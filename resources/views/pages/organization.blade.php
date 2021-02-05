@@ -181,8 +181,8 @@
                 <div class="card-header">
                     <!-- Title -->
                     <h5 class="h3 mb-0 account-header">{{ isset($account) ? $account->name : '' }}</h5>
-                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-black" src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
-                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-white" src="{{ asset('svg') }}/map-white.svg" class="map-icon-white " style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
+                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-black" src="{{ asset('svg') }}/map.svg" class="map-icon-black"  style="max-width: 20px" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
+                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-white" src="{{ asset('svg') }}/map-white.svg" class="map-icon-white" style="max-width: 20px" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
                 </div>
                 <!-- Card body -->
                 <div class="card-body" style="height:300px;">
