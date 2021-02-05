@@ -172,7 +172,7 @@ class PageController extends Controller
             'Content-Disposition' => 'filename="' . $cluster->name . '.pdf"'
         ])->deleteFileAfterSend();
     }
-    
+
     public function clusterReporting(Request $request, $cluster_name)
     {
         $user = $request->user();
@@ -217,14 +217,14 @@ class PageController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function privacy()
+    public function termsandconditions()
     {
-        return view('pages.privacy');
+        return view('pages.termsandconditions');
     }
 
     public function faq()
     {
-        return view('pages.privacy');
+        return view('pages.termsandconditions');
     }
 
     public function building()

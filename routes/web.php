@@ -27,7 +27,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 
 Route::get('invitation/create', 'InvitationController@create')->name('invitation.create');
 Route::get('pricing', 'PageController@pricing')->name('page.pricing');
-Route::get('privacy', 'PageController@privacy')->name('page.privacy');
+Route::get('termsandconditions', 'PageController@termsandconditions')->name('page.termsandconditions');
 Route::get('faq', 'PageController@faq')->name('page.faq');
 Route::get('reporting', 'PageController@reporting')->middleware('auth')->name('page.reporting');
 Route::get('reporting/project/{cluster_name}', 'PageController@clusterReporting')->middleware('auth')->name('page.cluster_reporting');

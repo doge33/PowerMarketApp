@@ -36,7 +36,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
-            @if (auth()->user()->isAdmin() && !in_array(request()->route()->getName(), ['home', 'welcome', 'invitation.create', 'invitation.store', 'page.pricing', 'page.reporting', 'page.cluster_reporting', 'page.privacy', 'page.lock', 'page.pdf', 'page.cluster_pdf', 'page.faq', 'page.building']))
+            @if (auth()->user()->isAdmin() && !in_array(request()->route()->getName(), ['home', 'welcome', 'invitation.create', 'invitation.store', 'page.pricing', 'page.reporting', 'page.cluster_reporting', 'page.termsandconditions', 'page.lock', 'page.pdf', 'page.cluster_pdf', 'page.faq', 'page.building']))
                 @include('layouts.navbars.sidebar')
             @endif
         @endauth
@@ -46,7 +46,7 @@
             @yield('content')
         </div>
 
-        @if(!auth()->check() || in_array(request()->route()->getName(), ['welcome', 'page.pricing','page.reporting', 'page.privacy', 'page.lock']))
+        @if(!auth()->check() || in_array(request()->route()->getName(), ['welcome', 'page.pricing','page.reporting', 'page.termsandconditions', 'page.lock']))
             @include('layouts.footers.guest')
         @endif
 

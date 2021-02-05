@@ -126,7 +126,7 @@
                             <div class="custom-control custom-control-alternative custom-checkbox">
                                 <input class="custom-control-input" id="customCheckRegister" type="checkbox" required>
                                 <label class="custom-control-label" for="customCheckRegister">
-                                    <span class="text-muted">{{ __('I agree with the') }} <a href="{{ route('page.privacy') }}" target=\\"_blank\\">{{ __('Terms of Use') }}</a></span>
+                                    <span class="text-muted">{{ __('I agree with the') }} <a href="{{ route('page.termsandconditions') }}" target=\\"_blank\\">{{ __('Terms of Use') }}</a></span>
                                 </label>
                             </div>
                         </div>
