@@ -102,7 +102,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                             </div>
-                            <input class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('Password') }}" type="password" name="password" required>
+                            <input id="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" placeholder="{{ __('Password') }}" type="password" name="password" required>
                         </div>
                         @if ($errors->has('password'))
                         <span class="invalid-feedback" style="display: block;" role="alert">
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                     <div class="text-muted font-italic">
-                        <small>{{ __('password strength') }}: <span class="text-success font-weight-700">{{ __('strong') }}</span></small>
+                        <small>{{ __('password strength') }}: <span id="password-strength-status"></span></small>
                     </div>
                     <div class="row my-4">
                         <div class="col-12">
@@ -151,6 +151,29 @@
         }
         else {
             $("#org-input").removeAttr('disabled');
+        }
+    })
+</script>
+<script>
+    $("#password").on('keyup', function(){
+        var number = /([0-9])/;
+        var alphabets = /([a-zA-Z])/;
+        var special_characters = /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/;
+        var status = $("#password-strength-status")
+        if ($(this).val().length < 6) {
+            status.removeClass();
+            status.addClass('text-warning font-weight-700 weak-password');
+            status.html("Weak (should be atleast 6 characters.)");
+        } else {
+            if ($(this).val().match(number) && $(this).val().match(alphabets) && $(this).val().match(special_characters)) {
+                status.removeClass();
+                status.addClass('text-success font-weight-700 strong-password');
+                status.html("Strong");
+            } else {
+                status.removeClass();
+                status.addClass('text-primary font-weight-700 medium-password');
+                status.html("Medium (should include alphabets, numbers and special characters or some combination.)");
+            }
         }
     })
 </script>

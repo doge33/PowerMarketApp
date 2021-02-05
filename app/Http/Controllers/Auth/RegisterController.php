@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
+//require_once 'vendor/autoload.php';
+
 class RegisterController extends Controller
 {
     /*
