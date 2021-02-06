@@ -212,7 +212,7 @@
                                         </div>
                                         <!-- Card body -->
                                         <div class="card-body" style="height:500px;">
-                                            <div id="map" style="width: 100%; height: 250px;"></div>
+                                            <div id="map" style="width: 100%; height: 250px;" class="map-border"></div>
                                             <div class="row p-3" style="height: 250px;">
                                                 <div class="col-12">
                                                     <h5 class="h3 text-muted">Address:</h5>

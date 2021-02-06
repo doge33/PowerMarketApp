@@ -337,7 +337,7 @@
         $(".card.account").click(function(event) {
             if (active_account == event.currentTarget.id) return;
             //setting styles for previous active account
-            $("[id=account-" + active_account + "]").css('display', 'none');
+            $("[id=account-" + active_account + "]").css('display', 'none'); //don't show the datasets for the previous selected account
             var account_card = $("#" + active_account + ".card.account");
             account_card.css('color', 'black');
             var face = account_card.prev();
