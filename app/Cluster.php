@@ -10,6 +10,11 @@ class Cluster extends Model
     protected $guarded = [];
     protected $hidden = ['pivot'];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public function geopoints()
     {
         return $this->belongsToMany(Geopoint::class);
