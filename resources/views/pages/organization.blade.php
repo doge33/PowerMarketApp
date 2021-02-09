@@ -276,7 +276,61 @@
                     <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
                     <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
                     <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-chart-bar-32 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-                    <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+                    <a data-toggle="modal" data-target="#share-form" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+                        <div class="modal fade" id="share-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                        <div class="card bg-secondary shadow border-0 mb-0">
+                                            <div class="card-header bg-white">
+                                                <div class="text-muted text-left mb-3">
+                                                    <h2>Share with users from your organization</h2>
+                                                </div>
+                                            </div>
+                                            <div class="card-body bg-white">
+                                                <form method="post" action="{{ route('invitation.store') }}" role="form">
+                                                    @csrf
+                                                    <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                                        <!-- <label class="form-control-label" for="input-user">{{ __('Select user') }}</label> -->
+                                                        <input list="users-in-org" type="text" name="name" autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+
+                                                            <datalist id="users-in-org">
+                                                                @foreach($members as $member)
+                                                                    <option value={{$member->name}} />
+                                                                @endforeach
+                                                            </datalist>
+
+                                                        @include('alerts.feedback', ['field' => 'name'])
+                                                    </div>
+                                                    <!-- <div class="dropdown">
+                                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            Dropdown button
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                            <a class="dropdown-item" href="#">Action</a>
+                                                            <a class="dropdown-item" href="#">Another action</a>
+                                                            <a class="dropdown-item" href="#">Something else here</a>
+                                                        </div>
+                                                    </div> -->
+                                                    <h4>User can edit?</h4>
+                                                    <div class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
+                                                        <label class="custom-toggle custom-toggle-success">
+                                                            <input type="checkbox" name="is_admin" value="1" checked>
+                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
+                                                        </label>
+                                                        @include('alerts.feedback', ['field' => 'is_admin'])
+                                                    </div>
+                                                    @include('alerts.feedback', ['field' => 'accounts'])
+                                                    <div class="text-left">
+                                                        <button type="submit" class="btn btn-default my-4">Share</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                 </div>
                 <!-- Card body -->
                 <div class="card-body add-cluster" style="height:300px;max-width:100%;">

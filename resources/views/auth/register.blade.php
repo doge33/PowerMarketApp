@@ -119,11 +119,7 @@
                         </div>
                     </div>
                     <div class="text-muted font-italic">
-<<<<<<< HEAD
-                        <small>{{ __('password strength') }}: <span id="password-strength-status"></span></small>
-=======
                       <small>{{ __('password strength') }}: <span id="password-strength-status"></span></small>
->>>>>>> d3aba88f442af17c03bce5e65f3d5f658e35bed6
                     </div>
                     <div class="row my-4">
                         <div class="col-12">
