@@ -158,7 +158,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="row">
-                                <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-gradient-pm text-white rounded-circle shadow">
                                     <i class="ni ni-chart-pie-35"></i>
                                 </div>
                             </div>
@@ -185,7 +185,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="row">
-                                <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-gradient-pm text-white rounded-circle shadow">
                                     <i class="ni ni-atom"></i>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="row">
-                                <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-gradient-pm text-white rounded-circle shadow">
                                     <i class="fas fa-pound-sign"></i>
                                 </div>
                             </div>
@@ -239,7 +239,7 @@
                         </div>
                         <div class="col-auto">
                             <div class="row">
-                                <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                <div class="icon icon-shape bg-gradient-pm text-white rounded-circle shadow">
                                     <i class="fas fa-smog"></i>
                                 </div>
                             </div>
@@ -292,9 +292,15 @@
         </div>
     </div>
     <!-- Disclaimer -->
-    <h4>Disclaimer</h4>
-    <h5>The data presented are estimations based on standard, industry-wide assumption; but can differ from actual solar array for the rooftops displayed. Please consult a professional solar installations company for a customised proposal.</h5>
-    <h5><a href="{{ route('page.faq') }}" target="_blank">FAQ</a></h5>
+    <br>
+    <h4>DISCLAIMER</h4>
+    <h5>The data presented are estimations based on standard, industry-wide assumption; but can differ from actual solar array for the rooftops displayed.</h5>
+    <h5>Please consult a professional solar installations company for a customised proposal.</h5>
+    <br>
+    <button type="button" class="btn btn-sm btn-neutral mr-0" aria-haspopup="true" aria-expanded="false">
+        <a href="{{ route('page.faq') }}" target="_blank">FAQ</a>
+    </button>
+    <!-- <h5><a href="{{ route('page.faq') }}" target="_blank">FAQ</a></h5> -->
     <!-- Footer -->
     @include('layouts.footers.auth')
 </div>

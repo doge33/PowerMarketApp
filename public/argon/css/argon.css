@@ -21978,6 +21978,11 @@ button.bg-lighter:focus
     background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%) !important;
 }
 
+.bg-gradient-pm
+{
+    background: linear-gradient(87deg, #0D1025 0, #1B2B4B 100%) !important;
+}
+
 .bg-gradient-indigo
 {
     background: linear-gradient(87deg, #5603ad 0, #9d03ad 100%) !important;

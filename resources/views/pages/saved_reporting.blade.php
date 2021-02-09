@@ -33,7 +33,7 @@
                         </div>
                         <a href="{{ route('page.pricing') }}"><button type="button" class="btn btn-primary mb-3">Upgrade to Download Reports</button></a>
                         <br>
-                    
+
                         <!-- <div class="card-footer">
                               <a href="mailto: abhinav.jain@powermarket.net" target="_blank" class="text-light">Upgrade to generate your own</a>
                           </div> -->

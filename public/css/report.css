@@ -92,6 +92,7 @@
     padding-left: 15px;
     padding-bottom: 30px;
     margin-bottom: 23px;
+    /* border-radius: .375rem; */
 }
 .add-cluster {
     display: flex;
