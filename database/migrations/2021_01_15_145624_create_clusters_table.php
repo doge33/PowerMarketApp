@@ -15,6 +15,7 @@ class CreateClustersTable extends Migration
     {
         Schema::create('clusters', function (Blueprint $table) {
             $table->id();
+            //$table->increments('id');
             $table->string('name');
             $table->unsignedInteger('user_id');
             $table->double('lat')->default(0);

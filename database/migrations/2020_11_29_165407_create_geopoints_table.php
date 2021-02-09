@@ -13,11 +13,12 @@ class CreateGeopointsTable extends Migration
      */
     public function up()
     {
-        // the lat Lon field is created as a geometry data in table, in order to query for 
+        // the lat Lon field is created as a geometry data in table, in order to query for
         // STContains, to find all the points within the polygon, which is super fast, if used
         // with spatial indeces in sql
         Schema::create('geopoints', function (Blueprint $table) {
             $table->id();
+            //$table->increments('id');
             $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
             $table->point('latLon');
             $table->double('area_sqm')->default(0);

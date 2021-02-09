@@ -15,9 +15,17 @@ class CreateClusterUserTable extends Migration
     {
         Schema::create('cluster_user', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('cluster_id');
-            $table->unsignedInteger('user_id');
-            $table->timestamps();
+            //$table->primary(['cluster_id', 'user_id']);
+            $table->bigInteger('cluster_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('cluster_id')->references('id')->on('clusters')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            //$table->timestamps();
+
+            //$table->foreignId('cluster_id');
+            //$table->foreignId('user_id');
+            //$table->primary(['cluster_id', 'user_id']);
+
         });
     }
 
