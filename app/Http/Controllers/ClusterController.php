@@ -127,10 +127,10 @@ class ClusterController extends Controller
         ]);
 
         $cluster = Cluster::findOrFail($request->cluster_id); //
-        $cluster->users()->syncWithoutDetaching($request->coOwners); //add the co-owner ids to this cluster in the pivot table
+        $cluster->users()->syncWithoutDetaching($request->co_owners); //add the co-owner ids to this cluster in the pivot table
 
         return response()->json([
-            'message' => 'Project is successfully shared' //may add co owner names in the future
+            'message' => 'Project is successfully shared.' //may add co owner names in the future
         ], 200);
 
     }

@@ -48,6 +48,7 @@ class User extends Authenticatable
 
     public function clusters()
     {
+
         return $this->belongsToMany(Cluster::class);
     }
     // public function sharedClusters()
