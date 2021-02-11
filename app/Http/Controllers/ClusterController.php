@@ -117,6 +117,23 @@ class ClusterController extends Controller
             'message' => 'The geopoint has been successfully removed'
         ], 200);
     }
+    //add each user_id in the array contained in the request to the cluster_user pivot table for a cluster
+    public function shareCluster(Request $request)
+    {
+        //$request object should contain: 1. cluster_id of selected cluster; 2. an array of the user('s id) selected
+        $request->validate([
+            'cluster_id' => 'required',
+            'co_owners' => 'required',
+        ]);
+
+        $cluster = Cluster::findOrFail($request->cluster_id); //
+        $cluster->users()->syncWithoutDetaching($request->coOwners); //add the co-owner ids to this cluster in the pivot table
+
+        return response()->json([
+            'message' => 'Project is successfully shared' //may add co owner names in the future
+        ], 200);
+
+    }
 
     public function delete(Cluster $cluster){
         $cluster->delete();

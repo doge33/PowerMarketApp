@@ -276,8 +276,8 @@
                     <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
                     <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
                     <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-chart-bar-32 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-                    <a data-toggle="modal" data-target="#share-form" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
-                        <div class="modal fade" id="share-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                    <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+                        <div class="modal fade " id="share-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                                 <div class="modal-content">
                                     <div class="modal-body p-0">
@@ -292,13 +292,13 @@
                                                     @csrf
                                                     <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                                         <!-- <label class="form-control-label" for="input-user">{{ __('Select user') }}</label> -->
-                                                        <input list="users-in-org" type="text" name="name" autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+                                                        <input list="org-members" type="text"  autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
 
-                                                            <datalist id="users-in-org">
-                                                                @foreach($members as $member)
-                                                                    <option value={{$member->name}} />
-                                                                @endforeach
-                                                            </datalist>
+                                                        <datalist id="org-members">
+                                                            @foreach($members as $member)
+                                                                <option data-user="{{$member->id}}" value={{$member->name}}> </option>
+                                                            @endforeach
+                                                        </datalist>
 
                                                         @include('alerts.feedback', ['field' => 'name'])
                                                     </div>
@@ -423,6 +423,61 @@
             $.ajax({
                 type: 'POST',
                 url: '/clusters',
+                data: formData,
+                dataType: 'json',
+                encode: true
+            }).done(function(data) {
+                $('#response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(2000).fadeOut();
+                $('#cluster-row').children().last().before(`
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="card cluster" id="${data.cluster.id}">
+                            <!-- Card header -->
+                            <div class="card-header">
+                                <!-- Title -->
+                                <h5 class="h3 mb-0 account-header">${data.cluster.name}</h5>
+                                <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="${data.cluster.id}"><i class="fa fa-trash-alt map-icon-black" style="font-size:22px;color:#191B2F;"></i></a>
+                                <a href="/projects/${data.cluster.name}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon" /></a>
+                                <a href="/reporting/project/${data.cluster.name}" target="_blank"><i class="ni ni-chart-pie-35 map-icon-black report-icon"></i></a>
+                            </div>
+                            <!-- Card body -->
+                            <div class="card-body add-cluster" style="height:300px;max-width:100%;">
+                                <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B(${data.cluster.lon},${data.cluster.lat})/${data.cluster.lon},${data.cluster.lat},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
+                            </div>
+                        </div>
+                    </div>
+                `)
+            }).fail(function(data) {
+                $('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
+            });
+        });
+        //grab project id when share button is clicked
+        var projectId;
+        var selectedMember;
+        $('a[class="share-button"]').on('click',function(){
+            projectId = $(this).closest(".card.cluster").attr('id');
+        })
+        //grab selected member's id
+        $("input[list='org-members']").on('change', function(){
+
+            var currentMember = $(this).val();
+            var memberList = $(this)
+                .siblings("#org-members")
+                .find('option'); //all the options in the datalist
+            //compare current selected member with each of the options, find the one that matches and grabs the user id
+            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
+
+        })
+        //share request
+        $('#share-form').submit(function(event) {
+            event.preventDefault();
+
+            var formData = {
+                'cluster_id': projectId,
+                'co_owners': selectedMember;
+            };
+            $.ajax({
+                type: 'POST',
+                url: 'share/project,
                 data: formData,
                 dataType: 'json',
                 encode: true
