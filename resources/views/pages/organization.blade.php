@@ -419,11 +419,6 @@
         </div>
         @endforeach
         @endif
-        <div class="col-lg-4 col-sm-6 col-12">
-            <div class="card add-cluster">
-                <a data-toggle="modal" data-target="#cluster-form" target="_blank" class="add-button"><img src="{{ asset('svg') }}/add-button.svg" class="rounded-circle border-secondary" style="width:4em" data-toggle="tooltip" data-placement="top" title="Add Project"></a>
-            </div>
-        </div>
     </div>
     @endif
 
