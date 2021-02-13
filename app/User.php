@@ -6,9 +6,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable; // contains the notify method . call like this: $user -> notify(new NewSharedProject($project)); & add on top: use App\Notifications\NewSharedProject;
+    //alternatively, use Notification Facade like so:      Notification::send($users, new InvoicePaid($invoice));
 
     const ADMIN = 1;
     const ORG_ADMIN = 2;
@@ -51,10 +53,7 @@ class User extends Authenticatable
 
         return $this->belongsToMany(Cluster::class);
     }
-    // public function sharedClusters()
-    // {
-    //     return $this->belongsToMany(Cluster::class);
-    // }
+
     /**
      * Get the path to the profile picture
      *

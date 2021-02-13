@@ -35,14 +35,15 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="ni ni-bell-55"></i>
+                        <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge">{{Auth::user()->notifications->count()}}</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
                         <!-- Dropdown header -->
                         <div class="px-3 py-3">
-                            <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">1</strong> notification.</h6>
+                            <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">{{Auth::user()->notifications->count()}}</strong> notification.</h6>
                         </div>
                         <!-- List group -->
+                        @foreach(Auth::user()->notifications as $notification)
                         <div class="list-group list-group-flush">
                             <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action">
                                 <div class="row align-items-center">
@@ -53,18 +54,24 @@
                                     <div class="col ml--2">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
-                                                <h4 class="mb-0 text-sm">PowerMarket</h4>
+                                                <h4 class="mb-0 text-sm">{{ Auth::user()->organization->name }}</h4>
                                             </div>
                                             <div class="text-right text-muted">
-                                                <small>2 hrs ago</small>
+                                                <small>{{ $notification->created_at->diffForHumans()}}</small>
                                             </div>
                                         </div>
-                                        <p class="text-sm mb-0">You are on trial. Upgrade Now.</p>
-{{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}}
+                                            <p>
+                                                <strong style="color: #51BBD6">{{ $notification->data['sharer_name']}}</strong> shared a project <strong style="color: #F7A22C">{{ $notification->data['project_name']}}</strong> with you.
+                                            </p>
+
+
+                                        <!-- <p class="text-sm mb-0">You are on trial. Upgrade Now.</p> -->
+<!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
                                     </div>
                                 </div>
                             </a>
                         </div>
+                        @endforeach
                         <!-- View all -->
                         <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
                     </div>

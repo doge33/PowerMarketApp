@@ -10,6 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use App\User;
+use App\Notifications\NewSharedProject;
 
 Route::get('/', function () {
 	return view('pages.welcome');
@@ -66,4 +68,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('clusters', 'ClusterController@index');
 	Route::get('projects/{cluster}', 'HomeController@cluster');
 	//Route::get('{page}', ['as' => 'page.index', 'uses' => 'PageController@index']);
+
+    Route::get('/x', function(){
+        //get this route when a user clicked on the notification badge
+
+        $user = Auth::user();
+
+        $user->notify(new NewSharedProject(User::findOrFail(2)));
+
+        foreach(Auth::user()->unreadNotifications as $notification) { //this one handles marking unread as read for a logged-in user
+            //dd($notification);
+            $notification -> markAsRead();
+        }
+    });
 });
