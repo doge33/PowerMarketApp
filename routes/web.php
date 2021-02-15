@@ -69,6 +69,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('projects/{cluster}', 'HomeController@cluster');
 	//Route::get('{page}', ['as' => 'page.index', 'uses' => 'PageController@index']);
 
+    Route::get('notifications/markread', 'NotificationController@markRead');
+
     Route::get('/x', function(){
         //get this route when a user clicked on the notification badge
 
