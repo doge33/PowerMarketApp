@@ -15,12 +15,17 @@ class NotificationController extends Controller
         $this->middleware('auth');
     }
 
-    public function markRead() {
-        //mark notifications as read for the logged-in user
-        foreach(Auth::user()->unreadNotifications as $notification) {
+    public function markAsRead(Request $request) {
+        //mark a notification as read for the logged-in user
 
-            $notification -> markAsRead();
+        $notification= auth()->user()->unreadNotifications->find($request->notificationId);
+
+        if($notification !== null) {
+            $notification->markAsRead();
         }
-        return redirect()->route('home');
+        return response()->json([
+            'message' => 'Notification marked as Read.'
+        ], 200);
+
     }
 }

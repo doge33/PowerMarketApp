@@ -44,9 +44,9 @@
                         </div>
                         <!-- List group -->
                         @foreach(Auth::user()->notifications as $notification)
-                        <div class="list-group list-group-flush">
+                        <div class="list-group list-group-flush single-notification" data-notification={{$notification->id}}>
                             <!-- <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action"> -->
-                            <a href="notifications/markread" class="list-group-item list-group-item-action">
+                            <div class="list-group-item list-group-item-action">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                     <!-- Avatar -->
@@ -62,16 +62,16 @@
                                             </div>
                                         </div>
                                             <!-- need to consider different types of notifications? -->
-                                            <p>
-                                                <strong style="color: #51BBD6">{{ $notification->data['sharer_name']}}</strong> shared a project <strong style="color: #F7A22C">{{ $notification->data['project_name']}}</strong> with you.
-                                            </p>
+                                        <p>
+                                                <strong>{{ $notification->data['sharer_name']}}</strong> shared a project <a id="link-to-project" href="/projects/{{ $notification->data['project_name']}}" style="color: #F7A22C">{{ $notification->data['project_name']}}</a> with you.
+                                        </p>
 
 
                                         <!-- <p class="text-sm mb-0">You are on trial. Upgrade Now.</p> -->
 <!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         </div>
                         @endforeach
                         <!-- View all -->
@@ -168,3 +168,43 @@
         </div>
     </div>
 </nav>
+
+<script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".single-notification").on("click", function(event){
+
+            var linkToProject = $("#link-to-project")
+            if(event.target === linkToProject){
+                alert('target = a tag');
+                event.stopPropagation();
+
+            }
+            var clickedNotification = $(this).attr("data-notification");
+            var data = {
+                'notificationId': clickedNotification
+            };
+
+            $.ajax({
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: '/notifications/markAsRead',
+                data: data,
+                dataType: 'json',
+                encode: true
+            }).done(function(data){
+                location.reload(true);
+            }).fail(function(){
+                alert('something went wrong...');
+                //location.reload(true);
+            });
+
+
+        });
+
+    });
+
+
+</script>

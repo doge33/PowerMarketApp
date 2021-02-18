@@ -69,18 +69,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('projects/{cluster}', 'HomeController@cluster');
 	//Route::get('{page}', ['as' => 'page.index', 'uses' => 'PageController@index']);
 
-    Route::get('notifications/markread', 'NotificationController@markRead');
+    Route::post('notifications/markAsRead', 'NotificationController@markAsRead');
 
-    Route::get('/x', function(){
-        //get this route when a user clicked on the notification badge
-
-        $user = Auth::user();
-
-        $user->notify(new NewSharedProject(User::findOrFail(2)));
-
-        foreach(Auth::user()->unreadNotifications as $notification) { //this one handles marking unread as read for a logged-in user
-            //dd($notification);
-            $notification -> markAsRead();
-        }
-    });
 });

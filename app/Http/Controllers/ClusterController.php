@@ -18,7 +18,10 @@ class ClusterController extends Controller
 {
     public function index(Request $request)
     {
-        return ClusterResource::collection($request->user()->clusters);
+        //return ClusterResource::collection($request->user()->clusters);
+
+        $my_clusters = DB::table('clusters')->where('user_id', $request->user()->id)->get();
+        return ClusterResource::collection($my_clusters);
     }
 
     public function store(Request $request)

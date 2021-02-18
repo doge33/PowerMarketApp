@@ -46,8 +46,8 @@ class HomeController extends Controller
             'org_name' => $org->name,
             'members' => $user->isMember() ? [] : $org->members,
             'accounts' => $user->isMember() ? $user->accounts->load('regions') : $org->accounts->load('regions'),
-            'my_clusters' => $user->isMember() ? null : $my_clusters,
-            'clusters' => $user->isMember() ? null : $user->clusters
+            'my_clusters' => $user->isMember() ? null : $my_clusters, //clusters I created
+            'clusters' => $user->isMember() ? null : $user->clusters //clusters shared with me
         ]);
     }
     public function account($account_name)
@@ -104,13 +104,23 @@ class HomeController extends Controller
     public function cluster($cluster_name) {
         $user = auth()->user();
         $cluster = Cluster::where('user_id', $user->id)->where('name', $cluster_name)->first();
+
         if ($cluster == null){
-            return abort(404);
+
+            $cluster = $user->clusters->where('name', $cluster_name)->first();
+
+            if($cluster == null) {
+
+                return abort(404);
+            }
         }
+
         $geopoints = $cluster->geopoints;
+
         return view('pages.dashboard', [
-            'geodata' => $geopoints,
-            'cluster' => $cluster->name
+        'geodata' => $geopoints,
+        'cluster' => $cluster->name
         ]);
+
     }
 }

@@ -736,6 +736,29 @@
                 $('#next-response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(3000).fadeOut();
             });
         });
+
+        // $(".single-notification").on("click", function(event){
+        //     //the id of the notification being clicked on
+        //     var clickedNotification = $(this).attr("data-notification");
+        //     //console.log(clickedNotification);
+
+        //     var data = {
+        //         'notificationId': clickedNotification
+        //     };
+
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: 'notifications/markAsRead',
+        //         data: data,
+        //         dataType: 'json',
+        //         encode: true
+        //     }).done(function(data){
+        //         alert(data);
+        //     })
+        //     .fail(function(data){
+        //         alert(data);
+        //     });
+        // });
     });
 </script>
 <style>

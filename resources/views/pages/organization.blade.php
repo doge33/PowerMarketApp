@@ -300,7 +300,9 @@
 
                                                         <datalist id="org-members">
                                                             @foreach($members as $member)
+                                                            @if($member->name !== auth()->user()->name)
                                                                 <option data-user="{{$member->id}}" value={{$member->name}}> </option>
+                                                            @endif
                                                             @endforeach
                                                         </datalist>
 
@@ -382,8 +384,11 @@
                                                         <input list="org-members" type="text"  autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
 
                                                         <datalist id="org-members">
+
                                                             @foreach($members as $member)
+                                                            @if($member->name !== auth()->user()->name)
                                                                 <option data-user="{{$member->id}}" value={{$member->name}}> </option>
+                                                            @endif
                                                             @endforeach
                                                         </datalist>
 
