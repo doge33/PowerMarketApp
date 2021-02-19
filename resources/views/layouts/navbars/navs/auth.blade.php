@@ -33,7 +33,7 @@
                         <i class="ni ni-zoom-split-in"></i>
                     </a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" id="notification-section">
                     <a id="notification-bell" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span>
                     </a>
@@ -174,12 +174,8 @@
     $(document).ready(function(){
         $(".single-notification").on("click", function(event){
 
-            var linkToProject = $("#link-to-project")
-            if(event.target === linkToProject){
-                alert('target = a tag');
-                event.stopPropagation();
+            //var linkToProject = $("#link-to-project");
 
-            }
             var clickedNotification = $(this).attr("data-notification");
             var data = {
                 'notificationId': clickedNotification
@@ -195,7 +191,13 @@
                 dataType: 'json',
                 encode: true
             }).done(function(data){
-                location.reload(true);
+                //alert("marked as read!")
+
+                //$("#notification-section").load(window.location.href + " #notification-section" );
+
+            // }
+                //location.reload(true);
+
             }).fail(function(){
                 alert('something went wrong...');
                 //location.reload(true);
