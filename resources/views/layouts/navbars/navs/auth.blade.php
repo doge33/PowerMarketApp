@@ -193,9 +193,6 @@
             }).done(function(data){
                 //alert("marked as read!")
 
-                //$("#notification-section").load(window.location.href + " #notification-section" );
-
-            // }
                 //location.reload(true);
 
             }).fail(function(){
