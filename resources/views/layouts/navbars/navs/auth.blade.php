@@ -33,23 +33,59 @@
                         <i class="ni ni-zoom-split-in"></i>
                     </a>
                 </li>
-                <li class="nav-item dropdown" id="notification-section">
-                    <a id="notification-bell" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      @if(Auth::user()->unreadNotifications->count()>0)
+                      <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span>
+                      @else
+                      <i class="ni ni-bell-55"></i>
+                      @endif
                     </a>
                     <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
+
                         <!-- Dropdown header -->
                         <div class="px-3 py-3">
                             <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">{{Auth::user()->unreadNotifications->count() }}</strong> new notification(s).</h6>
                         </div>
+
                         <!-- List group -->
                         @foreach(Auth::user()->notifications as $notification)
-                        <div class="list-group list-group-flush single-notification" data-notification={{$notification->id}}>
-                            <!-- <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action"> -->
-                            <div class="list-group-item list-group-item-action">
+                        <div class="list-group list-group-flush">
+                          <!-- <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action"> -->
+                          <div class="list-group-item list-group-item-action">
+                            <div class="row align-items-center">
+                              <div class="col-auto">
+                                <!-- Avatar -->
+                                <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/team-4.jpg" class="avatar rounded-circle">
+                              </div>
+                              <div class="col ml--2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                  <div>
+                                    <h4 class="mb-0 text-sm">{{ Auth::user()->organization->name }}</h4>
+                                  </div>
+                                  <div class="text-right text-muted">
+                                    <small>{{ $notification->created_at->diffForHumans()}}</small>
+                                  </div>
+                                </div>
+                                <!-- need to consider different types of notifications? -->
+                                <h4 class="text-sm" style="font-weight: 200 !important; padding-top: .5em;">
+                                  <strong style="">{{ $notification->data['sharer_name']}}</strong> shared a project <strong><a href="/projects/{{ $notification->data['project_name']}}" target="_blank" style="color: #F7A22C; font-weight: 800;">{{ $notification->data['project_name']}}</a></strong> with you.
+                                </h4>
+                                <!-- <p class="text-sm mb-0">You are on trial. Upgrade Now.</p> -->
+                                <!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        @endforeach
+                        <!-- View all -->
+
+                        <!-- Beginning of Hard Coded Notifications -->
+                        <!-- <div class="list-group list-group-flush">
+                            <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
-                                    <!-- Avatar -->
+
                                         <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/team-4.jpg" class="avatar rounded-circle">
                                     </div>
                                     <div class="col ml--2">
@@ -71,10 +107,10 @@
 <!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        @endforeach
-                        <!-- View all -->
+                            </a>
+                        </div> -->
+                        <!-- End of Hard Coded Notifications -->
+
                         <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
                     </div>
                 </li>
@@ -173,8 +209,6 @@
 <script>
     $(document).ready(function(){
         $(".single-notification").on("click", function(event){
-
-            //var linkToProject = $("#link-to-project");
 
             var clickedNotification = $(this).attr("data-notification");
             var data = {

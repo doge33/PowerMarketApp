@@ -10,7 +10,10 @@ use Illuminate\Notifications\Notification;
 class NewSharedProject extends Notification
 {
     use Queueable;
+<<<<<<< HEAD
 
+=======
+>>>>>>> ec5a099c2dfe42ba07dca9436099b612302980b6
     public $user; //global variable user
     /**
      * Create a new notification instance.
@@ -22,7 +25,10 @@ class NewSharedProject extends Notification
         $this->user = $user;  //pass the sender in which becomes the publically available variable $user
         $this->cluster = $cluster;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ec5a099c2dfe42ba07dca9436099b612302980b6
     /**
      * Get the notification's delivery channels.
      *
@@ -33,7 +39,10 @@ class NewSharedProject extends Notification
     {
         return ['database'];
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ec5a099c2dfe42ba07dca9436099b612302980b6
     /**
      * Get the mail representation of the notification.
      *
@@ -47,7 +56,10 @@ class NewSharedProject extends Notification
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ec5a099c2dfe42ba07dca9436099b612302980b6
     /**
      * Get the array representation of the notification.
      *

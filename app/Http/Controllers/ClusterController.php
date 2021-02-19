@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Cluster;
 use App\User;
-
 use App\Http\Resources\ClusterResource;
 
 use Illuminate\Http\Request;
@@ -12,14 +11,12 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\NewSharedProject;
-// use App\Http\Controllers\Auth;
 
 class ClusterController extends Controller
 {
     public function index(Request $request)
     {
-        //return ClusterResource::collection($request->user()->clusters);
-
+        // return ClusterResource::collection($request->user()->clusters);
         $my_clusters = DB::table('clusters')->where('user_id', $request->user()->id)->get();
         return ClusterResource::collection($my_clusters);
     }
@@ -133,14 +130,13 @@ class ClusterController extends Controller
             'co_owners' => 'required',
         ]);
 
-        $cluster = Cluster::findOrFail($request->cluster_id); //
-        //dump($cluster);
+        $cluster = Cluster::findOrFail($request->cluster_id);
         $cluster->users()->syncWithoutDetaching($request->co_owners); //add the co-owner ids to this cluster in the pivot table
         $co_owners = User::findOrFail($request->co_owners); // the user to notify (single user for now)
 
+        //send notification
         $co_owners->notify(new NewSharedProject(Auth::user(), $cluster));
 
-        //send notification
 
         return response()->json([
             'message' => 'Project is successfully shared.' //may add co owner names in the future

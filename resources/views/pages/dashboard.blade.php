@@ -257,6 +257,9 @@
             </div>
         </div>
     </div>
+    <div class="back home">
+      <a href="{{ route('home') }}"><i class="fas fa-arrow-circle-left" style="font-size: 2rem; padding-bottom: 2rem;"></i></a>
+    </div>
     <div class="row">
         <div class="col text-left" style="margin-bottom: 10px;">
             <button type="button" class="btn btn-sm btn-neutral mr-0" data-toggle="modal" data-target="#modal-form" aria-haspopup="true" aria-expanded="false">
