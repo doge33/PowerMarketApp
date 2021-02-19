@@ -163,11 +163,7 @@
         if ($(this).val().length < 6) {
             status.removeClass();
             status.addClass('text-warning font-weight-700 weak-password');
-<<<<<<< HEAD
-            status.html("Weak (should be atleast 6 characters.)");
-=======
             status.html("Weak (should be at least 6 characters.)");
->>>>>>> d3aba88f442af17c03bce5e65f3d5f658e35bed6
         } else {
             if ($(this).val().match(number) && $(this).val().match(alphabets) && $(this).val().match(special_characters)) {
                 status.removeClass();
@@ -176,11 +172,7 @@
             } else {
                 status.removeClass();
                 status.addClass('text-primary font-weight-700 medium-password');
-<<<<<<< HEAD
-                status.html("Medium (should include alphabets, numbers and special characters or some combination.)");
-=======
                 status.html("Medium (numbers and special characters help improve strength.)");
->>>>>>> d3aba88f442af17c03bce5e65f3d5f658e35bed6
             }
         }
     })

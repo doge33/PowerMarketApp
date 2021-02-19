@@ -33,26 +33,32 @@
                         <i class="ni ni-zoom-split-in"></i>
                     </a>
                 </li>
+
+
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       @if(Auth::user()->unreadNotifications->count()>0)
-                      <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span>
+                      <!-- <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span> -->
+                      <i class="ni ni-bell-55"></i><span class="badge badge-circle navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span>
                       @else
                       <i class="ni ni-bell-55"></i>
                       @endif
                     </a>
-                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
-
+                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 scroll-dropdown" role="menu">
                         <!-- Dropdown header -->
                         <div class="px-3 py-3">
                             <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">{{Auth::user()->unreadNotifications->count() }}</strong> new notification(s).</h6>
                         </div>
 
+
+                        <link href="{{ asset('css') }}/notifications.css" rel='stylesheet' />
+
                         <!-- List group -->
                         @foreach(Auth::user()->notifications as $notification)
-                        <div class="list-group list-group-flush">
+                        @if($notification->unread())<div class="list-group list-group-flush single-notification notification-unread " data-notification={{ $notification->id }}>@endif
+                        @if($notification->read())<div class="list-group list-group-flush single-notification notification-read" data-notification={{ $notification->id }}>@endif
                           <!-- <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action"> -->
-                          <div class="list-group-item list-group-item-action">
+                          <div class="list-group-notification list-group-notification-action">
                             <div class="row align-items-center">
                               <div class="col-auto">
                                 <!-- Avatar -->
@@ -71,18 +77,18 @@
                                 <h4 class="text-sm" style="font-weight: 200 !important; padding-top: .5em;">
                                   <strong style="">{{ $notification->data['sharer_name']}}</strong> shared a project <strong><a href="/projects/{{ $notification->data['project_name']}}" target="_blank" style="color: #F7A22C; font-weight: 800;">{{ $notification->data['project_name']}}</a></strong> with you.
                                 </h4>
-                                <!-- <p class="text-sm mb-0">You are on trial. Upgrade Now.</p> -->
-                                <!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
                               </div>
                             </div>
                           </div>
                         </div>
                         @endforeach
                         <!-- View all -->
-
-                        <!-- Beginning of Hard Coded Notifications -->
+                        <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+                    </div>
+                </li>
+                    <!-- Beginning of Hard Coded Notifications -->
                         <!-- <div class="list-group list-group-flush">
-                            <a href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action">
+                            <div href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
 
@@ -97,23 +103,24 @@
                                                 <small>{{ $notification->created_at->diffForHumans()}}</small>
                                             </div>
                                         </div>
-                                            <!-- need to consider different types of notifications? -->
+
                                         <p>
                                                 <strong>{{ $notification->data['sharer_name']}}</strong> shared a project <a id="link-to-project" href="/projects/{{ $notification->data['project_name']}}" style="color: #F7A22C">{{ $notification->data['project_name']}}</a> with you.
-                                        </p>
+                                        </p> -->
 
 
                                         <!-- <p class="text-sm mb-0">You are on trial. Upgrade Now.</p> -->
 <!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
-                                    </div>
+                                    <!-- </div>
                                 </div>
-                            </a>
+                            </div>
                         </div> -->
-                        <!-- End of Hard Coded Notifications -->
+                    <!-- End of Hard Coded Notifications -->
 
-                        <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
-                    </div>
-                </li>
+
+
+
+
 {{--                <li class="nav-item dropdown">--}}
 {{--                    <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
 {{--                        <i class="ni ni-ungroup"></i>--}}
@@ -208,14 +215,19 @@
 <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
-        $(".single-notification").on("click", function(event){
 
+        //mark notificaiton as read
+        $(".single-notification").on("click", function(event){
             var clickedNotification = $(this).attr("data-notification");
             var data = {
                 'notificationId': clickedNotification
             };
+            //if this notification is unread, mark it as read and change color from blue to white
+            if($(this).hasClass("notification-unread")){
 
-            $.ajax({
+                $(this).removeClass("notification-unread").addClass("notification-read");
+
+                $.ajax({
                 headers:{
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -224,16 +236,15 @@
                 data: data,
                 dataType: 'json',
                 encode: true
-            }).done(function(data){
-                //alert("marked as read!")
+                }).done(function(data){
 
-                //location.reload(true);
+                }).fail(function(){
+                    alert('something went wrong...');
 
-            }).fail(function(){
-                alert('something went wrong...');
-                //location.reload(true);
-            });
+                });
 
+
+            }
 
         });
 
