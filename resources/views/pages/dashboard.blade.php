@@ -259,6 +259,10 @@
     </div>
     <div class="back home">
       <a href="{{ route('home') }}"><i class="fas fa-arrow-circle-left" style="font-size: 2rem; padding-bottom: 2rem;"></i></a>
+      <!-- if the cluster name is passed in (which means if we are at a project page) -->
+      @if(isset($cluster))
+      <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-chart-bar-32 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+      @endif
     </div>
     <div class="row">
         <div class="col text-left" style="margin-bottom: 10px;">

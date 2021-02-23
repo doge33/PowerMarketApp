@@ -31,10 +31,13 @@ Route::get('invitation/create', 'InvitationController@create')->name('invitation
 Route::get('pricing', 'PageController@pricing')->name('page.pricing');
 Route::get('termsandconditions', 'PageController@termsandconditions')->name('page.termsandconditions');
 Route::get('faq', 'PageController@faq')->name('page.faq');
-Route::get('reporting', 'PageController@reporting')->middleware('auth')->name('page.reporting');
-Route::get('reporting/project/{cluster_name}', 'PageController@clusterReporting')->middleware('auth')->name('page.cluster_reporting');
+
+Route::get('reporting', 'PageController@reporting')->middleware('auth')->name('page.reporting'); //the report generated from a single geopoint in an accounts/dataset page
+
+Route::get('reporting/project/{cluster_name}', 'PageController@clusterReporting')->middleware('auth')->name('page.cluster_reporting');//gives you reporting on a project
 Route::get('pdf', 'PageController@pdf')->middleware('auth')->name('page.pdf');
-Route::get('pdf/cluster/{cluster_name}', 'PageController@clusterPdf')->middleware('auth')->name('page.cluster_pdf');
+Route::get('pdf/cluster/{cluster_name}', 'PageController@clusterPdf')->middleware('auth')->name('page.cluster_pdf');//the pdf version for download for a specific project
+
 Route::get('lock', 'PageController@lock')->name('page.lock');
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {

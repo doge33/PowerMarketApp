@@ -105,6 +105,7 @@ class HomeController extends Controller
         $user = auth()->user();
         $cluster = Cluster::where('user_id', $user->id)->where('name', $cluster_name)->first();
 
+        //temporary fix until cluster-user relationship updated properly
         if ($cluster == null){
             $cluster = $user->clusters->where('name', $cluster_name)->first();
             if($cluster == null) {
@@ -116,7 +117,7 @@ class HomeController extends Controller
 
         return view('pages.dashboard', [
         'geodata' => $geopoints,
-        'cluster' => $cluster->name
+        'cluster' => $cluster->name,
         ]);
 
     }

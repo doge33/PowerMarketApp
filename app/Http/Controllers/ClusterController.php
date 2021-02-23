@@ -71,9 +71,15 @@ class ClusterController extends Controller
             if (!$geopoint_ids->contains('id', $request->geopoint_id)) {
                 return response()->json(['message' => 'Geopoint not found'], 422);
             }
+
+        //temporary updates before the cluster-user relationship in the database is updated
+            $my_clusters = DB::table('clusters')
+                        ->where('user_id', $user->id)
+                        ->get();
             //cluster possession validation
             if ($request->filled('cluster_id')) {
-                if (!$user->clusters->contains('id', $request->cluster_id)) {
+                // if (!$user->clusters->contains('id', $request->cluster_id)) {
+                if (!$my_clusters->contains('id', $request->cluster_id)) {
                     return response()->json(['message' => 'Project not found'], 422);
                 }
                 $cluster = Cluster::findOrFail($request->cluster_id);
