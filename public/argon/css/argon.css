@@ -787,6 +787,17 @@ pre code
     padding-left: 15px;
 }
 
+.container-fluid-org
+{
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 15px;
+    padding-left: 15px;
+    background: RGBA(29, 44, 73, 1.00);
+    margin-bottom: 3rem;
+}
+
 .row
 {
     display: flex;
@@ -26895,4 +26906,50 @@ html:not([dir='rtl']) .noUi-horizontal .noUi-handle
 .swal2-popup .swal2-image
 {
     max-width: 200px;
+}
+
+
+
+/* NOTIFICATIONS */
+
+.notification-unread {
+    /* background-color: #f6f9fc; */
+    background-color: #f0f4f8;
+}
+
+/* .list-group-notification
+{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    padding-left: 0;
+} */
+
+.list-group-notification-action:hover,
+.list-group-notification-action:focus
+{
+    text-decoration: none;
+
+    color: #525f7f;
+    /* background-color: #f6f9fc; */
+}
+
+.list-group-notification {
+    position: relative;
+    display: block;
+    margin-bottom: -1px;
+    padding: 1rem 1rem;
+    border: 1px solid #e9ecef;
+    /* background-color: #fff; */
+}
+
+.notification-read {
+    background-color: #fff;
+}
+
+.scroll-dropdown {
+    max-height: 395px;
+    height: auto;
+    overflow-x: hidden;
+
 }

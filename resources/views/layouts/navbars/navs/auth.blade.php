@@ -38,13 +38,13 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       @if(Auth::user()->unreadNotifications->count()>0)
-                      <!-- <i class="ni ni-bell-55"></i><span class="badge badge-warning navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span> -->
                       <i class="ni ni-bell-55"></i><span class="badge badge-circle navbar-badge" style="background-color: orange">{{Auth::user()->unreadNotifications->count()}}</span>
                       @else
                       <i class="ni ni-bell-55"></i>
                       @endif
                     </a>
-                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 scroll-dropdown" role="menu">
+                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 scroll-dropdown">
+
                         <!-- Dropdown header -->
                         <div class="px-3 py-3">
                             <h6 class="text-sm text-muted m-0">You have <strong class="text-primary">{{Auth::user()->unreadNotifications->count() }}</strong> new notification(s).</h6>
@@ -83,7 +83,7 @@
                         </div>
                         @endforeach
                         <!-- View all -->
-                        <a href="#!" class="dropdown-item text-center text-primary font-weight-bold py-3">View all</a>
+                        <a href="{{ route('page.pricing') }}" target="_blank" class="dropdown-item text-center text-primary font-weight-bold py-3">Upgrade</a>
                     </div>
                 </li>
                     <!-- Beginning of Hard Coded Notifications -->
@@ -116,9 +116,6 @@
                             </div>
                         </div> -->
                     <!-- End of Hard Coded Notifications -->
-
-
-
 
 
 {{--                <li class="nav-item dropdown">--}}
@@ -215,7 +212,6 @@
 <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
-
         //mark notificaiton as read
         $(".single-notification").on("click", function(event){
             var clickedNotification = $(this).attr("data-notification");
@@ -224,9 +220,7 @@
             };
             //if this notification is unread, mark it as read and change color from blue to white
             if($(this).hasClass("notification-unread")){
-
                 $(this).removeClass("notification-unread").addClass("notification-read");
-
                 $.ajax({
                 headers:{
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

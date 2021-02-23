@@ -72,10 +72,11 @@ class ClusterController extends Controller
                 return response()->json(['message' => 'Geopoint not found'], 422);
             }
 
-        //temporary updates before the cluster-user relationship in the database is updated
+            //temporary updates before the cluster-user relationship in the database is updated
             $my_clusters = DB::table('clusters')
-                        ->where('user_id', $user->id)
-                        ->get();
+                ->where('user_id', $user->id)
+                ->get();
+
             //cluster possession validation
             if ($request->filled('cluster_id')) {
                 // if (!$user->clusters->contains('id', $request->cluster_id)) {

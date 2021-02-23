@@ -94,16 +94,18 @@
     </div>
 </div>
 <!-- Page content -->
-<div class="container-fluid">
-    <div class="row" style="margin-right: 0px; margin-left: 0px;">
-        <div class="col-12 orgname">
-            <span class="h1">{{ $org_name }}</span>
+<div class="container-fluid-org">
+    <div class="row" style="margin-right: 10px; margin-left: 20px;">
+        <div class="col-12 orgname-org-blade">
+            <span class="h1" style="color: RGBA(248, 249, 254, 1.00) !important;" >{{ $org_name }}</span>
         </div>
     </div>
+</div>
+<div class="container-fluid">
     @if(!auth()->user()->isMember())
-    <div class="row" style="margin-right: 0px; margin-left: 0px;">
-        <div class="col-12">
-            <p class="h2">Users:</p>
+    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;">
+        <div class="col-12 pb-3">
+            <p class="h2">Users</p>
         </div>
         @foreach($members as $member)
         <div class="user">
@@ -169,9 +171,9 @@
     </div>
     @endif
     @include('alerts.success')
-    <div class="row pt-5" style="margin-right: 0px; margin-left: 0px;">
-        <div class="col-12 pb-3">
-            <p class="h2">Accounts:</p>
+    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;">
+        <div class="col-12 pb-4">
+            <p class="h2">Accounts</p>
         </div>
         @foreach($accounts as $account)
         <div class="col-lg-4 col-sm-6 col-12">
@@ -217,9 +219,9 @@
         @endforeach
     </div>
     @foreach($accounts as $account)
-    <div class="row" id="account-{{ $account->id }}" style="display: none; margin-right: 0px; margin-left: 0px;">
-        <div class="col-12 pb-3">
-            <p class="h2">Data Sets:</p>
+    <div class="row pt-5" id="account-{{ $account->id }}" style="display: none; margin-right: 15px; margin-left: 15px;">
+        <div class="col-12 pb-4">
+            <p class="h2">Data Sets</p>
         </div>
         @foreach($account->regions as $region)
         <div class="col-lg-4 col-sm-6 col-12">
@@ -264,8 +266,8 @@
     @endforeach
     <!-- projects that are created by me -->
     @if(!auth()->user()->isMember())
-    <div class="row" style="margin-right: 0px; margin-left: 0px;" id="cluster-row">
-        <div class="col-12 pb-3">
+    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;" id="cluster-row">
+        <div class="col-12 pb-4">
             <p class="h2">Projects Created by Me</p>
         </div>
         @if(isset($clusters))
@@ -351,8 +353,8 @@
     @endif
     <!-- projects that are shared with me  -->
     @if(!auth()->user()->isMember())
-    <div class="row" style="margin-right: 0px; margin-left: 0px;" id="cluster-row">
-      <div class="col-12 pb-3">
+    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px; padding-bottom: 2rem;" id="cluster-row">
+      <div class="col-12 pb-4">
         <p class="h2">Projects Shared with Me</p>
       </div>
       @if(isset($clusters))
