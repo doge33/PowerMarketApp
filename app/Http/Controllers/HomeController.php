@@ -42,6 +42,8 @@ class HomeController extends Controller
                     ->where('user_id', $user->id)
                     ->get();
 
+
+
         return view('pages.organization', [
             'org_name' => $org->name,
             'members' => $user->isMember() ? [] : $org->members,
