@@ -298,14 +298,14 @@
                             </div>
                             <div class="card-body bg-white">
 
-                              <form method="post" action="/share/clusters/{{$my_cluster->id}}" role="form">
+                              <form>
                                 @csrf
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                 <span class="{{ $my_cluster->id }}">{{ $my_cluster->id}}</span>
 
-                                  <input list="org-members-{{ $my_cluster->id }}" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+                                  <input list="org-members-{{$my_cluster->id}}" onchange="return handleShareInput()" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
 
-                                  <datalist id="org-members-{{ $my_cluster->id }}">
+                                  <datalist id="org-members-{{$my_cluster->id}}">
                                     <!-- other members of your organization -->
 
                                     @foreach($members as $member)
@@ -342,7 +342,7 @@
                             </div> -->
                             <!-- @include('alerts.feedback', ['field' => 'accounts']) -->
                             <div class="text-left">
-                              <button type="submit" class="btn btn-default my-4">Share</button>
+                              <button onclick="return onSubmitHandle(event)" class="btn btn-default my-4">Share</button>
                             </div>
                           </form>
                         </div>
@@ -510,86 +510,50 @@
                 $('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
             });
         });
-        //grab project id when share button is clicked
+        // handling share function for each project
        var projectId;
        var selectedMember;
        $('a[class="share-button"]').on('click',function(){
            projectId = $(this).closest(".card.cluster").attr('id');
-
        })
-       //grab selected member's id
-       $(`input[list='org-members-${projectId}']`).on('change', function(){
-           var currentMember = $(this).val();
-           var memberList = $(this)
-               .siblings(`datalist[id='org-members-${projectId}]'`)
+       //event handlers on <input> & submit button inside each share modal
+        window.handleShareInput = function() {
+            //grab selected member's id
+            var shareInput = $(`input[list='org-members-${projectId}']`)
+            var currentMember = shareInput.val();
+            var memberList = shareInput
+               .siblings(`datalist[id='org-members-${projectId}']`)
                .find('option'); //all the options in the datalist
            //compare current selected member with each of the options, find the one that matches and grabs the user id
            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
-            console.log(selectedMember)
-       })
-    // $(`input[list='org-members']`).on('change', function(){
-    //        var currentMember = $(this).val();
-    //        var memberList = $(this)
-    //            .siblings("datalist")
-    //            .find('option'); //all the options in the datalist
-    //        //compare current selected member with each of the options, find the one that matches and grabs the user id
-    //        [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
-    //    })
-       //share request
-       $(`#share-form-${projectId}`).submit(function(event) {
-           event.preventDefault();
-           console.log(projectId);
-           var formData = {
-               'cluster_id': projectId,
-               'co_owners': selectedMember,
-           };
-           $.ajax({
-               headers:{
-                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-               },
-               type: 'POST',
-               url: '/share/clusters/' + projectId,
-               data: formData,
-               dataType: 'json',
-               encode: true
-           }).done(function(data) {
-                alert('success');
-            //    $(`#share-form${projectId}`).modal('hide')
-               //$('#delete-next-form').modal('show')
-               //$('#delete-next-response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(3000).fadeOut();
-           }).fail(function(data) {
-            //    alert('failed')
-               //$('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
-           });
-           return false;
-       });
+        }
 
-    // $(`#share-form`).submit(function(event) {
-    //        event.preventDefault();
-    //        console.log(projectId);
-    //        var formData = {
-    //            'cluster_id': projectId,
-    //            'co_owners': selectedMember,
-    //        };
-    //        $.ajax({
-    //            headers:{
-    //                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //            },
-    //            type: 'POST',
-    //            url: '/share/clusters/' + projectId,
-    //            data: formData,
-    //            dataType: 'json',
-    //            encode: true
-    //        }).done(function(data) {
-    //             alert('success');
-    //         //    $(`#share-form${projectId}`).modal('hide')
-    //            //$('#delete-next-form').modal('show')
-    //            //$('#delete-next-response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(3000).fadeOut();
-    //        }).fail(function(data) {
-    //         //    alert('failed')
-    //            //$('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
-    //        });
-    //    });
+        window.onSubmitHandle = function(evt){
+            evt.preventDefault();
+            console.log('form submit clicked');
+            var formData = {
+                'cluster_id': projectId,
+                'co_owners': selectedMember,
+            };
+            $.ajax({
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: '/share/clusters/' + projectId,
+                data: formData,
+                dataType: 'json',
+                encode: true
+            }).done(function(data) {
+                $(`#share-form-${projectId}`).modal('hide')
+                $('#delete-next-form').modal('show')
+                $('#delete-next-response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(3000).fadeOut();
+            }).fail(function(data) {
+                alert('something went wrong')
+                //$('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
+            });
+        }
+
     });
 </script>
 @endpush
