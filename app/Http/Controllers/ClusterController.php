@@ -138,7 +138,7 @@ class ClusterController extends Controller
             'cluster_id' => 'required',
             'co_owners' => 'required',
         ]);
-        dd($request);
+
 
         $cluster = Cluster::findOrFail($request->cluster_id);
         $cluster->users()->syncWithoutDetaching($request->co_owners); //add the co-owner ids to this cluster in the pivot table

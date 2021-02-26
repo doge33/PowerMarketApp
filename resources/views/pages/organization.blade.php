@@ -282,11 +282,11 @@
                   <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$my_cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;"data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
                   <a href="/projects/{{ $my_cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
                   <a href="/reporting/project/{{ $my_cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-                  <a class="share-button" data-toggle="modal" href="#share-form{{$my_cluster->id}}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+                  <a class="share-button" data-toggle="modal" href="#share-form-{{ $my_cluster->id }}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
                   <!-- <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
 
                         <!-- share modal form  -->
-                  <div class="modal fade"  id="share-form{{$my_cluster->id}}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                  <div class="modal fade"  id="share-form-{{ $my_cluster->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                       <div class="modal-content">
                         <div class="modal-body p-0">
@@ -301,11 +301,11 @@
                               <form method="post" action="/share/clusters/{{$my_cluster->id}}" role="form">
                                 @csrf
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                <span class="{{ $my_cluster->id }}">{{ $my_cluster-> id}}</span>
+                                <span class="{{ $my_cluster->id }}">{{ $my_cluster->id}}</span>
 
-                                  <input list="org-members-{{$my_cluster->id}}" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+                                  <input list="org-members-{{ $my_cluster->id }}" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
 
-                                  <datalist id="org-members-{{$my_cluster->id}}">
+                                  <datalist id="org-members-{{ $my_cluster->id }}">
                                     <!-- other members of your organization -->
 
                                     @foreach($members as $member)
@@ -575,6 +575,14 @@
            //compare current selected member with each of the options, find the one that matches and grabs the user id
            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
        })
+    // $(`input[list='org-members']`).on('change', function(){
+    //        var currentMember = $(this).val();
+    //        var memberList = $(this)
+    //            .siblings("datalist")
+    //            .find('option'); //all the options in the datalist
+    //        //compare current selected member with each of the options, find the one that matches and grabs the user id
+    //        [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
+    //    })
        //share request
        $(`#share-form${projectId}`).submit(function(event) {
            event.preventDefault();
