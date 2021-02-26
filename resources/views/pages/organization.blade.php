@@ -390,64 +390,14 @@
                         <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
                         <!-- <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
 
-                        <!-- share modal form again; not in used -->
-                        <div class="modal fade " id="share-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-body p-0">
-                                        <div class="card bg-secondary shadow border-0 mb-0">
-                                            <div class="card-header bg-white">
-                                                <div class="text-muted text-left mb-3">
-                                                <h2>Share with users from your organization</h2>
-                                                </div>
-                                            </div>
-                                        <div class="card-body bg-white">
-
-                                            <form method="post" action="/share/clusters/{cluser_id}" role="form">
-                                                @csrf
-                                                <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                                    <!-- <label class="form-control-label" for="input-user">{{ __('Select user') }}</label> -->
-                                                    <input list="org-members" type="text"  autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
-
-                                                    <datalist id="org-members">
-                                                        @foreach($members as $member)
-                                                        @if($member->name !== auth()->user()->name)
-                                                        <option data-user="{{$member->id}}" value={{$member->name}}> </option>
-                                                        @endif
-                                                        @endforeach
-
-                                                    </datalist>
-
-                                                    @include('alerts.feedback', ['field' => 'name'])
-                                                </div>
-                                                    <!-- <h4>User can edit?</h4>
-                                                    <div class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
-                                                    <label class="custom-toggle custom-toggle-success">
-                                                    <input type="checkbox" name="is_admin" value="1" checked>
-                                                    <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
-                                                    </label>
-                                                    @include('alerts.feedback', ['field' => 'is_admin'])
-                                                </div> -->
-                                                <!-- @include('alerts.feedback', ['field' => 'accounts']) -->
-                                                <div class="text-left">
-                                                    <button type="submit" class="btn btn-default my-4">Share</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end of share modal form again -->
 
                     </div>
-                </div>
-            </div>
             <!-- Card body -->
-            <div class="card-body add-cluster" style="height:300px;max-width:100%;">
-                <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$cluster->lon}},{{$cluster->lat}})/{{$cluster->lon}},{{$cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
-            </div>
-            </div>
-        </div>
+                    <div class="card-body add-cluster" style="height:300px;max-width:100%;">
+                        <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$cluster->lon}},{{$cluster->lat}})/{{$cluster->lon}},{{$cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
+                    </div>
+                </div>
+             </div>
         @endif
 
 
@@ -565,15 +515,17 @@
        var selectedMember;
        $('a[class="share-button"]').on('click',function(){
            projectId = $(this).closest(".card.cluster").attr('id');
+
        })
        //grab selected member's id
        $(`input[list='org-members-${projectId}']`).on('change', function(){
            var currentMember = $(this).val();
            var memberList = $(this)
-               .siblings("datalist")
+               .siblings(`datalist[id='org-members-${projectId}]'`)
                .find('option'); //all the options in the datalist
            //compare current selected member with each of the options, find the one that matches and grabs the user id
            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
+            console.log(selectedMember)
        })
     // $(`input[list='org-members']`).on('change', function(){
     //        var currentMember = $(this).val();
@@ -584,7 +536,7 @@
     //        [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
     //    })
        //share request
-       $(`#share-form${projectId}`).submit(function(event) {
+       $(`#share-form-${projectId}`).submit(function(event) {
            event.preventDefault();
            console.log(projectId);
            var formData = {

@@ -139,7 +139,6 @@ class ClusterController extends Controller
             'co_owners' => 'required',
         ]);
 
-
         $cluster = Cluster::findOrFail($request->cluster_id);
         $cluster->users()->syncWithoutDetaching($request->co_owners); //add the co-owner ids to this cluster in the pivot table
         $co_owners = User::findOrFail($request->co_owners); // the user to notify (single user for now)
