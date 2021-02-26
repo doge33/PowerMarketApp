@@ -12,7 +12,17 @@ class Cluster extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot(['is_author', 'is_editor']);
+    }
+
+    public function author()
+    {
+        return $this->belongsToMany(User::class)->wherePivot('is_author', '1');
+    }
+
+    public function co_owners()
+    {
+        return $this->belongsToMany(User::class)->wherePivot('is_author', '0');
     }
 
     public function geopoints()

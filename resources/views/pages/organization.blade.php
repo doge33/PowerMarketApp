@@ -80,7 +80,7 @@
                             @csrf
                             <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="input-name">{{ __('Name') }}</label>
-                                <input type="text" name="name" id="input-name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Enter Name') }}" value="{{ old('name') }}" required autofocus>
+                                <input maxlength="20" type="text" name="name" id="input-name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Enter Name') }}" value="{{ old('name') }}" required autofocus>
                             </div>
                             <div id="response-status" class="alert" role="alert"></div>
                             <div class="text-center">
@@ -113,7 +113,7 @@
         </div>
         @endforeach
         <div class="user">
-            <a data-toggle="modal" data-target="#modal-form">
+            <a data-toggle="modal" href="#modal-form">
                 <img src="{{ asset('svg') }}/add-button.svg" class="rounded-circle border-secondary add-button" data-toggle="tooltip" data-placement="top" title="Invite User">
             </a>
             <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
@@ -270,50 +270,57 @@
         <div class="col-12 pb-4">
             <p class="h2">Projects Created by Me</p>
         </div>
-        @if(isset($my_clusters))
-        @foreach($my_clusters as $my_cluster)
+        @if(isset($clusters))
+        @foreach($clusters as $my_cluster)
+        @if($my_cluster->pivot->is_author)
         <div class="col-lg-4 col-sm-6 col-12">
             <div class="card cluster" id="{{ $my_cluster->id }}">
                 <!-- Card header -->
                 <div class="card-header">
                   <!-- Title -->
-                  <h5 class="h3 mb-0 account-header">{{ $my_cluster->name }}; id: {{$my_cluster->id}}</h5>
+                  <h5 class="h3 mb-0 account-header">{{ $my_cluster->name }}</h5>
                   <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$my_cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;"data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
                   <a href="/projects/{{ $my_cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
                   <a href="/reporting/project/{{ $my_cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-                  <a class="share-button" data-toggle="modal" data-target="#share-form{{ $my_cluster->id }}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+                  <a class="share-button" data-toggle="modal" href="#share-form{{$my_cluster->id}}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
                   <!-- <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
 
                         <!-- share modal form  -->
-                  <div class="modal fade {{ $my_cluster->id }}" id="share-form{{ $my_cluster->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                  <div class="modal fade"  id="share-form{{$my_cluster->id}}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
                       <div class="modal-content">
                         <div class="modal-body p-0">
                           <div class="card bg-secondary shadow border-0 mb-0">
                             <div class="card-header bg-white">
                               <div class="text-muted text-left mb-3">
-                                <h2>Share with users from your organization {{$my_cluster->name}}</h2>
+                                <h2>Share with users from your organization {{$my_cluster->name}} </h2>
                               </div>
                             </div>
                             <div class="card-body bg-white">
 
-                              <form method="post" action="/share/clusters/{cluser_id}" role="form">
+                              <form method="post" action="/share/clusters/{{$my_cluster->id}}" role="form">
                                 @csrf
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                <span class="{{ $my_cluster->id }}">{{ $my_cluster->id }}</span>
-                                  <!-- <label class="form-control-label" for="input-user">{{ __('Select user') }}</label> -->
-                                  <input list="org-members" type="text"  autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+                                <span class="{{ $my_cluster->id }}">{{ $my_cluster-> id}}</span>
 
-                                  <datalist id="org-members" style="z-index:2000 !important">
+                                  <input list="org-members-{{$my_cluster->id}}" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+
+                                  <datalist id="org-members-{{$my_cluster->id}}">
                                     <!-- other members of your organization -->
 
                                     @foreach($members as $member)
 
+                                            @if($member->name !== auth()->user()->name)
+                                                @if(!in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
+                                                {
+                                                    <option data-user="{{$member->id}}" value={{$member->name}}></option>
+                                                }
+                                                @else{
+                                                    <option data-user="{{$member->id}}" value={{$member->name}}>this user already shares this project</option>
 
-
-                                            <option class="{{ $my_cluster->id }}" data-user="{{$member->id}}" value={{$member->name}}> current project id: {{ $my_cluster->id }}; this user already shares:{{ $member->clusters->pluck('id')}}</option>
-
-
+                                                }
+                                                @endif
+                                            @endif
 
 
                                     @endforeach
@@ -352,6 +359,7 @@
                 </div>
             </div>
         </div>
+        @endif
         @endforeach
         @endif
         <div class="col-lg-4 col-sm-6 col-12">
@@ -364,86 +372,89 @@
     <!-- projects that are shared with me  -->
     @if(!auth()->user()->isMember())
     <div class="row pt-5" style="margin-right: 15px; margin-left: 15px; padding-bottom: 2rem;" id="cluster-row">
-      <div class="col-12 pb-4">
-        <p class="h2">Projects Shared with Me</p>
-      </div>
-      @if(isset($clusters))
-      @foreach($clusters as $cluster)
-      <div class="col-lg-4 col-sm-6 col-12">
-        <div class="card cluster" id="{{ $cluster->id }}">
-          <!-- Card header -->
-          <div class="card-header">
-            <!-- Title -->
-            <h5 class="h3 mb-0 account-header">{{ $cluster->name }}</h5>
-            <!-- <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a> -->
-            <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px; margin-right: 5px !important;" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
-            <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-            <!-- <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
-
-            <!-- share modal form again; not in used -->
-            <div class="modal fade " id="share-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                <div class="modal-content">
-                  <div class="modal-body p-0">
-                    <div class="card bg-secondary shadow border-0 mb-0">
-                      <div class="card-header bg-white">
-                        <div class="text-muted text-left mb-3">
-                          <h2>Share with users from your organization</h2>
-                        </div>
-                      </div>
-                      <div class="card-body bg-white">
-
-                        <form method="post" action="/share/clusters/{cluser_id}" role="form">
-                          @csrf
-                          <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                            <!-- <label class="form-control-label" for="input-user">{{ __('Select user') }}</label> -->
-                            <input list="org-members" type="text"  autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
-
-                            <datalist id="org-members">
-                              @foreach($members as $member)
-                              @if($member->name !== auth()->user()->name)
-                               <option data-user="{{$member->id}}" value={{$member->name}}> </option>
-                              @endif
-                              @endforeach
-
-                            </datalist>
-
-                            @include('alerts.feedback', ['field' => 'name'])
-                          </div>
-
-
-                          <!-- <h4>User can edit?</h4>
-                          <div class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
-                          <label class="custom-toggle custom-toggle-success">
-                          <input type="checkbox" name="is_admin" value="1" checked>
-                          <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
-                        </label>
-                        @include('alerts.feedback', ['field' => 'is_admin'])
-                      </div> -->
-                      <!-- @include('alerts.feedback', ['field' => 'accounts']) -->
-                      <div class="text-left">
-                        <button type="submit" class="btn btn-default my-4">Share</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- end of share modal form again -->
-
-          </div>
+        <div class="col-12 pb-4">
+            <p class="h2">Projects Shared with Me</p>
         </div>
-      </div>
-      <!-- Card body -->
-      <div class="card-body add-cluster" style="height:300px;max-width:100%;">
-        <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$cluster->lon}},{{$cluster->lat}})/{{$cluster->lon}},{{$cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
-      </div>
+        @if(isset($clusters))
+        @foreach($clusters as $cluster)
+        <!-- get all clusters where the current user is not the author -->
+        @if(!$cluster->pivot->is_author)
+            <div class="col-lg-4 col-sm-6 col-12">
+                <div class="card cluster" id="{{ $cluster->id }}">
+                    <!-- Card header -->
+                    <div class="card-header">
+                        <!-- Title -->
+                        <h5 class="h3 mb-0 account-header">{{ $cluster->name }} {{$cluster->pivot->is_author}}</h5>
+                        <!-- <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a> -->
+                        <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px; margin-right: 5px !important;" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
+                        <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+                        <!-- <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
+
+                        <!-- share modal form again; not in used -->
+                        <div class="modal fade " id="share-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                        <div class="card bg-secondary shadow border-0 mb-0">
+                                            <div class="card-header bg-white">
+                                                <div class="text-muted text-left mb-3">
+                                                <h2>Share with users from your organization</h2>
+                                                </div>
+                                            </div>
+                                        <div class="card-body bg-white">
+
+                                            <form method="post" action="/share/clusters/{cluser_id}" role="form">
+                                                @csrf
+                                                <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                                    <!-- <label class="form-control-label" for="input-user">{{ __('Select user') }}</label> -->
+                                                    <input list="org-members" type="text"  autocomplete="off" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+
+                                                    <datalist id="org-members">
+                                                        @foreach($members as $member)
+                                                        @if($member->name !== auth()->user()->name)
+                                                        <option data-user="{{$member->id}}" value={{$member->name}}> </option>
+                                                        @endif
+                                                        @endforeach
+
+                                                    </datalist>
+
+                                                    @include('alerts.feedback', ['field' => 'name'])
+                                                </div>
+                                                    <!-- <h4>User can edit?</h4>
+                                                    <div class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
+                                                    <label class="custom-toggle custom-toggle-success">
+                                                    <input type="checkbox" name="is_admin" value="1" checked>
+                                                    <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
+                                                    </label>
+                                                    @include('alerts.feedback', ['field' => 'is_admin'])
+                                                </div> -->
+                                                <!-- @include('alerts.feedback', ['field' => 'accounts']) -->
+                                                <div class="text-left">
+                                                    <button type="submit" class="btn btn-default my-4">Share</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of share modal form again -->
+
+                    </div>
+                </div>
+            </div>
+            <!-- Card body -->
+            <div class="card-body add-cluster" style="height:300px;max-width:100%;">
+                <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$cluster->lon}},{{$cluster->lat}})/{{$cluster->lon}},{{$cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
+            </div>
+            </div>
+        </div>
+        @endif
+
+
+        @endforeach
+        @endif
     </div>
-  </div>
-  @endforeach
-  @endif
-</div>
-@endif
+    @endif
 </div>
 @endsection
 @push('css')
@@ -468,6 +479,7 @@
             var formData = {
                 '_token': $('input[name=_token]').val()
             }
+            console.log("line483");
             $.ajax({
                 type: 'DELETE',
                 url: '/clusters/' + clicked_project,
@@ -511,6 +523,7 @@
         window.dispatchEvent(new Event('resize'));
         $('#cluster-form').submit(function(event) {
             event.preventDefault();
+            console.log("line526");
             var visiblePoints = [];
             var formData = {
                 'name': $('input[name=name]').val(),
@@ -554,17 +567,18 @@
            projectId = $(this).closest(".card.cluster").attr('id');
        })
        //grab selected member's id
-       $("input[list='org-members']").on('change', function(){
+       $(`input[list='org-members-${projectId}']`).on('change', function(){
            var currentMember = $(this).val();
            var memberList = $(this)
-               .siblings("#org-members")
+               .siblings("datalist")
                .find('option'); //all the options in the datalist
            //compare current selected member with each of the options, find the one that matches and grabs the user id
            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
        })
        //share request
-       $('#share-form').submit(function(event) {
+       $(`#share-form${projectId}`).submit(function(event) {
            event.preventDefault();
+           console.log(projectId);
            var formData = {
                'cluster_id': projectId,
                'co_owners': selectedMember,
@@ -579,13 +593,43 @@
                dataType: 'json',
                encode: true
            }).done(function(data) {
-               $('#share-form').modal('hide')
-               $('#delete-next-form').modal('show')
-               $('#delete-next-response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(3000).fadeOut();
+                alert('success');
+            //    $(`#share-form${projectId}`).modal('hide')
+               //$('#delete-next-form').modal('show')
+               //$('#delete-next-response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(3000).fadeOut();
            }).fail(function(data) {
-               $('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
+            //    alert('failed')
+               //$('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
            });
+           return false;
        });
+
+    // $(`#share-form`).submit(function(event) {
+    //        event.preventDefault();
+    //        console.log(projectId);
+    //        var formData = {
+    //            'cluster_id': projectId,
+    //            'co_owners': selectedMember,
+    //        };
+    //        $.ajax({
+    //            headers:{
+    //                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //            },
+    //            type: 'POST',
+    //            url: '/share/clusters/' + projectId,
+    //            data: formData,
+    //            dataType: 'json',
+    //            encode: true
+    //        }).done(function(data) {
+    //             alert('success');
+    //         //    $(`#share-form${projectId}`).modal('hide')
+    //            //$('#delete-next-form').modal('show')
+    //            //$('#delete-next-response-status').text(data.message).css('display', 'block').addClass('alert-success').removeClass('alert-danger').delay(3000).fadeOut();
+    //        }).fail(function(data) {
+    //         //    alert('failed')
+    //            //$('#response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(2000).fadeOut();
+    //        });
+    //    });
     });
 </script>
 @endpush

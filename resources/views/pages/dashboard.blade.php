@@ -51,7 +51,7 @@
                             @csrf
                             <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="input-name">{{ __('Name') }}</label>
-                                <input type="text" name="name" id="input-name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Enter Name') }}" value="{{ old('name') }}" required autofocus>
+                                <input maxlength="20" type="text" name="name" id="input-name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Enter Name') }}" value="{{ old('name') }}" required autofocus>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-default my-4">Create project</button>
@@ -133,7 +133,7 @@
                                 </label>
                             </div>
                             <div class="form-group{{ $errors->has('new_name') ? ' has-danger' : '' }}">
-                                <input style="margin-top: 1rem;" disabled type="text" name="new_name" id="new-name" class="form-control{{ $errors->has('new_name') ? ' is-invalid' : '' }} form-control-sm" placeholder="{{ __('Enter new project name') }}" value="{{ old('new_name') }}" required autofocus>
+                                <input maxlength="20" style="margin-top: 1rem;" disabled type="text" name="new_name" id="new-name" class="form-control{{ $errors->has('new_name') ? ' is-invalid' : '' }} form-control-sm" placeholder="{{ __('Enter new project name') }}" value="{{ old('new_name') }}" required autofocus>
                             </div>
                             <!-- <div id="cluster-response-status" class="alert" role="alert"></div> -->
                             <div class="text-center">

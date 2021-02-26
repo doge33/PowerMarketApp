@@ -41,6 +41,8 @@ class ClusterController extends Controller
             'name' => $request->name,
             'user_id' => $user->id
         ]);
+        $cluster->users()->attach($user->id, ['is_author' => 1, 'is_editor' => 1]);
+
         $cluster->geopoints()->attach($geopoints);
         $cluster->setLatLon();
         return response()->json([
@@ -136,6 +138,7 @@ class ClusterController extends Controller
             'cluster_id' => 'required',
             'co_owners' => 'required',
         ]);
+        dd($request);
 
         $cluster = Cluster::findOrFail($request->cluster_id);
         $cluster->users()->syncWithoutDetaching($request->co_owners); //add the co-owner ids to this cluster in the pivot table

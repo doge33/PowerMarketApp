@@ -50,8 +50,13 @@ class User extends Authenticatable
 
     public function clusters()
     {
-        return $this->belongsToMany(Cluster::class);
+        return $this->belongsToMany(Cluster::class)->withPivot(['is_author', 'is_editor']);
     }
+
+    // public function my_clusters()
+    // {
+    //     return $this->belongsToMany(Cluster::class)->wherePivot('is_author', 1);
+    // }
 
     /**
      * Get the path to the profile picture
@@ -116,4 +121,6 @@ class User extends Authenticatable
     {
         return $this->role_id == self::ORG_MEMBER;
     }
+
+
 }
