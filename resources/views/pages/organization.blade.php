@@ -80,7 +80,7 @@
                             @csrf
                             <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="input-name">{{ __('Name') }}</label>
-                                <input maxlength="20" type="text" name="name" id="input-name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Enter Name') }}" value="{{ old('name') }}" required autofocus>
+                                <input maxlength="15" type="text" name="name" id="input-name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Enter Name') }}" value="{{ old('name') }}" required autofocus>
                             </div>
                             <div id="response-status" class="alert" role="alert"></div>
                             <div class="text-center">
@@ -301,50 +301,52 @@
                               <form>
                                 @csrf
                                 <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                <span class="{{ $my_cluster->id }}">{{ $my_cluster->id}}</span>
+                                    <span class="{{ $my_cluster->id }}">project id: {{ $my_cluster->id}}</span>
 
-                                  <input list="org-members-{{$my_cluster->id}}" onchange="return handleShareInput()" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+                                    <input list="org-members-{{$my_cluster->id}}" onchange="return handleShareInput()" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
 
-                                  <datalist id="org-members-{{$my_cluster->id}}">
-                                    <!-- other members of your organization -->
+                                    <datalist id="org-members-{{$my_cluster->id}}">
+                                        <!-- other members of your organization -->
 
-                                    @foreach($members as $member)
+                                        @foreach($members as $member)
 
-                                            @if($member->name !== auth()->user()->name)
-                                                @if(!in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
-                                                {
-                                                    <option data-user="{{$member->id}}" value={{$member->name}}></option>
-                                                }
-                                                @else{
-                                                    <option data-user="{{$member->id}}" value={{$member->name}}>this user already shares this project</option>
+                                                @if($member->name !== auth()->user()->name)
+                                                    @if(!in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
+                                                    {
+                                                        <option data-user="{{$member->id}}" value={{$member->name}}></option>
+                                                    }
 
-                                                }
+                                                    @endif
                                                 @endif
-                                            @endif
 
 
-                                    @endforeach
+                                        @endforeach
 
 
-                                  </datalist>
-
-                                  @include('alerts.feedback', ['field' => 'name'])
+                                    </datalist>
+                                    <div style="margin-top: 1rem;" class="edit-permission">
+                                        <h4>User can edit</h4>
+                                        <div style="margin-bottom: auto" class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
+                                            <label class="custom-toggle custom-toggle-success">
+                                                <input type="checkbox" id="is-editor-{{$my_cluster->id}}" onchange="return handleEditorInput()" name="is_editor" value="1" checked>
+                                                <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
+                                            </label>
+                                            @include('alerts.feedback', ['field' => 'is_editor'])
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span style="color: gray;margin-bottom: 2rem;font-size: small">shared with:</span><br>
+                                        @foreach($members as $member)
+                                        @if($member->name !== auth()->user()->name && in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
+                                            <button style="display:inline-block; border-radius:34px" class="btn btn-secondary btn-sm" aria-label="Close"> {{$member->name}} </button>
+                                        @endif
+                                        @endforeach
+                                    </div>
                                 </div>
-
-
-                                <!-- <h4>User can edit?</h4>
-                                <div class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
-                                <label class="custom-toggle custom-toggle-success">
-                                <input type="checkbox" name="is_admin" value="1" checked>
-                                <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
-                              </label>
-                              @include('alerts.feedback', ['field' => 'is_admin'])
-                            </div> -->
-                            <!-- @include('alerts.feedback', ['field' => 'accounts']) -->
-                            <div class="text-left">
-                              <button onclick="return onSubmitHandle(event)" class="btn btn-default my-4">Share</button>
-                            </div>
-                          </form>
+                                <div class="text-left">
+                                    <button onclick="return onSubmitHandle(event)" class="btn btn-default my-4">Share</button>
+                                </div>
+                            </form>
                         </div>
                       </div>
                     </div>
@@ -429,7 +431,6 @@
             var formData = {
                 '_token': $('input[name=_token]').val()
             }
-            console.log("line483");
             $.ajax({
                 type: 'DELETE',
                 url: '/clusters/' + clicked_project,
@@ -473,7 +474,6 @@
         window.dispatchEvent(new Event('resize'));
         $('#cluster-form').submit(function(event) {
             event.preventDefault();
-            console.log("line526");
             var visiblePoints = [];
             var formData = {
                 'name': $('input[name=name]').val(),
@@ -528,12 +528,18 @@
            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
         }
 
+        // window.handleEditorInput = function(){
+        //     var is_editor = $(`input[id='is_editor-${projectId}']`);
+        //     console.log("value of is_editor is:", is_editor, projectId)
+        // }
+
         window.onSubmitHandle = function(evt){
             evt.preventDefault();
             console.log('form submit clicked');
             var formData = {
                 'cluster_id': projectId,
                 'co_owners': selectedMember,
+
             };
             $.ajax({
                 headers:{
