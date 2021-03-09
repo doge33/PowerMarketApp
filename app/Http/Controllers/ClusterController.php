@@ -113,7 +113,8 @@ class ClusterController extends Controller
     {
         $request->validate([
             'geopoint_id' => 'required|integer',
-            'cluster_name' => 'required'
+            'cluster_name' => 'required',
+
         ]);
         $user = $request->user();
         $cluster = Cluster::where([
@@ -137,10 +138,12 @@ class ClusterController extends Controller
         $request->validate([
             'cluster_id' => 'required',
             'co_owners' => 'required',
+            'is_editor' => 'boolean'
         ]);
 
+
         $cluster = Cluster::findOrFail($request->cluster_id);
-        $cluster->users()->syncWithoutDetaching($request->co_owners); //add the co-owner ids to this cluster in the pivot table
+        $cluster->users()->syncWithoutDetaching([$request->co_owners =>['is_editor'=> $request->is_editor]]); //add the co-owner ids to this cluster in the pivot table
         $co_owners = User::findOrFail($request->co_owners); // the user to notify (single user for now)
 
         //send notification

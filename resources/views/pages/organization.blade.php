@@ -328,7 +328,7 @@
                                         <h4>User can edit</h4>
                                         <div style="margin-bottom: auto" class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
                                             <label class="custom-toggle custom-toggle-success">
-                                                <input type="checkbox" id="is-editor-{{$my_cluster->id}}" onchange="return handleEditorInput()" name="is_editor" value="1" checked>
+                                                <input type="checkbox" id="is-editor-{{$my_cluster->id}}" name="is_editor" value="1" checked>
                                                 <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
                                             </label>
                                             @include('alerts.feedback', ['field' => 'is_editor'])
@@ -513,6 +513,8 @@
         // handling share function for each project
        var projectId;
        var selectedMember;
+
+
        $('a[class="share-button"]').on('click',function(){
            projectId = $(this).closest(".card.cluster").attr('id');
        })
@@ -528,19 +530,18 @@
            [...memberList].forEach(member => member.value === currentMember ? selectedMember = member.getAttribute('data-user'):'')
         }
 
-        // window.handleEditorInput = function(){
-        //     var is_editor = $(`input[id='is_editor-${projectId}']`);
-        //     console.log("value of is_editor is:", is_editor, projectId)
-        // }
-
         window.onSubmitHandle = function(evt){
             evt.preventDefault();
-            console.log('form submit clicked');
+            var is_editor = $(`input[id='is-editor-${projectId}']`).is(":checked");;
+            //console.log('is_editor is checked?', is_editor);
+
+            //console.log('form submit clicked');
             var formData = {
                 'cluster_id': projectId,
                 'co_owners': selectedMember,
-
+                'is_editor': is_editor ? 1 : 0
             };
+
             $.ajax({
                 headers:{
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
