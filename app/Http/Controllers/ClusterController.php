@@ -114,19 +114,22 @@ class ClusterController extends Controller
         $request->validate([
             'geopoint_id' => 'required|integer',
             'cluster_name' => 'required',
-
         ]);
         $user = $request->user();
-        $cluster = Cluster::where([
-            ['user_id', $user->id],
+        $cluster_requested = Cluster::where([
             ['name', $request->cluster_name]
         ])->first();
-        if ($cluster == null) {
+
+        //checks user's edit permission(boolean) on the project
+        $can_edit = $user->clusters()
+            ->where('cluster_id', $cluster_requested->id)->first()->pivot->is_editor;
+
+        if (!$can_edit) {
             return response()->json([
-                'message' => 'The project is not found'
+                'message' => 'Sorry, you do not have permission to edit this project.'
             ], 404);
         }
-        $cluster->geopoints()->detach($request->geopoint_id);
+        $cluster_requested->geopoints()->detach($request->geopoint_id);
         return response()->json([
             'message' => 'The geopoint has been successfully removed'
         ], 200);
