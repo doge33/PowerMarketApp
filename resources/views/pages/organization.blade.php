@@ -264,151 +264,152 @@
         @endforeach
     </div>
     @endforeach
-    <!-- projects that are created by me -->
+
     @if(!auth()->user()->isMember())
-    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;" id="cluster-row">
-        <div class="col-12 pb-4">
-            <p class="h2">Projects Created by Me</p>
-        </div>
-        @if(isset($clusters))
-        @foreach($clusters as $my_cluster)
-        @if($my_cluster->pivot->is_author)
-        <div class="col-lg-4 col-sm-6 col-12">
-            <div class="card cluster" id="{{ $my_cluster->id }}">
-                <!-- Card header -->
-                <div class="card-header">
-                  <!-- Title -->
-                  <h5 class="h3 mb-0 account-header">{{ $my_cluster->name }}</h5>
-                  <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$my_cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;"data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
-                  <a href="/projects/{{ $my_cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
-                  <a href="/reporting/project/{{ $my_cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-                  <a class="share-button" data-toggle="modal" href="#share-form-{{ $my_cluster->id }}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
-                  <!-- <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
+        <!-- projects that are created by me -->
+        @if(isset($my_clusters))
+        <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;" id="cluster-row">
+            <div class="col-12 pb-4">
+                <p class="h2">Projects Created by Me</p>
+            </div>
+            @foreach($my_clusters as $my_cluster)
+                @if($my_cluster->pivot->is_author)
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="card cluster" id="{{ $my_cluster->id }}">
+                            <!-- Card header -->
+                            <div class="card-header">
+                            <!-- Title -->
+                            <h5 class="h3 mb-0 account-header">{{ $my_cluster->name }}</h5>
+                            <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$my_cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;"data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
+                            <a href="/projects/{{ $my_cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                            <a href="/reporting/project/{{ $my_cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+                            <a class="share-button" data-toggle="modal" href="#share-form-{{ $my_cluster->id }}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+                            <!-- <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
 
-                        <!-- share modal form  -->
-                  <div class="modal fade"  id="share-form-{{ $my_cluster->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-                      <div class="modal-content">
-                        <div class="modal-body p-0">
-                          <div class="card bg-secondary shadow border-0 mb-0">
-                            <div class="card-header bg-white">
-                              <div class="text-muted text-left mb-3">
-                                <h2>Share with users from your organization {{$my_cluster->name}} </h2>
-                              </div>
-                            </div>
-                            <div class="card-body bg-white">
-
-                              <form>
-                                @csrf
-                                <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                    <span class="{{ $my_cluster->id }}">project id: {{ $my_cluster->id}}</span>
-
-                                    <input list="org-members-{{$my_cluster->id}}" onchange="return handleShareInput()" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
-
-                                    <datalist id="org-members-{{$my_cluster->id}}">
-                                        <!-- other members of your organization -->
-
-                                        @foreach($members as $member)
-
-                                                @if($member->name !== auth()->user()->name)
-                                                    @if(!in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
-                                                    {
-                                                        <option data-user="{{$member->id}}" value={{$member->name}}></option>
-                                                    }
-
-                                                    @endif
-                                                @endif
-
-
-                                        @endforeach
-
-
-                                    </datalist>
-                                    <div style="margin-top: 1rem;" class="edit-permission">
-                                        <h4>User can edit</h4>
-                                        <div style="margin-bottom: auto" class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
-                                            <label class="custom-toggle custom-toggle-success">
-                                                <input type="checkbox" id="is-editor-{{$my_cluster->id}}" name="is_editor" value="1" checked>
-                                                <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
-                                            </label>
-                                            @include('alerts.feedback', ['field' => 'is_editor'])
+                                    <!-- share modal form  -->
+                            <div class="modal fade"  id="share-form-{{ $my_cluster->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body p-0">
+                                    <div class="card bg-secondary shadow border-0 mb-0">
+                                        <div class="card-header bg-white">
+                                        <div class="text-muted text-left mb-3">
+                                            <h2>Share with users from your organization {{$my_cluster->name}} </h2>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <span style="color: gray;margin-bottom: 2rem;font-size: small">shared with:</span><br>
-                                        @foreach($members as $member)
-                                        @if($member->name !== auth()->user()->name && in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
-                                            <button style="display:inline-block; border-radius:34px" class="btn btn-secondary btn-sm" aria-label="Close"> {{$member->name}} </button>
-                                        @endif
-                                        @endforeach
+                                        </div>
+                                        <div class="card-body bg-white">
+
+                                        <form>
+                                            @csrf
+                                            <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                                <span class="{{ $my_cluster->id }}">project id: {{ $my_cluster->id}}</span>
+
+                                                <input list="org-members-{{$my_cluster->id}}" onchange="return handleShareInput()" type="text"  autocomplete="off" class="share-input form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Select a user') }}" value="{{ old('name') }}" required autofocus>
+
+                                                <datalist id="org-members-{{$my_cluster->id}}">
+                                                    <!-- other members of your organization -->
+
+                                                    @foreach($members as $member)
+
+                                                            @if($member->name !== auth()->user()->name)
+                                                                @if(!in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
+                                                                {
+                                                                    <option data-user="{{$member->id}}" value={{$member->name}}></option>
+                                                                }
+
+                                                                @endif
+                                                            @endif
+
+
+                                                    @endforeach
+
+
+                                                </datalist>
+                                                <div style="margin-top: 1rem;" class="edit-permission">
+                                                    <h4>User can edit</h4>
+                                                    <div style="margin-bottom: auto" class="form-group{{ $errors->has('is_admin') ? ' has-danger' : '' }}">
+                                                        <label class="custom-toggle custom-toggle-success">
+                                                            <input type="checkbox" id="is-editor-{{$my_cluster->id}}" name="is_editor" value="1" checked>
+                                                            <span class="custom-toggle-slider rounded-circle" data-label-off="NO" data-label-on="YES"></span>
+                                                        </label>
+                                                        @include('alerts.feedback', ['field' => 'is_editor'])
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span style="color: gray;margin-bottom: 2rem;font-size: small">shared with:</span><br>
+                                                    @foreach($members as $member)
+                                                    @if($member->name !== auth()->user()->name && in_array($member->id, $my_cluster->co_owners->pluck('id')->all()))
+                                                        <button style="display:inline-block; border-radius:34px" class="btn btn-secondary btn-sm" aria-label="Close"> {{$member->name}} </button>
+                                                    @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <div class="text-left">
+                                                <button onclick="return onSubmitHandle(event)" class="btn btn-default my-4">Share</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                                <div class="text-left">
-                                    <button onclick="return onSubmitHandle(event)" class="btn btn-default my-4">Share</button>
                                 </div>
-                            </form>
+                            </div>
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-            </div>
-                <!-- Card body -->
-                <div class="card-body add-cluster" style="height:300px;max-width:100%;">
-                    <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$my_cluster->lon}},{{$my_cluster->lat}})/{{$my_cluster->lon}},{{$my_cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
+                        </div>
+                            <!-- Card body -->
+                            <div class="card-body add-cluster" style="height:300px;max-width:100%;">
+                                <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$my_cluster->lon}},{{$my_cluster->lat}})/{{$my_cluster->lon}},{{$my_cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+                <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="card add-cluster">
+                        <a data-toggle="modal" data-target="#cluster-form" target="_blank" class="add-button"><img src="{{ asset('svg') }}/add-button.svg" class="rounded-circle border-secondary" style="width:4em" data-toggle="tooltip" data-placement="top" title="Add Project"></a>
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
-        @endforeach
-        @endif
-        <div class="col-lg-4 col-sm-6 col-12">
-            <div class="card add-cluster">
-                <a data-toggle="modal" data-target="#cluster-form" target="_blank" class="add-button"><img src="{{ asset('svg') }}/add-button.svg" class="rounded-circle border-secondary" style="width:4em" data-toggle="tooltip" data-placement="top" title="Add Project"></a>
+        <!-- projects that are shared with me  -->
+        @if(isset($shared_clusters))
+        <div class="row pt-5" style="margin-right: 15px; margin-left: 15px; padding-bottom: 2rem;" id="cluster-row">
+            <div class="col-12 pb-4">
+                <p class="h2">Projects Shared with Me</p>
             </div>
+            @foreach($shared_clusters as $cluster)
+                @if(!$cluster->pivot->is_author)
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="card cluster" id="{{ $cluster->id }}">
+                            <!-- Card header -->
+                            <div class="card-header">
+                                <!-- Title -->
+                                <h5 class="h3 mb-0 account-header">{{ $cluster->name }} {{$cluster->pivot->is_author}}</h5>
+                                <!-- <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a> -->
+                                <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px; margin-right: 5px !important;" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
+                                <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+                                <!-- <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
+
+
+                            </div>
+                    <!-- Card body -->
+                            <div class="card-body add-cluster" style="height:300px;max-width:100%;">
+                                <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$cluster->lon}},{{$cluster->lat}})/{{$cluster->lon}},{{$cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
+                            </div>
+                        </div>
+                    </div>
+
+
+                @endif
+            @endforeach
+
         </div>
-    </div>
+        @endif
     @endif
-    <!-- projects that are shared with me  -->
-    @if(!auth()->user()->isMember())
-    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px; padding-bottom: 2rem;" id="cluster-row">
-        <div class="col-12 pb-4">
-            <p class="h2">Projects Shared with Me</p>
-        </div>
-        @if(isset($clusters))
-        @foreach($clusters as $cluster)
-        <!-- get all clusters where the current user is not the author -->
-        @if(!$cluster->pivot->is_author)
-            <div class="col-lg-4 col-sm-6 col-12">
-                <div class="card cluster" id="{{ $cluster->id }}">
-                    <!-- Card header -->
-                    <div class="card-header">
-                        <!-- Title -->
-                        <h5 class="h3 mb-0 account-header">{{ $cluster->name }} {{$cluster->pivot->is_author}}</h5>
-                        <!-- <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a> -->
-                        <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px; margin-right: 5px !important;" data-toggle="tooltip" data-placement="top" title="Explore Map"/></a>
-                        <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
-                        <!-- <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
 
-
-                    </div>
-            <!-- Card body -->
-                    <div class="card-body add-cluster" style="height:300px;max-width:100%;">
-                        <img style="height: 250px;max-width:100%;object-fit:cover;border-radius:.375rem;" src="https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/static/pin-s+F6A22B({{$cluster->lon}},{{$cluster->lat}})/{{$cluster->lon}},{{$cluster->lat}},10,0,0/800x300?access_token=pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow">
-                    </div>
-                </div>
-             </div>
-        @endif
-
-
-        @endforeach
-        @endif
-    </div>
-    @endif
 </div>
 @endsection
+
 @push('css')
 <link rel="stylesheet" href="{{ asset('css') }}/report.css" />
 <link rel="stylesheet" href="{{ asset('css') }}/mapbox-gl.css" />
