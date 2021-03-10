@@ -121,8 +121,7 @@ class ClusterController extends Controller
         ])->first();
 
         //checks user's edit permission(boolean) on the project
-        $can_edit = $user->clusters()
-            ->where('cluster_id', $cluster_requested->id)->first()->pivot->is_editor;
+        $can_edit = $cluster_requested->users()->where('user_id', $user->id)->first()->pivot->is_editor;
 
         if (!$can_edit) {
             return response()->json([
