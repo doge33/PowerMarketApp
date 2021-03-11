@@ -229,11 +229,11 @@
                                             <h5>Showing <b id="count"></b> selected rooftops</h5>
                                         </div> -->
                                         <div class="table-responsive" style="padding-top:10px;">
-                                            <table class="table" id="datatable-report">
+                                            <table class="table table-flush dataTable" id="datatable-report">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Id</th>
-                                                        <th>System Size (kWp)</th>
+                                                        <th >System Size (kWp)</th>
                                                         <th>System Cost (£)</th>
                                                         <th>Annual Generation (kWh)</th>
                                                         <th>Annual Savings (£)</th>
@@ -310,8 +310,9 @@
         var table = $('#datatable-report').DataTable({
             // paging: false,
             // searching: false,
-            ordering: false,
+            // ordering: false,
             info: false,
+
             language: {
                 paginate: {
                     previous: "<i class='fas fa-angle-left'>",
