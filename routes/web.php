@@ -74,4 +74,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('notifications/markAsRead', 'NotificationController@markAsRead');
 
+    Route::get('/error', function(){
+        return view('errors.403');
+    });
+
 });
