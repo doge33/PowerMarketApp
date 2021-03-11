@@ -312,7 +312,6 @@
             // searching: false,
             // ordering: false,
             info: false,
-
             language: {
                 paginate: {
                     previous: "<i class='fas fa-angle-left'>",
