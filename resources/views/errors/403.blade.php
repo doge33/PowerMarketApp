@@ -4,8 +4,13 @@
 @section('code', '403')
 @section('message', __('Forbidden'))
 
+@if($exception ?? '')
+    @section('message', __($exception ->getMessage() ?: 'Forbidden'))
+@else
+    @section('message', __('Forbidden'))
+@endif
 
-<img src="{{ asset('svg/403.svg') }}" id="bg-403"/>
+<img src="{{ asset('svg/404.svg') }}" id="bg-403"/>
 
 <style>
     #bg-403{

@@ -12,9 +12,7 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
-    protected $dontReport = [
-        //
-    ];
+
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
@@ -32,10 +30,13 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return void
      */
+
+
     public function report(Throwable $exception)
     {
         parent::report($exception);
     }
+
 
     /**
      * Render an exception into an HTTP response.

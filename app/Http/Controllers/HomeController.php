@@ -8,6 +8,7 @@ use App\Geopoint;
 use App\Cluster;
 use Illuminate\Support\Facades\DB;
 
+
 class HomeController extends Controller
 {
     /**

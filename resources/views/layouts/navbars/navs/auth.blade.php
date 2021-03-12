@@ -86,36 +86,7 @@
                         <a href="{{ route('page.pricing') }}" target="_blank" class="dropdown-item text-center text-primary font-weight-bold py-3">Upgrade</a>
                     </div>
                 </li>
-                    <!-- Beginning of Hard Coded Notifications -->
-                        <!-- <div class="list-group list-group-flush">
-                            <div href="{{ route('page.pricing') }}" class="list-group-item list-group-item-action">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
 
-                                        <img alt="Image placeholder" src="{{ asset('argon') }}/img/theme/team-4.jpg" class="avatar rounded-circle">
-                                    </div>
-                                    <div class="col ml--2">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h4 class="mb-0 text-sm">{{ Auth::user()->organization->name }}</h4>
-                                            </div>
-                                            <div class="text-right text-muted">
-                                                <small>{{ $notification->created_at->diffForHumans()}}</small>
-                                            </div>
-                                        </div>
-
-                                        <p>
-                                                <strong>{{ $notification->data['sharer_name']}}</strong> shared a project <a id="link-to-project" href="/projects/{{ $notification->data['project_name']}}" style="color: #F7A22C">{{ $notification->data['project_name']}}</a> with you.
-                                        </p> -->
-
-
-                                        <!-- <p class="text-sm mb-0">You are on trial. Upgrade Now.</p> -->
-<!-- {{--                                        <p class="text-sm mb-0">You are on trial.<a href="{{ route('page.pricing') }}">Upgrade Now.</a></p>--}} -->
-                                    <!-- </div>
-                                </div>
-                            </div>
-                        </div> -->
-                    <!-- End of Hard Coded Notifications -->
 
 
 {{--                <li class="nav-item dropdown">--}}

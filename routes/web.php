@@ -12,6 +12,7 @@
 */
 use App\User;
 use App\Notifications\NewSharedProject;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 Route::get('/', function () {
 	return view('pages.welcome');
@@ -74,8 +75,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('notifications/markAsRead', 'NotificationController@markAsRead');
 
-    Route::get('/error', function(){
-        return view('errors.403');
-    });
+    // Route::get('/error', function(){
+    //     return view('errors.503');
+    // });
+
+    Route::get('/test', 'ClusterController@findCluster');
 
 });

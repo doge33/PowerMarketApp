@@ -127,6 +127,7 @@ class ClusterController extends Controller
             return response()->json([
                 'message' => 'Sorry, you do not have permission to edit this project.'
             ], 404);
+
         }
         $cluster_requested->geopoints()->detach($request->geopoint_id);
         return response()->json([
@@ -163,5 +164,11 @@ class ClusterController extends Controller
         return response()->json([
             'message' => 'Project is successfully deleted'
         ], 200);
+    }
+
+    public function findCluster()
+    {
+        //$cluster = Cluster::findOrFail(60);
+        return abort('500');
     }
 }
