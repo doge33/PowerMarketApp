@@ -38,7 +38,7 @@ class RegionController extends Controller
                 if ($field == 'latLon') {
                     $value[] = $this->wrapPoint($point);
                 } else if (is_string($point[$field])) {
-                    $value[] = '"' . $point[$field] . '"';
+                    $value[] = '"' . $point[$field] . '"'; //this for the "existingsolar" column
                 } else {
                     $value[] = '"' . json_encode($point[$field]) . '"';
                 }

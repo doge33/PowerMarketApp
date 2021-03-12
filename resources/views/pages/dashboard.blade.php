@@ -299,6 +299,10 @@
             </div>
         </div>
     </div>
+
+    <div id="geopoints-test">
+    </div>
+
     <!-- Disclaimer -->
     <br>
     <h4>DISCLAIMER</h4>
@@ -308,6 +312,7 @@
     <button type="button" class="btn btn-sm btn-neutral mr-0" aria-haspopup="true" aria-expanded="false">
         <a href="{{ route('page.faq') }}" target="_blank">FAQ</a>
     </button>
+
     <!-- <h5><a href="{{ route('page.faq') }}" target="_blank">FAQ</a></h5> -->
     <!-- Footer -->
     @include('layouts.footers.auth')
@@ -354,7 +359,8 @@
         [11, '#cf7f3e'],
         [12, '#bd403a'],
         [13, '#bd403a'],
-        [14, '#bd403a']
+        [14, '#bd403a'],
+
     ];
     var yearColorMap = new Map(yearColors);
     var symbolCountMap = new Map();
@@ -364,14 +370,17 @@
     var filterYears = new Map();
     var cluster_route = `{!! $cluster ?? '' !!}`
     var features = [];
-
+    var breakEven11;
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
         ' !!}`;
+
         var bounds = new mapboxgl.LngLatBounds();
         var filterGroup = document.getElementById('filter-group');
         if (jsonString.length > 0) {
             dataArray = JSON.parse(jsonString);
+            breakEven11 = dataArray.filter(point => point.roofclass === "i");
+            console.log(breakEven11);
             dataArray.sort(function(a, b) {
                 return a['breakeven_years'] - b['breakeven_years'];
             });
@@ -438,6 +447,8 @@
                     symbolCountMap[dataArray[key].breakeven_years] = 0;
                 symbolCountMap[dataArray[key].breakeven_years] += 1;
             }
+
+            console.log("features are:", features)
             features.forEach(function(feature) {
                 bounds.extend(feature.geometry.coordinates);
             });
@@ -632,6 +643,7 @@
     }
     $(document).ready(function() {
         renderMap();
+        //console.log(JSON.parse(jsonString2));
         $('[data-toggle="tooltip"]').tooltip();
         getClusters();
         $('#map').on('click', '#add_cluster', function(event) {
