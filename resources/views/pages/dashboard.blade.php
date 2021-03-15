@@ -275,6 +275,15 @@
                 <span id="selected-count">1</span>
                 of <span id="total-count">1</span> entries</span>
         </div>
+        <!-- show existing solar toggle -->
+        <div class="col text-right" style="margin-bottom: 10px;">
+            <span class="text-nowrap" style="font-size: .75rem">view rooftops that already have solar installed &nbsp;</span>
+            <label class="custom-toggle checkbox-inline btn-sm mr-0" style="">
+                <input  id="checkExisting" type="checkbox">
+                <span  class="custom-toggle-slider rounded-circle" style=""></span>
+            </label>
+        </div>
+        <!-- end of show existing solar toggle -->
         <div class="col text-right" style="margin-bottom: 10px;">
             <span class="text-nowrap" style="font-size: .75rem">You are browsing by &nbsp;</span>
             <button type="button" class="btn btn-sm btn-neutral mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -300,8 +309,7 @@
         </div>
     </div>
 
-    <div id="geopoints-test">
-    </div>
+
 
     <!-- Disclaimer -->
     <br>
@@ -360,17 +368,28 @@
         [12, '#bd403a'],
         [13, '#bd403a'],
         [14, '#bd403a'],
-
+        ['existing', '#5E72E4']
     ];
+
+    // var existingSolarColor = [
+    //     [exists, '#5E72E4']
+    // ]
     var yearColorMap = new Map(yearColors);
+
+    // var existingSolarMap = new Map(existingSolarColor)
+
     var symbolCountMap = new Map();
     var totalCount = 0;
+    var totalCount2 = 0;
+    var selectedCount2 = 0;
     var selectedCount = 0,
-        dataArray;
+        originalDataArray;
     var filterYears = new Map();
+    var filterRoofClass = new Map();
     var cluster_route = `{!! $cluster ?? '' !!}`
+    var cluster_route2 = `{!! $cluster ?? '' !!}`
     var features = [];
-    var breakEven11;
+    var features2 = [];
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
         ' !!}`;
@@ -378,12 +397,18 @@
         var bounds = new mapboxgl.LngLatBounds();
         var filterGroup = document.getElementById('filter-group');
         if (jsonString.length > 0) {
-            dataArray = JSON.parse(jsonString);
-            breakEven11 = dataArray.filter(point => point.roofclass === "i");
-            console.log(breakEven11);
+            originalDataArray = JSON.parse(jsonString);
+            //separate points that already has a roofclass pf "s"
+            dataArray = originalDataArray.filter(point => point.roofclass !== "s");
+            roofClassArray = originalDataArray.filter(point => point.roofclass === "s")
+            console.log("non-existing solar:", dataArray);
+            console.log("existing solar:", roofClassArray);
+
             dataArray.sort(function(a, b) {
                 return a['breakeven_years'] - b['breakeven_years'];
             });
+
+        // for all points not with roofclass of "s"
             var potential = 0;
             var savings = 0;
             var co2 = 0;
@@ -432,7 +457,8 @@
                         id: dataArray[key].id,
                         area: dataArray[key].area_sqm,
                         panels: dataArray[key].numpanels,
-                        roi: dataArray[key].lifetime_return_on_investment_percent
+                        roi: dataArray[key].lifetime_return_on_investment_percent,
+                        // roofClass: dataArray[key].roofclass
                     },
                     geometry: {
                         type: dataArray[key].latLon.type,
@@ -449,6 +475,7 @@
             }
 
             console.log("features are:", features)
+            //features means a collection of feature, and each feature is a point on the map
             features.forEach(function(feature) {
                 bounds.extend(feature.geometry.coordinates);
             });
@@ -466,9 +493,98 @@
             selectedCount = totalCount;
             $('#total-count').text(numeral(dataArray.length).format('0,0'));
             $('#selected-count').text(numeral(dataArray.length).format('0,0'));
+
+        //for all points with a roofclass = "s"
+            var potential2 = 0;
+            var savings2 = 0;
+            var co2_2 = 0;
+
+            // for (var key in jsonData) {
+            for (key = 0; key < roofClassArray.length; key++) {
+                //determining header of point popup
+                var header = `
+                    <h5 class="h3 mb-0" title="Remove the geopoint from project" data-toggle="tooltip" data-placement="top">Remove from project</h5>
+                    <a id="remove_from_cluster" data-toggle="modal" data-target="#delete-form" data-geopoint="${roofClassArray[key].id}">
+                        <img src="{{ asset('argon') }}/img/icons/minus.png" />
+                    </a>
+                `
+                if (cluster_route2 == "") {
+                    header = `
+                        <h5 class="h3 mb-0" title="Add this geopoint to a new or existing project" data-toggle="tooltip" data-placement="top">Add to Project</h5>
+                        <a id="add_cluster" data-toggle="modal" data-target="#cluster-form" data-geopoint="${roofClassArray[key].id}">
+                            <img src="{{ asset('argon') }}/img/icons/plus.png" />
+                        </a>
+                    `
+                }
+                var feature = {
+                    type: "Feature",
+                    properties: {
+                        description: `
+                        <div class="card popup-card">
+                            <div id="cluster-header" class="card-header" style="display:table;padding-top:0.5rem;padding-bottom:0.5rem;padding-left:1rem;padding-right:0;">
+                                ${header}
+                            </div>
+                            <div class="card-body" style="padding-top:0.5rem;padding-bottom:0.5rem; padding-left:1rem; padding-right:1rem;">
+                                <p class="card-text">
+                                <strong>Break-even:</strong> ${roofClassArray[key].breakeven_years} years</br>
+                                <strong>System Size:</strong> ${numeral(roofClassArray[key].system_capacity_kWp).format('0,0.0a')} kWp<br/>
+                                <strong>System Cost:</strong> £ ${numeral(roofClassArray[key].system_cost_GBP).format('0,0.0a')}<br/>
+                                <strong>Lifetime Savings:</strong> £ ${numeral(roofClassArray[key].lifetime_gen_GBP).format('0,0.0a')}<br/>
+                                <strong>Lifetime CO<sub>2</sub> saving:</strong> ${numeral(roofClassArray[key].lifetime_co2_saved_kg).format('0,0.0a')} kgs<br/>
+                                <strong>Lifetime RoI:</strong> ${numeral(roofClassArray[key].lifetime_return_on_investment_percent).format('0,0.0a')}%<br/>
+                                </p>
+                                <a href="{{ route('page.reporting') }}?geopoint_id=${roofClassArray[key].id}" class="btn btn-primary"
+                                target="_blank">Generate Report</a>
+                                <a href="{{ route('page.building') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
+                                target="_blank" title="Upgrade to view detailed building ownership information, and tenancy details for commercial and industrial buildings.">Building Info</a>
+                            </div>
+                        </div>`,
+                        years: roofClassArray[key].breakeven_years,
+                        id: roofClassArray[key].id,
+                        area: roofClassArray[key].area_sqm,
+                        panels: roofClassArray[key].numpanels,
+                        roi: roofClassArray[key].lifetime_return_on_investment_percent
+                    },
+                    geometry: {
+                        type: roofClassArray[key].latLon.type,
+                        coordinates: roofClassArray[key].latLon.coordinates
+                    }
+                };
+                features2.push(feature);
+                potential2 = potential2 + roofClassArray[key].system_capacity_kWp;
+                savings2 = savings2 + roofClassArray[key].lifetime_gen_GBP;
+                co2_2 = co2_2 + roofClassArray[key].lifetime_co2_saved_kg;
+                if (symbolCountMap[roofClassArray[key].breakeven_years] == undefined)
+                    symbolCountMap[roofClassArray[key].breakeven_years] = 0;
+                symbolCountMap[roofClassArray[key].breakeven_years] += 1;
+            }
+
+            // //console.log("features are:", features)
+            features2.forEach(function(feature) {
+                bounds.extend(feature.geometry.coordinates); //the boundaries of this point
+            });
+
+             //these are the meta datas above the map; probably don't need for the existing layer
+            // if (potential2 / 1000000 >= 1) {
+            //     potential2 = potential2 / 1000000;
+            //     $('#potential-card').text(numeral(potential2).format('0,0.0a') + " GWp");
+            // } else if (potential2 / 1000 >= 1) {
+            //     potential2 = potential2 / 1000;
+            //     $('#potential-card').text(numeral(potential2).format('0,0.0a') + " MWp");
+            // } else
+            //     $('#potential-card').text(numeral(potential2).format('0,0.0a') + " kWp");
+            // $('#savings-card').text('£ ' + numeral(savings2).format('(0.00a)'));
+            // $('#co2-card').text(numeral(co2_2).format('0,0.0a') + " kgs");
+            // totalCount2 = roofClassArray.length;
+            // selectedCount2 = totalCount;
+            // $('#total-count').text(numeral(roofClassArray.length).format('0,0'));
+            // $('#selected-count').text(numeral(roofClassArray.length).format('0,0'));
         }
+        //end of two different arrays
+
         map.on('load', function() {
             map.loadImage('../../svg/map-marker-alt-solid.png', function(error, image) {
+                // the marker itself is colorless
                 if (error) throw error;
                 map.addImage('marker-icon', image, {
                     'sdf': true
@@ -483,13 +599,27 @@
                     clusterMaxZoom: 12, // Max zoom to cluster points on
                     clusterRadius: 50
                 });
+                map.addSource('existingSolar', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': features2
+                    },
+                    cluster: true,
+                    clusterMaxZoom: 12, // Max zoom to cluster points on
+                    clusterRadius: 50
+                });
+
+
                 features.forEach(function(feature) {
                     var symbol = feature.properties['years'];
                     var layerID = layerPrefix + symbol;
                     filterYears[symbol] = true;
+
                     // Add a layer for this symbol type if it hasn't been added already.
                     if (!map.getLayer(layerID)) {
-                        map.addLayer({
+
+                            map.addLayer({
                             'id': layerID,
                             'type': 'symbol',
                             'source': 'places',
@@ -502,9 +632,10 @@
                             },
                             'filter': ['==', 'years', symbol],
                             'paint': {
-                                'icon-color': yearColorMap.get(symbol) ?? '#6D0000'
+                                'icon-color': yearColorMap.get(symbol) ?? '#6D0000' //this is where we style the map markers
                             }
                         });
+
 
                         // Add checkbox and label elements for the layer.
                         var input = document.createElement('input');
@@ -570,6 +701,27 @@
                         });
                     }
                 });
+
+
+
+                map.addLayer({
+                id: 'existingSolar-layer',
+                type: 'symbol',
+                source: 'existingSolar',
+                layout: {
+                        'icon-image': 'marker-icon',
+                        'icon-allow-overlap': true,
+                        "icon-size": ['interpolate', ['linear'],
+                            ['zoom'], 10, 0.1, 15, 1
+                            ]
+                        },
+
+                paint: {
+                        'icon-color': '#5F73E4' //this is where we style the map markers
+                        }
+                })
+
+
                 map.addLayer({
                     id: 'clusters',
                     type: 'circle',
@@ -613,6 +765,34 @@
                         'text-size': 12
                     }
                 });
+
+
+                var checkExisting = document.querySelector("#checkExisting");
+                checkExisting.className = '';
+                checkExisting.onclick = function (e) {
+                    //e.stopPropagation();
+                    map.setLayoutProperty(
+                        'existingSolar-layer',
+                        'visibility',
+                        e.target.checked ? 'visible' : 'none'
+                    );
+
+                    // var clickedLayer = this.textContent;
+                    //e.preventDefault();
+                     //e.stopPropagation();
+
+                    var visibility = map.getLayoutProperty('existingSolar-layer', 'visibility');
+                    console.log("is checked? ", e.target.checked)
+                    if (visibility === 'visible') {
+                        map.setLayoutProperty('existingSolar-layer', 'visibility', 'none');
+                        this.className = '';
+                    } else {
+                        this.className = 'active';
+                        map.setLayoutProperty('existingSolar-layer', 'visibility', 'visible');
+                    }
+                };
+
+
 
                 var layers = map.getStyle().layers;
 
