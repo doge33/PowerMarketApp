@@ -753,8 +753,8 @@
                         var checkExisting = document.querySelector("#checkExisting");
 
                         checkExisting.onclick = function (e) {
-                            e.preventDefault();
-                            e.stopPropagation();
+                            // e.preventDefault();
+                            // e.stopPropagation();
                             console.log("in event listener")
 
                             var filter_years = map.getFilter(layerID);
