@@ -566,19 +566,19 @@
 
              //these are the meta datas above the map; probably don't need for the existing layer
             // if (potential2 / 1000000 >= 1) {
-            //     potential2 = potential2 / 1000000;
-            //     $('#potential-card').text(numeral(potential2).format('0,0.0a') + " GWp");
+            //     //potential2 = potential2 / 1000000;
+            //     //$('#potential-card').text(numeral(potential2).format('0,0.0a') + " GWp");
             // } else if (potential2 / 1000 >= 1) {
-            //     potential2 = potential2 / 1000;
-            //     $('#potential-card').text(numeral(potential2).format('0,0.0a') + " MWp");
+            //     //potential2 = potential2 / 1000;
+            //     //$('#potential-card').text(numeral(potential2).format('0,0.0a') + " MWp");
             // } else
-            //     $('#potential-card').text(numeral(potential2).format('0,0.0a') + " kWp");
-            // $('#savings-card').text('£ ' + numeral(savings2).format('(0.00a)'));
-            // $('#co2-card').text(numeral(co2_2).format('0,0.0a') + " kgs");
+            //    //$('#potential-card').text(numeral(potential2).format('0,0.0a') + " kWp");
+            // //$('#savings-card').text('£ ' + numeral(savings2).format('(0.00a)'));
+            // //$('#co2-card').text(numeral(co2_2).format('0,0.0a') + " kgs");
             // totalCount2 = roofClassArray.length;
             // selectedCount2 = totalCount;
-            // $('#total-count').text(numeral(roofClassArray.length).format('0,0'));
-            // $('#selected-count').text(numeral(roofClassArray.length).format('0,0'));
+            // $('#total-count').text(numeral(roofClassArray.length+totalCount).format('0,0'));
+            // $('#selected-count').text(numeral(totalCount2).format('0,0'));
         }
         //end of two different arrays
 
@@ -768,30 +768,28 @@
 
 
                 var checkExisting = document.querySelector("#checkExisting");
-                checkExisting.className = '';
-                checkExisting.onclick = function (e) {
-                    //e.stopPropagation();
-                    map.setLayoutProperty(
-                        'existingSolar-layer',
-                        'visibility',
-                        e.target.checked ? 'visible' : 'none'
-                    );
+                map.setLayoutProperty(
+                    'existingSolar-layer',
+                    'visibility',
+                    'none'
+                );
 
-                    // var clickedLayer = this.textContent;
-                    //e.preventDefault();
-                     //e.stopPropagation();
+                checkExisting.onclick = function (e) {
 
                     var visibility = map.getLayoutProperty('existingSolar-layer', 'visibility');
-                    console.log("is checked? ", e.target.checked)
+
                     if (visibility === 'visible') {
                         map.setLayoutProperty('existingSolar-layer', 'visibility', 'none');
                         this.className = '';
+                        $('#total-count').text(numeral(totalCount).format('0,0'));
+                        //$('#selected-count').text(numeral(totalCount2).format('0,0'));
                     } else {
                         this.className = 'active';
                         map.setLayoutProperty('existingSolar-layer', 'visibility', 'visible');
+                        $('#total-count').text(numeral(roofClassArray.length+totalCount).format('0,0'));
+                        //$('#selected-count').text(numeral(roofClassArray.length+totalCount ).format('0,0'));
                     }
                 };
-
 
 
                 var layers = map.getStyle().layers;
