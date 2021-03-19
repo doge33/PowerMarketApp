@@ -389,6 +389,7 @@
     var cluster_route = `{!! $cluster ?? '' !!}`
     //var cluster_route2 = `{!! $cluster ?? '' !!}`
     var features = [];
+    var checkExisting = document.querySelector("#checkExisting");
     //var features2 = [];
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
@@ -496,94 +497,6 @@
             $('#total-count').text(numeral(dataArray.length).format('0,0'));
             $('#selected-count').text(numeral(dataArray.length).format('0,0'));
 
-        // //for all points with a roofclass = "s"
-        //     var potential2 = 0;
-        //     var savings2 = 0;
-        //     var co2_2 = 0;
-
-        //     // for (var key in jsonData) {
-        //     for (key = 0; key < roofClassArray.length; key++) {
-        //         //determining header of point popup
-        //         var header = `
-        //             <h5 class="h3 mb-0" title="Remove the geopoint from project" data-toggle="tooltip" data-placement="top">Remove from project</h5>
-        //             <a id="remove_from_cluster" data-toggle="modal" data-target="#delete-form" data-geopoint="${roofClassArray[key].id}">
-        //                 <img src="{{ asset('argon') }}/img/icons/minus.png" />
-        //             </a>
-        //         `
-        //         if (cluster_route2 == "") {
-        //             header = `
-        //                 <h5 class="h3 mb-0" title="Add this geopoint to a new or existing project" data-toggle="tooltip" data-placement="top">Add to Project</h5>
-        //                 <a id="add_cluster" data-toggle="modal" data-target="#cluster-form" data-geopoint="${roofClassArray[key].id}">
-        //                     <img src="{{ asset('argon') }}/img/icons/plus.png" />
-        //                 </a>
-        //             `
-        //         }
-        //         var feature = {
-        //             type: "Feature",
-        //             properties: {
-        //                 description: `
-        //                 <div class="card popup-card">
-        //                     <div id="cluster-header" class="card-header" style="display:table;padding-top:0.5rem;padding-bottom:0.5rem;padding-left:1rem;padding-right:0;">
-        //                         ${header}
-        //                     </div>
-        //                     <div class="card-body" style="padding-top:0.5rem;padding-bottom:0.5rem; padding-left:1rem; padding-right:1rem;">
-        //                         <p class="card-text">
-        //                         <strong>Break-even:</strong> ${roofClassArray[key].breakeven_years} years</br>
-        //                         <strong>System Size:</strong> ${numeral(roofClassArray[key].system_capacity_kWp).format('0,0.0a')} kWp<br/>
-        //                         <strong>System Cost:</strong> £ ${numeral(roofClassArray[key].system_cost_GBP).format('0,0.0a')}<br/>
-        //                         <strong>Lifetime Savings:</strong> £ ${numeral(roofClassArray[key].lifetime_gen_GBP).format('0,0.0a')}<br/>
-        //                         <strong>Lifetime CO<sub>2</sub> saving:</strong> ${numeral(roofClassArray[key].lifetime_co2_saved_kg).format('0,0.0a')} kgs<br/>
-        //                         <strong>Lifetime RoI:</strong> ${numeral(roofClassArray[key].lifetime_return_on_investment_percent).format('0,0.0a')}%<br/>
-        //                         </p>
-        //                         <a href="{{ route('page.reporting') }}?geopoint_id=${roofClassArray[key].id}" class="btn btn-primary"
-        //                         target="_blank">Generate Report</a>
-        //                         <a href="{{ route('page.building') }}" class="btn btn-primary" data-toggle="tooltip" data-placement="top"
-        //                         target="_blank" title="Upgrade to view detailed building ownership information, and tenancy details for commercial and industrial buildings.">Building Info</a>
-        //                     </div>
-        //                 </div>`,
-        //                 years: roofClassArray[key].breakeven_years,
-        //                 id: roofClassArray[key].id,
-        //                 area: roofClassArray[key].area_sqm,
-        //                 panels: roofClassArray[key].numpanels,
-        //                 roi: roofClassArray[key].lifetime_return_on_investment_percent
-        //             },
-        //             geometry: {
-        //                 type: roofClassArray[key].latLon.type,
-        //                 coordinates: roofClassArray[key].latLon.coordinates
-        //             }
-        //         };
-        //         features2.push(feature);
-        //         potential2 = potential2 + roofClassArray[key].system_capacity_kWp;
-        //         savings2 = savings2 + roofClassArray[key].lifetime_gen_GBP;
-        //         co2_2 = co2_2 + roofClassArray[key].lifetime_co2_saved_kg;
-        //         if (symbolCountMap[roofClassArray[key].breakeven_years] == undefined)
-        //             symbolCountMap[roofClassArray[key].breakeven_years] = 0;
-        //         symbolCountMap[roofClassArray[key].breakeven_years] += 1;
-        //     }
-
-        //     // //console.log("features are:", features)
-        //     features2.forEach(function(feature) {
-        //         bounds.extend(feature.geometry.coordinates); //the boundaries of this point
-        //     });
-
-             //these are the meta datas above the map; probably don't need for the existing layer
-            // if (potential2 / 1000000 >= 1) {
-            //     //potential2 = potential2 / 1000000;
-            //     //$('#potential-card').text(numeral(potential2).format('0,0.0a') + " GWp");
-            // } else if (potential2 / 1000 >= 1) {
-            //     //potential2 = potential2 / 1000;
-            //     //$('#potential-card').text(numeral(potential2).format('0,0.0a') + " MWp");
-            // } else
-            //    //$('#potential-card').text(numeral(potential2).format('0,0.0a') + " kWp");
-            // //$('#savings-card').text('£ ' + numeral(savings2).format('(0.00a)'));
-            // //$('#co2-card').text(numeral(co2_2).format('0,0.0a') + " kgs");
-            // totalCount2 = roofClassArray.length;
-            // selectedCount2 = totalCount;
-            // $('#total-count').text(numeral(roofClassArray.length+totalCount).format('0,0'));
-            // $('#selected-count').text(numeral(totalCount2).format('0,0'));
-        }
-        //end of two different arrays
-
         map.on('load', function() {
             map.loadImage('../../svg/map-marker-alt-solid.png', function(error, image) {
                 // the marker itself is colorless
@@ -601,32 +514,14 @@
                     clusterMaxZoom: 12, // Max zoom to cluster points on
                     clusterRadius: 50
                 });
-                // map.addSource('existingSolar', {
-                //     'type': 'geojson',
-                //     'data': {
-                //         'type': 'FeatureCollection',
-                //         'features': features2
-                //     },
-                //     cluster: true,
-                //     clusterMaxZoom: 12, // Max zoom to cluster points on
-                //     clusterRadius: 50
-                // });
 
                 var counter = 0;
                 features.forEach(function(feature) {
                     var symbol = feature.properties['years'];
                     var layerID = layerPrefix + symbol;
                     filterYears[symbol] = true;
-                    // if(feature.properties.roofClass === "s"){
-                    //     //layerID = layerPrefix + "0";
-                    //     symbol = "existing"
-                    // }
-                    //console.log(symbol, layerID)
-                    //console.log(feature.properties.id, layerID)
-                    // Add a layer for this symbol type if it hasn't been added already.
 
-                     //keep track of number of filters not "s"
-                     if(feature.properties.roofClass !=="s"){
+                    if(feature.properties.roofClass !=="s"){
                          counter++}
 
                     if (!map.getLayer(layerID) ) {
@@ -643,46 +538,26 @@
                                         ['zoom'], 10, 0.1, 15, 1
                                     ]
                                 },
-                                'filter': ['==', 'years', symbol],
-                                // 'paint': {
-                                //     'icon-color': [
-                                //         'match',
-                                //         ['get', 'roofClass'],
-                                //         's', '#5F73E3',
-                                //         yearColorMap.get(symbol)
-                                //     ]
-                                // }
+                                'filter': [
+                                    "all",
+                                    ["==", "years", symbol],
+                                    ["!=", "roofClass", "s"]
+                                ],
+
+
                                 'paint': {
-                                    'icon-color': yearColorMap.get(symbol) ?? "#ffffff"
+                                    'icon-color': [
+                                        'match',
+                                        ['get', 'roofClass'],
+                                        's', '#5F73E3',
+                                        yearColorMap.get(symbol),
+
+                                    ]
                                 }
+                                // 'paint': {
+                                //     'icon-color': yearColorMap.get(symbol) ?? "#ffffff"
+                                // }
                             });
-
-
-
-                        // if(symbol !== "existing"){
-                        //     map.setLayerProperties()
-                        // } else {
-                        //     console.log(feature.properties.id, layerID)
-                        //     map.addLayer({
-                        //         'id': layerID,
-                        //         'type': 'symbol',
-                        //         'source': 'places',
-                        //         'layout': {
-                        //                 'icon-image': 'marker-icon',
-                        //                 'icon-allow-overlap': true,
-                        //                 "icon-size": ['interpolate', ['linear'],
-                        //                     ['zoom'], 10, 0.1, 15, 1
-                        //                     ]
-                        //                 },
-                        //         // 'filter': ['==', 'years', symbol],
-                        //         'paint': {
-                        //                 'icon-color': '#5F73E4' //this is where we style the map markers
-                        //                 }
-                        //         })
-
-                        // }
-
-
 
 
                         // Add checkbox and label elements for the layer.
@@ -749,60 +624,9 @@
                             map.getCanvas().style.cursor = '';
                         });
 
-                        //add a new filter to each layer?
-                        var checkExisting = document.querySelector("#checkExisting");
 
-                        checkExisting.onclick = function (e) {
-                            // e.preventDefault();
-                            // e.stopPropagation();
-                            console.log("in event listener")
-
-                            var filter_years = map.getFilter(layerID);
-                            console.log(JSON.stringify(filter_years));
-                            var filter_existing = ["==", "roofClass", "s"];
-                            map.setFilter(layerID, filter_existing)
-                            console.log(JSON.stringify(map.getFilter(layerID)));
-                        }
                     }
                 });
-
-                console.log("counter of non-'s': ", counter)
-
-
-
-                    // var visibility = map.getLayoutProperty('existingSolar-layer', 'visibility');
-
-                    // if (visibility === 'visible') {
-                    //     map.setLayoutProperty('existingSolar-layer', 'visibility', 'none');
-                    //     this.className = '';
-                    //     $('#total-count').text(numeral(totalCount).format('0,0'));
-                    //     //$('#selected-count').text(numeral(totalCount2).format('0,0'));
-                    // } else {
-                    //     this.className = 'active';
-                    //     map.setLayoutProperty('existingSolar-layer', 'visibility', 'visible');
-                    //     $('#total-count').text(numeral(roofClassArray.length+totalCount).format('0,0'));
-                    //     //$('#selected-count').text(numeral(roofClassArray.length+totalCount ).format('0,0'));
-                    // }
-
-
-
-
-                // map.addLayer({
-                // id: 'existingSolar-layer',
-                // type: 'symbol',
-                // source: 'existingSolar',
-                // layout: {
-                //         'icon-image': 'marker-icon',
-                //         'icon-allow-overlap': true,
-                //         "icon-size": ['interpolate', ['linear'],
-                //             ['zoom'], 10, 0.1, 15, 1
-                //             ]
-                //         },
-
-                // paint: {
-                //         'icon-color': '#5F73E4' //this is where we style the map markers
-                //         }
-                // })
 
 
                 map.addLayer({
@@ -848,24 +672,59 @@
                         'text-size': 12
                     }
                 });
-
-
-
-
-
                 var layers = map.getStyle().layers;
-
                 var labelLayerId;
                 for (var i = 0; i < layers.length; i++) {
                     if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
                         labelLayerId = layers[i].id;
+
                         break;
                     }
                 }
+                //show or hide existing solar on toggle
+                console.log(layers);
+                var yearsArray = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] //this may be updated if our years filter changes
+                checkExisting.onclick = function (e) {
+
+                    layers.forEach(layer => {
+                        // var features = map.queryRenderedFeatures({layers:[layer.id]});
+                        // console.log("features.length before change",features.length);
+                        if(layer.type === "symbol" && layer.id !== "cluster-count"){
+
+                            if(checkExisting.checked){
+                                // console.log("layer before filter change", layer)
+                                var year = layer.filter[1][2]
+                                // console.log(layer.id, year);
+                                var include_existing =["==", "years", year];
+                                map.setFilter(layer.id, include_existing);
+                                // selectedCount
+                                // $('#selected-count').text(numeral(selectedCount).format('0,0'));
+                                // console.log("layer after filter change", layer);
+                                // // var features = map.queryRenderedFeatures({layers:[layer.id]});
+                                // console.log("features.length after change", map.queryRenderedFeatures({layers:[layer.id]}));
+
+                            } else {
+                            var filter_existing =[
+                                "all",
+                                ["==", "years", layer.filter[1][2]],
+                                ["!=", "roofClass", "s"]
+                            ];
+                            map.setFilter(layer.id, filter_existing);
+                            // $('#selected-count').text(numeral(selectedCount).format('0,0'));
+                            // console.log(features.length);
+
+                            }
+
+                        }
+
+                    })
+                }
+
                 map.fitBounds(bounds);
             });
         });
     }
+}
 
     function getClusters() {
         $.ajax({
