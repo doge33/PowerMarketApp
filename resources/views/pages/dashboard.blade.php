@@ -459,7 +459,7 @@
                         area: dataArray[key].area_sqm,
                         panels: dataArray[key].numpanels,
                         roi: dataArray[key].lifetime_return_on_investment_percent,
-                        roofClass: dataArray[key].roofclass
+                        existingSolar: dataArray[key].existingsolar
                     },
                     geometry: {
                         type: dataArray[key].latLon.type,
@@ -541,15 +541,15 @@
                                 'filter': [
                                     "all",
                                     ["==", "years", symbol],
-                                    ["!=", "roofClass", "s"]
+                                    ["!=", "existingSolar", "Y"]
                                 ],
 
 
                                 'paint': {
                                     'icon-color': [
                                         'match',
-                                        ['get', 'roofClass'],
-                                        's', '#5F73E3',
+                                        ['get', 'existingSolar'],
+                                        'Y', '#5F73E3',
                                         yearColorMap.get(symbol),
 
                                     ]
