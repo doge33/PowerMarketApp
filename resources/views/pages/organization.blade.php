@@ -184,8 +184,8 @@
                     <!-- Title -->
                     <h5 class="h3 mb-0 account-header">{{ isset($account) ? $account->name : '' }}</h5>
 
-                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-black" src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:22px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
-                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-white" src="{{ asset('svg') }}/map-white.svg" class="map-icon-white" style="width:22px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-black" src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-white" src="{{ asset('svg') }}/map-white.svg" class="map-icon-white" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
 
                 </div>
                 <!-- Card body -->
@@ -230,7 +230,7 @@
                 <div class="card-header">
                     <!-- Title -->
                     <h5 class="h3 mb-0 account-header">{{ $region->name }}</h5>
-                    <a href="/dashboard/{{ $account->name }}/{{ $region->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:22px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                    <a href="/dashboard/{{ $account->name }}/{{ $region->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
                 </div>
                 <!-- Card body -->
                 <div class="card-body" style="height:300px;">
@@ -266,6 +266,7 @@
     @endforeach
 
     @if(!auth()->user()->isMember())
+<<<<<<< HEAD
         <!-- projects that are created by me -->
         @if(isset($my_clusters))
         <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;" id="cluster-row">
@@ -285,6 +286,24 @@
                             <a href="/reporting/project/{{ $my_cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
                             <a class="share-button" data-toggle="modal" href="#share-form-{{ $my_cluster->id }}" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
                             <!-- <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
+=======
+    <div class="row pt-5" style="margin-right: 15px; margin-left: 15px;" id="cluster-row">
+        <div class="col-12 pb-4">
+            <p class="h2">Projects Created by Me</p>
+        </div>
+        @if(isset($clusters))
+        @foreach($my_clusters as $cluster)
+        <div class="col-lg-4 col-sm-6 col-12">
+            <div class="card cluster" id="{{ $cluster->id }}">
+                <!-- Card header -->
+                <div class="card-header">
+                  <!-- Title -->
+                  <h5 class="h3 mb-0 account-header">{{ $cluster->name }}</h5>
+                  <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="{{$cluster->id}}"><i class="fa fa-trash-alt map-icon-black card-icons" style="font-size:20px;color:#191B2F;"data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
+                  <a href="/projects/{{ $cluster->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon card-icons"  style="width:20px"/ data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                  <a href="/reporting/project/{{ $cluster->name }}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+                  <!-- <a href="/pricing" target="_blank"><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a> -->
+>>>>>>> 799e0ec2bb83ffaceb7bc50677456bef52955be2
 
                                     <!-- share modal form  -->
                             <div class="modal fade"  id="share-form-{{ $my_cluster->id }}" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
@@ -496,9 +515,16 @@
                             <div class="card-header">
                                 <!-- Title -->
                                 <h5 class="h3 mb-0 account-header">${data.cluster.name}</h5>
+<<<<<<< HEAD
                                 <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="${data.cluster.id}"><i class="fa fa-trash-alt map-icon-black" style="font-size:22px;color:#191B2F;"></i></a>
                                 <a href="/projects/${data.cluster.name}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon" /></a>
                                 <a href="/reporting/project/${data.cluster.name}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon"></i></a>
+=======
+                                <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="${data.cluster.id}"><i class="fa fa-trash-alt map-icon-black" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
+                                <a href="/projects/${data.cluster.name}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon" style="width:20px" data-toggle="tooltip" data-placement="top" title="Share Project" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                                <a href="/reporting/project/${data.cluster.name}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+                                <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
+>>>>>>> 799e0ec2bb83ffaceb7bc50677456bef52955be2
                             </div>
                             <!-- Card body -->
                             <div class="card-body add-cluster" style="height:300px;max-width:100%;">

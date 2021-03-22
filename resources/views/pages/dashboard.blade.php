@@ -259,32 +259,36 @@
     </div>
     <div class="back home">
       <!-- <a href="{{ route('home') }}"><i class="fas fa-home" style="font-size: 1.8rem; color: #191B2E; padding-bottom: 2rem; " data-toggle="tooltip" data-placement="top" title="Back home"></i></a> -->
-      <a href="{{ route('home') }}"><i class="ni ni-folder-17 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-bottom: 2rem;" data-toggle="tooltip" data-placement="top" title="Back Home"></i></a>
+      <a href="{{ route('home') }}"><i class="ni ni-folder-17 map-icon-black report-icon card-icons" style="font-size: 1.5rem; color: #191B2E; padding-bottom: 2rem;" data-toggle="tooltip" data-placement="top" title="Back Home"></i></a>
       <!-- if the cluster name is passed in (which means if we are at a project page) -->
      @if(isset($cluster))
-     <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.8rem; color: #191B2E; padding-left: 1rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+     <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-left: 1.2rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
      @endif
     </div>
     <div class="row">
-        <div class="col text-left" style="margin-bottom: 10px;">
-            <button type="button" class="btn btn-sm btn-neutral mr-0" data-toggle="modal" data-target="#modal-form" aria-haspopup="true" aria-expanded="false">
-                Create project from active points
-            </button>
-            <span class="text-nowrap" style="font-size: .75rem">
-                Showing
-                <span id="selected-count">1</span>
-                of <span id="total-count">1</span> entries</span>
-        </div>
+
+      <div class="col text-left" style="margin-bottom: 10px;">
+        <span class="text-nowrap" style="font-size: .75rem; margin-right: .5rem;">Show active solar sites &nbsp;</span>
+        <label class="custom-toggle checkbox-inline btn-sm mr-0" style="">
+          <input id="checkExisting" type="checkbox">
+          <span class="custom-toggle-slider rounded-circle" style=""></span>
+        </label>
+      </div>
+
+      <div class="col text-right" style="margin-bottom: 10px;">
+        <span class="text-nowrap" style="font-size: .75rem; margin-right: .5rem;">
+          Showing
+            <span id="selected-count">1</span>
+            of <span id="total-count">1</span>
+          sites
+        </span>
+        <button type="button" class="btn btn-sm btn-neutral mr-0" data-toggle="modal" data-target="#modal-form" aria-haspopup="true" aria-expanded="false">
+          Create project from active points
+        </button>
+      </div>
         <!-- show existing solar toggle -->
-        <div class="col text-right" style="margin-bottom: 10px;">
-            <span class="text-nowrap" style="font-size: .75rem">view rooftops that already have solar installed &nbsp;</span>
-            <label class="custom-toggle checkbox-inline btn-sm mr-0" style="">
-                <input  id="checkExisting" type="checkbox">
-                <span  class="custom-toggle-slider rounded-circle" style=""></span>
-            </label>
-        </div>
         <!-- end of show existing solar toggle -->
-        <div class="col text-right" style="margin-bottom: 10px;">
+        <!-- <div class="col text-right" style="margin-bottom: 10px;">
             <span class="text-nowrap" style="font-size: .75rem">You are browsing by &nbsp;</span>
             <button type="button" class="btn btn-sm btn-neutral mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Break-even Time
@@ -294,7 +298,7 @@
             </div>
             {{-- <a href="#" class="btn btn-sm btn-neutral">{{ __('New') }}</a>--}}
             {{-- <a href="#" class="btn btn-sm btn-neutral">{{ __('Filters') }}</a>--}}
-        </div>
+        </div> -->
     </div>
     <div class="row">
         <div class="col">
@@ -390,8 +394,6 @@
     //var cluster_route2 = `{!! $cluster ?? '' !!}`
     var features = [];
     var checkExisting = document.querySelector("#checkExisting");
-    console.log(checkExisting)
-    //var features2 = [];
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
         ' !!}`;
@@ -400,11 +402,8 @@
         var filterGroup = document.getElementById('filter-group'); //"breakeven nav bar tag"
         if (jsonString.length > 0) {
             dataArray = JSON.parse(jsonString);
-            //separate points that already has a roofclass pf "s"
-            //dataArray = originalDataArray.filter(point => point.roofclass !== "s");
-            //roofClassArray = originalDataArray.filter(point => point.roofclass === "s")
-            //console.log("non-existing solar:", dataArray);
-            //console.log("existing solar:", roofClassArray);
+
+            console.log(dataArray)
 
             dataArray.sort(function(a, b) {
                 return a['breakeven_years'] - b['breakeven_years'];
@@ -521,45 +520,33 @@
                     var symbol = feature.properties['years'];
                     var layerID = layerPrefix + symbol;
                     filterYears[symbol] = true;
-
-                    if(feature.properties.roofClass !=="s"){
-                         counter++}
-
-                    if (!map.getLayer(layerID) ) {
-
-
-                           map.addLayer({
-                                'id': layerID,
-                                'type': 'symbol',
-                                'source': 'places',
-                                'layout': {
-                                    'icon-image': 'marker-icon',
-                                    'icon-allow-overlap': true,
-                                    "icon-size": ['interpolate', ['linear'],
-                                        ['zoom'], 10, 0.1, 15, 1
-                                    ]
-                                },
-                                'filter': [
+                    // Add a layer for this symbol type if it hasn't been added already.
+                    if (!map.getLayer(layerID)) {
+                        map.addLayer({
+                            'id': layerID,
+                            'type': 'symbol',
+                            'source': 'places',
+                            'layout': {
+                                'icon-image': 'marker-icon',
+                                'icon-allow-overlap': true,
+                                "icon-size": ['interpolate', ['linear'],
+                                    ['zoom'], 10, 0.1, 15, 1
+                                ]
+                            },
+                            'filter': [
                                     "all",
                                     ["==", "years", symbol],
                                     ["!=", "existingSolar", "Y"]
-                                ],
-
-
-                                'paint': {
+                            ],
+                            'paint': {
                                     'icon-color': [
                                         'match',
                                         ['get', 'existingSolar'],
                                         'Y', '#5F73E3',
                                         yearColorMap.get(symbol),
-
-                                    ]
-                                }
-                                // 'paint': {
-                                //     'icon-color': yearColorMap.get(symbol) ?? "#ffffff"
-                                // }
-                            });
-
+                            ]
+                          }
+                        });
 
                         // Add checkbox and label elements for the layer.
                         var input = document.createElement('input');
@@ -695,50 +682,37 @@
                         break;
                     }
                 }
-                //show or hide existing solar on toggle
-                console.log(layers);
-                var yearsArray = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] //this may be updated if our years filter changes
+                var yearsArray = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
                 checkExisting.onclick = function (e) {
-
                     layers.forEach(layer => {
-                        // var features = map.queryRenderedFeatures({layers:[layer.id]});
-                        // console.log("features.length before change",features.length);
-                        if(layer.type === "symbol" && layer.id !== "cluster-count"){
 
+                        if(layer.type === "symbol" && layer.id !== "cluster-count"){
                             if(checkExisting.checked){
-                                // console.log("layer before filter change", layer)
+
                                 var year = layer.filter[1][2]
-                                // console.log(layer.id, year);
+
                                 var include_existing =["==", "years", year];
                                 map.setFilter(layer.id, include_existing);
-                                // selectedCount
-                                // $('#selected-count').text(numeral(selectedCount).format('0,0'));
-                                // console.log("layer after filter change", layer);
-                                // // var features = map.queryRenderedFeatures({layers:[layer.id]});
-                                // console.log("features.length after change", map.queryRenderedFeatures({layers:[layer.id]}));
 
                             } else {
                             var filter_existing =[
                                 "all",
                                 ["==", "years", layer.filter[1][2]],
-                                ["!=", "roofClass", "s"]
+                                ["!=", "existingSolar", "Y"]
                             ];
                             map.setFilter(layer.id, filter_existing);
-                            // $('#selected-count').text(numeral(selectedCount).format('0,0'));
-                            // console.log(features.length);
 
                             }
-
                         }
-
                     })
                 }
-
                 map.fitBounds(bounds);
             });
         });
+      }
     }
-}
+
+
 
     function getClusters() {
         $.ajax({
