@@ -390,6 +390,7 @@
     //var cluster_route2 = `{!! $cluster ?? '' !!}`
     var features = [];
     var checkExisting = document.querySelector("#checkExisting");
+    console.log(checkExisting)
     //var features2 = [];
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
