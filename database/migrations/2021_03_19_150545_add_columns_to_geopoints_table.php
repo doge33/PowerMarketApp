@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToGeopoints extends Migration
+class AddColumnsToGeopointsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -30,7 +30,12 @@ class AddColumnsToGeopoints extends Migration
     public function down()
     {
         Schema::table('geopoints', function (Blueprint $table) {
-            $table->dropColumn(["existingsolar", "yearly_gen_captive_kWh", "yearly_gen_export_kWh", "monthly_gen_captive_export_kWh", "monthly_gen_captive_kWh"]);
+            $table->dropColumn("monthly_gen_export_kWh");
+            $table->dropColumn("monthly_gen_captive_kWh");
+            $table->dropColumn("existingsolar");
+            $table->dropColumn("yearly_gen_captive_kWh");
+            $table->dropColumn("yearly_gen_export_kWh");
+
         });
     }
 }

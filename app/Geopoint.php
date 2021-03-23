@@ -15,6 +15,7 @@ class Geopoint extends Model
         'area_sqm',
         'numpanels',
         'roofclass',
+        'existingsolar',
         'annual_gen_GBP',
         'annual_gen_kWh',
         'breakeven_years',
@@ -29,7 +30,11 @@ class Geopoint extends Model
         'lons',
         'yearly_co2_saved_kg',
         'monthly_gen_export_value_GBP',
-        'monthly_gen_saving_value_GBP'
+        'monthly_gen_saving_value_GBP',
+        'monthly_gen_export_kWh',
+        'monthly_gen_captive_kWh',
+        'yearly_gen_captive_kWh',
+        'yearly_gen_export_kWh'
     ];
     protected $guarded = [];
 

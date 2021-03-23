@@ -543,7 +543,8 @@
                                         'match',
                                         ['get', 'existingSolar'],
                                         'Y', '#5F73E3',
-                                        yearColorMap.get(symbol),
+                                        yearColorMap.get(symbol)?? "#6D0000",
+
                             ]
                           }
                         });
@@ -783,7 +784,10 @@
             var visiblePoints = [];
             for (var i = 0; i < dataArray.length; i++) {
                 if (filterYears[dataArray[i].breakeven_years]) {
+                    if(dataArray[i].existingsolar === "N"){
                     visiblePoints.push(dataArray[i].id);
+
+                    }
                 }
             }
             var formData = {

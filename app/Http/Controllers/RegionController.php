@@ -32,19 +32,28 @@ class RegionController extends Controller
         ]);
         $values = [];
         $json_data =  json_decode($request->geodata, true)['regions'];
+        //dd($json_data);
         foreach ($json_data as $point) {
             $value = [];
+            $fieldArr = [];
             foreach (Geopoint::COLUMNS as $field) {
                 if ($field == 'latLon') {
                     $value[] = $this->wrapPoint($point);
+                    $fieldArr[] = $field;
                 } else if (is_string($point[$field])) {
                     $value[] = '"' . $point[$field] . '"'; //this for the "existingsolar" column
+                    $fieldArr[] = $field;
                 } else {
                     $value[] = '"' . json_encode($point[$field]) . '"';
+                    $fieldArr[] = $field;
                 }
+
             }
+
             $value[] = '"' . $region->id . '"';
-            $values[] = "(" . implode(",", $value) . ")";
+            //dd($fieldArr);
+            $values[] = "(" . implode(",", $value) . ")"; //join an array using separater ","
+            //dd($values);
         };
         DB::insert('insert into geopoints (' . implode(",", Geopoint::COLUMNS) . ',region_id) values ' . implode(",", $values));
         $geopoints = Geopoint::where('region_id', $region->id)->get();
