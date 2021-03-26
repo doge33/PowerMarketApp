@@ -476,7 +476,7 @@
                     'September', 'October', 'November', 'December'
                 ],
                 datasets: [{
-                    label: 'Generation', //1st data in bar chart
+                    label: 'Captive', //1st data in bar chart
                     backgroundColor: '#6074DD',
                     data: monthly_gen_captive,
                     borderWidth: 0
@@ -666,18 +666,29 @@
                         //         return false;
                         //     } else return true;
                         // }
-                    }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
                 },
+
                 data: {
                     labels: years,
-                    datasets: [{
-                            label: 'Yearly Generation Captive',
+                    datasets: [
+                        {
+                            label: 'Captive',
+                            backgroundColor: "#17192B",
                             data: yearly_gen_captive,
-                            borderColor: '#17192B'
+                            borderColor: '#17192B',
+                            fill: false
                         },
                         {
-                            label: 'Yearly Gerneration Exports',
-                            data: yearly_gen_exports
+                            label: 'Export',
+                            backgroundColor: "#6074DD",
+                            data: yearly_gen_exports,
+                            borderColor: '#6074DD',
+                            fill: false
                         }
                     ],
                 }
