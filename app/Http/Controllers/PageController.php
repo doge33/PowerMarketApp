@@ -211,24 +211,43 @@ class PageController extends Controller
         $yearly_gen_captive = array_fill(0, 25, 0);
         $yearly_gen_exports = array_fill(0, 25, 0);
         $yearly_co2 = array_fill(0, 26, 0);
+
         foreach ($geopoints as $geopoint) {
+
+            //new params
+            if($geopoint->monthly_gen_captive_kWh){
+                for ($i = 0; $i < 12; $i++) {
+                    $monthly_gen_captive[$i] += $geopoint->monthly_gen_captive_kWh[$i];
+                }
+            }
+
+            if($geopoint->monthly_gen_export_kWh){
+                for ($i = 0; $i < 12; $i++) {
+                    $monthly_gen_exports[$i] += $geopoint->monthly_gen_export_kWh[$i];
+                }
+
+            }
 
             for ($i = 0; $i < 12; $i++) {
                 $monthly_savings[$i] += $geopoint->monthly_gen_saving_value_GBP[$i]; //populate each value in the 12-item array with the value of the corresponding value in this param in the geopoint
                 $monthly_exports[$i] += $geopoint->monthly_gen_export_value_GBP[$i]; //there should be  at least 12 values (one for each month) on those columns/params for each geopoint
-                $monthly_gen_captive[$i] += $geopoint->monthly_gen_captive_kWh[$i];
-                $monthly_gen_exports[$i] += $geopoint->monthly_gen_export_kWh[$i];
-
             }
 
             for ($i = 0; $i < 26; $i++) {
                 $yearly_co2[$i] += $geopoint->yearly_co2_saved_kg[$i]; //there should be at least 26 values in this param for each geopoint
             }
 
-            for ($i = 0; $i < 25; $i++) {
-                $yearly_gen_captive[$i] += $geopoint->yearly_gen_captive_kWh[$i]; //verified that y-gen-cap and y-gen-exp both are arrays of 25 values
-                $yearly_gen_exports[$i] += $geopoint->yearly_gen_export_kWh[$i];
+            if($geopoint->yearly_gen_captive_kWh){
+                for ($i = 0; $i < 25; $i++) {
+                    $yearly_gen_captive[$i] += $geopoint->yearly_gen_captive_kWh[$i]; //verified that y-gen-cap and y-gen-exp both are arrays of 25 values
+                }
             }
+             if($geopoint->yearly_gen_export_kWh){
+                for ($i = 0; $i < 25; $i++) {
+                    $yearly_gen_exports[$i] += $geopoint->yearly_gen_export_kWh[$i];  //verified that y-gen-cap and y-gen-exp both are arrays of 25 values
+                }
+            }
+
         }
 
         return view('pages.cluster_reporting', [
@@ -248,7 +267,8 @@ class PageController extends Controller
             'monthly_gen_exports' => json_encode($monthly_gen_exports),
             'yearly_gen_captive' => json_encode($yearly_gen_captive),
             'yearly_gen_exports' => json_encode($yearly_gen_exports),
-            'saved_co2' => json_encode($yearly_co2)
+            'saved_co2' => json_encode($yearly_co2),
+            'test_value' => ''
         ]);
     }
     /**

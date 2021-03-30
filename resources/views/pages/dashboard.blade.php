@@ -337,6 +337,8 @@
 <link rel="stylesheet" href="{{ asset('argon') }}/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css">
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css'>
 <link rel="stylesheet" href="{{ asset('css') }}/dashboard.css">
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css' type='text/css' />
+
 @endpush
 @push('js')
 <script src="{{ asset('argon') }}/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -350,6 +352,9 @@
 <script src="{{ asset('js') }}/mapbox-gl.js"></script>
 <script src="{{ asset('argon') }}/vendor/list.js/dist/list.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow';
     var map = new mapboxgl.Map({
@@ -359,6 +364,22 @@
         bearing: -17.6,
         antialias: true
     });
+    //initialize the draw toolbox
+    var draw = new MapboxDraw({
+            displayControlsDefault: false,
+            controls: {
+                polygon:true,
+                trash: true
+            }
+        });
+
+    map.addControl(draw, 'top-left');
+    // map.on('draw.create', this.updateArea);
+    // map.on('draw.delete', this.updateArea);
+    // map.on('draw.update', this.updateArea);
+
+
+
     var clicked_geopoint_id, clicked_layer, clicked_popup;
     var layerPrefix = 'layer-years-';
     var yearColors = [
@@ -389,6 +410,16 @@
     var selectedCount = 0,
         dataArray;
     var filterYears = new Map();
+    //adds polygon drawing tool
+    // var draw =  new MapboxDraw({
+    //     displayControlsDefault: false,
+    //     controls: {
+    //         polygon: true,
+    //         trash: true
+    //     }
+    // })
+    // map.addControl(draw);
+
     //var filterRoofClass = new Map();
     var cluster_route = `{!! $cluster ?? '' !!}`
     //var cluster_route2 = `{!! $cluster ?? '' !!}`
