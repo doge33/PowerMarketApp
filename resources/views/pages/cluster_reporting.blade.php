@@ -485,16 +485,20 @@
                                 zeroLineColor: '#6074DD',
                                 zeroLineBorderDash: [0, 0]
                             },
-                            ticks: {}
+                            ticks: {},
+                            stacked: true
 
                         }],
                         xAxes: [{
+                            // stacked:true,
+
                             ticks: {
-                                callback: function(value, index, values) {
-                                    if (value % 5 == 0) //only show the year value every 5 years
-                                        return value;
-                                    else return null;
-                                }
+                                autoSkip: false,
+                                // callback: function(value, index, values) {
+                                //     if (value % 5 == 0) //only show the year value every 5 years
+                                //         return value;
+                                //     else return null;
+                                // }
                             }
                         }]
                     },
@@ -536,20 +540,20 @@
                     datasets: [
                         {
                             label: 'Savings',
-                            backgroundColor: 'RGB(224, 187, 228, 0.5)',
+                            backgroundColor: 'RGBA(98, 118, 214, 1.00)',
                             data: monthly_savings,
                             borderWidth: 0,
-                            borderColor: '#17192B',
-                            fill: false
+                            borderColor: 'RGBA(98, 118, 214, 1.00)',
+                            //fill: false
                         },
                         {
                             label: 'Export',
-                            backgroundColor: "RGB(122,130,222, 0.5)",
+                            backgroundColor: "RGBA(30, 43, 73, 1)",
                             data: monthly_exports,
-                            borderColor: '#6074DD',
-                            borderColor: '#6074DD',
+                            borderColor: "RGBA(30, 43, 73, 1)",
+                            //borderColor: '#6074DD',
                             borderWidth: 0,
-                            fill: false
+                            //fill: false
                         }
                     ],
                 }
@@ -632,6 +636,7 @@
                 options: {
                     scales: {
                         yAxes: [{
+                            stacked: true,
                             gridLines: {
                                 color: '#6074DD',
                                 zeroLineColor: '#6074DD',
@@ -642,11 +647,8 @@
                         }],
                         xAxes: [{
                             ticks: {
-                                callback: function(value, index, values) {
-                                    if (value % 5 == 0) //only show the year value every 5 years
-                                        return value;
-                                    else return null;
-                                }
+
+                                autoSkip:false
                             }
                         }]
                     },
@@ -688,27 +690,26 @@
                     datasets: [
                         {
                             label: 'Captive',
-                            backgroundColor: 'RGB(224, 187, 228, 0.5)',
+                            backgroundColor: 'RGBA(98, 118, 214, 1.00)',
                             data: monthly_gen_captive,
                             borderWidth: 0,
-                            borderColor: '#17192B',
-                            fill: false
+                            borderColor: 'RGBA(98, 118, 214, 1.00) ',
+                            //fill: false
                         },
                         {
                             label: 'Export',
-                            backgroundColor: "RGB(122,130,222, 0.5)",
+                            backgroundColor: "RGBA(30, 43, 73, 1)",
                             data: monthly_gen_exports,
-                            borderColor: '#6074DD',
-                            borderColor: '#6074DD',
+                            borderColor: 'RGBA(30, 43, 73, 1.00)',
                             borderWidth: 0,
-                            fill: false
+                            //fill: false
                         }
                     ],
                 }
             });
 
             // Save to jQuery object
-            $this.data('chart', monethlyChart);
+            $this.data('chart', monthlyChart);
         };
         // Events
         if ($chart_monthly_gen.length) {
@@ -717,36 +718,55 @@
 
 
     };
-    function renderLineChart_co2() {
+    function renderBarChart_co2() {
         // Variables
+         var numOfYears = 25;
+        //     negatives = [], // for Y-axis
+        //     positives = [],  // for Y-axis
+        // var firstPositive = 26;
         var $chart = $('#chart-report');
-        var numOfYears = 25,
-            negatives = [], // for Y-axis
-            positives = [],  // for Y-axis
-            years = []; // for X-axis?
+        var years = [];
+        var yearly_sav = []
 
-        var firstPositive = 26;
         for (var i = 0; i <= numOfYears; i++) {
-            if (saved_co2[i] <= 0) {
-                negatives.push(saved_co2[i] / 1000)
-            } else firstPositive = Math.min(firstPositive, i); //choose the lower one outta two; worst case it's gonna be the 26th value (==never positive co2 saving within 25 years)
-            positives.push(saved_co2[i] / 1000)
+            // if (saved_co2[i] <= 0) {
+            //     negatives.push(saved_co2[i] / 1000)
+            // } else {
+            //     firstPositive = Math.min(firstPositive, i)//choose the lower one outta two; will remain the index i of the first positive value we run into.
+            //     positives.push(saved_co2[i] / 1000)
+            // };
+            yearly_sav.push(saved_co2[i]/1000)
             years.push(i);
         }
+        console.log("negatives: ", negatives);
+        console.log("positives: ", positives);
+        console.log("yearly_sav: ", yearly_sav)
         // Methods
         function init($this) {
             // Chart data
             var data ={
                 labels: years,
                 datasets: [{
-                    label: 'Captive', //1st data in bar chart
+                    label: 'Co2 Savings', //1st data in bar chart
                     backgroundColor: '#6074DD',
-                    data: saved_co2,
-                    borderWidth: 0
-                }]
+                    data: yearly_sav,
+                    //borderColor: 'red',
+                     borderWidth: 1,
+                    barPercentage: 0.5
+
+                    }
+                    // , {
+                    //     label: 'Positive', //1st data in bar chart
+                    //     backgroundColor: '#6074DD',
+                    //     data: positives,
+
+                    //     //barThickness: 'flex'
+                    // }
+                ]
             };
             // Options
             var options= {
+
                 scales: {
                     xAxes: [{
                         ticks: {
@@ -763,37 +783,39 @@
                             zeroLineColor: '#6074DD',
                             zeroLineBorderDash: [0, 0]
                         },
-                        ticks: {}
+                        ticks: {
+
+                        }
                     }],
                 // legend: {
                 //     display: true,
                 //     position: 'top',
                 // },
                  },
-                tooltips: {
-                    callbacks: {
-                        labelColor: function(tooltipItem, data) {
-                            if (tooltipItem.datasetIndex == 0) {
-                                return {
-                                    backgroundColor: '#17192B'
-                                }
-                            } else {
-                                return {
-                                    backgroundColor: '#6074DD'
-                                }
-                            }
-                        }
-                    },
-                    filter: function(tooltipItem, data) {
-                        var dataIndex = tooltipItem.datasetIndex;
-                        var label = data.labels[tooltipItem.index];
-                        if (dataIndex == 0) {
-                            return true;
-                        } else if (label < firstPositive) {
-                            return false;
-                        } else return true;
-                    }
-                }
+                // tooltips: {
+                //     callbacks: {
+                //         labelColor: function(tooltipItem, data) {
+                //             if (tooltipItem.datasetIndex == 0) {
+                //                 return {
+                //                     backgroundColor: '#17192B'
+                //                 }
+                //             } else {
+                //                 return {
+                //                     backgroundColor: '#6074DD'
+                //                 }
+                //             }
+                //         }
+                //     },
+                //     filter: function(tooltipItem, data) {
+                //         var dataIndex = tooltipItem.datasetIndex;
+                //         var label = data.labels[tooltipItem.index];
+                //         if (dataIndex == 0) {
+                //             return true;
+                //         } else if (label < firstPositive) {
+                //             return false;
+                //         } else return true;
+                //     }
+                // }
             };
             // Init chart      //prepare data, prepare options to init chart
             var barChart = new Chart($this, {
@@ -898,101 +920,106 @@
 
     // };
 
-    // function renderLineChart_gen() {
-    //     // Variables
-    //     var $chart_yearly_gen= $('#chart-report-generation');
-    //     var numOfYears = 25;
-    //     var firstPositive = 25;
-    //     var years = [];
-    //     for (var i = 1; i <= numOfYears; i++) {
-    //         years.push(i);
-    //     }
-    //     // Methods
-    //     function init($this) {
-    //         var yearlyChart = new Chart($this, {
-    //             type: 'line',
-    //             options: {
-    //                 scales: {
-    //                     yAxes: [{
-    //                         gridLines: {
-    //                             color: '#6074DD',
-    //                             zeroLineColor: '#6074DD',
-    //                             zeroLineBorderDash: [0, 0]
-    //                         },
-    //                         ticks: {}
+    function renderBarChart_gen() {
+        // Variables
+        var $chart_yearly_gen= $('#chart-report-generation');
+        var numOfYears = 25;
+        var firstPositive = 25;
+        var years = [];
+        for (var i = 1; i <= numOfYears; i++) {
+            years.push(i);
+        }
+        // Methods
+        function init($this) {
+            var yearlyChart = new Chart($this, {
+                type: 'bar',
+                options: {
+                    scales: {
+                        yAxes: [{
+                            gridLines: {
+                                color: '#6074DD',
+                                zeroLineColor: '#6074DD',
+                                zeroLineBorderDash: [0, 0]
+                            },
+                            ticks: {},
+                            stacked: true
 
-    //                     }],
-    //                     xAxes: [{
-    //                         ticks: {
-    //                             callback: function(value, index, values) {
-    //                                 if (value % 5 == 0) //only show the year value every 5 years
-    //                                     return value;
-    //                                 else return null;
-    //                             }
-    //                         }
-    //                     }]
-    //                 },
-    //                 tooltips: {
-    //                     callbacks: {
-    //                         labelColor: function(tooltipItem, data) {
-    //                             if (tooltipItem.datasetIndex == 0) {
-    //                                 return {
-    //                                     backgroundColor: '#17192B'
-    //                                 }
-    //                             } else {
-    //                                 return {
-    //                                     backgroundColor: '#6074DD'
-    //                                 }
-    //                             }
-    //                         }
-    //                     }
-    //                     // filter: function(tooltipItem, data) {
-    //                     //     var dataIndex = tooltipItem.datasetIndex;
-    //                     //     var label = data.labels[tooltipItem.index];
-    //                     //     if (dataIndex == 0) {
-    //                     //         return true;
-    //                     //     } else if (label < firstPositive) {
-    //                     //         return false;
-    //                     //     } else return true;
-    //                     // }
-    //                 },
-    //                 legend: {
-    //                     display: true,
-    //                     position: 'top'
-    //                 },
-    //             },
+                        }],
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    if (value % 5 == 0) //only show the year value every 5 years
+                                        return value;
+                                    else return null;
+                                },
 
-    //             data: {
-    //                 labels: years,
-    //                 datasets: [
-    //                     {
-    //                         label: 'Captive',
-    //                         backgroundColor: 'RGB(224, 187, 228, 0.5)',
-    //                         data: yearly_gen_captive,
-    //                         borderColor: 'RGB(224, 187, 228, 0.2)',
-    //                          //fill: false
-    //                     },
-    //                     {
-    //                         label: 'Export',
-    //                         backgroundColor: "RGB(122,130,222, 0.5)",
-    //                         data: yearly_gen_exports,
-    //                         borderColor: '#6074DD',
-    //                          //fill: false
-    //                     }
-    //                 ],
-    //             }
-    //         });
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        callbacks: {
+                            labelColor: function(tooltipItem, data) {
+                                if (tooltipItem.datasetIndex == 0) {
+                                    return {
+                                        backgroundColor: '#6276D6'
+                                    }
+                                } else {
+                                    return {
+                                        backgroundColor: "#1E2B49"
+                                    }
+                                }
+                            }
+                        }
+                        // filter: function(tooltipItem, data) {
+                        //     var dataIndex = tooltipItem.datasetIndex;
+                        //     var label = data.labels[tooltipItem.index];
+                        //     if (dataIndex == 0) {
+                        //         return true;
+                        //     } else if (label < firstPositive) {
+                        //         return false;
+                        //     } else return true;
+                        // }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                },
 
-    //         // Save to jQuery object
-    //         $this.data('chart', yearlyChart);
-    //     };
-    //     // Events
-    //     if ($chart_yearly_gen.length) {
-    //         init($chart_yearly_gen);
-    //     }
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Captive',
+                            backgroundColor: '#6276D6',
+                            data: yearly_gen_captive,
+                            borderColor: 'RGB(224, 187, 228, 0.2)',
+                            borderWidth: 0
+                             //fill: false
+                        },
+                        {
+                            label: 'Export',
+                            backgroundColor: "#1E2B49",
+                            data: yearly_gen_exports,
+                            borderColor: '#6074DD',
+                            borderWidth: 0
+                             //fill: false
+                        }
+                    ],
+                }
+            });
+
+            // Save to jQuery object
+            $this.data('chart', yearlyChart);
+        };
+        // Events
+        if ($chart_yearly_gen.length) {
+            init($chart_yearly_gen);
+        }
 
 
-    // };
+    };
 
     function renderMap() {
         var features = []
@@ -1063,8 +1090,8 @@
         $('[data-toggle="tooltip"]').tooltip();
         renderLineChart_sav();
         renderLineChart_gen();
-        renderLineChart_co2();
-        //renderLineChart_gen();
+        renderBarChart_co2();
+        renderBarChart_gen();
         renderMap();
         renderTable();
     });
