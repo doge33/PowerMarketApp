@@ -409,64 +409,7 @@
         column.visible(false)
     }
 
-    // function renderBarChart_sav() {
-    //     // Variables
-    //     var $chart_sav = $('#chart-bar-savings');
-    //     // Methods
-    //     function init($this) {
-    //         // Chart data
-    //         var data = {
-    //             labels: ['January', 'February', 'March', 'April', //x axis lables
-    //                 'May', 'June', 'July', 'August',
-    //                 'September', 'October', 'November', 'December'
-    //             ],
-    //             datasets: [{
-    //                 label: 'Savings', //1st data in bar chart
-    //                 backgroundColor: '#6074DD',
-    //                 data: monthly_savings,
-    //                 borderWidth: 0
-    //             }, {
-    //                 label: 'Export', //2nd data in bar chart
-    //                 backgroundColor: '#1B2B4B',
-    //                 data: monthly_exports,
-    //                 borderWidth: 0
-    //             }]
-    //         };
-
-    //         // Options
-    //         var options= {
-    //             scales: {
-    //                 xAxes: [{
-    //                     stacked: true,
-    //                     ticks: {
-    //                         autoSkip: false
-    //                     }
-    //                 }],
-    //                 yAxes: [{
-    //                     stacked: true
-    //                 }]
-    //             },
-    //             legend: {
-    //                 display: true,
-    //                 position: 'top',
-    //             },
-    //         }
-
-    //         // Init chart      //prepare data, prepare options to init chart
-    //         var barStackedChart = new Chart($this, {
-    //             type: 'bar',
-    //             data: data,
-    //             options: options
-    //         });
-
-    //         // Save to jQuery object
-    //         $this.data('chart', barStackedChart);
-    //     }
-    //      // Events
-    //     if ($chart_sav.length) {
-    //             init($chart_sav);
-    //     }
-    // };
+    //TOP LEFT GRAPH
     function renderLineChart_sav() {
         // Variables
         var $chart_monthly_sav= $('#chart-bar-savings');
@@ -567,62 +510,121 @@
 
 
     };
-    // function renderBarChart_gen() {
-    //     // Variables
-    //     var $chart_gen = $('#chart-bar-gen');
-    //     // Methods
-    //     function init($this) {
-    //         // Chart data
-    //         var data ={
-    //             labels: ['January', 'February', 'March', 'April', //x axis lables
-    //                 'May', 'June', 'July', 'August',
-    //                 'September', 'October', 'November', 'December'
-    //             ],
-    //             datasets: [{
-    //                 label: 'Captive', //1st data in bar chart
-    //                 backgroundColor: '#6074DD',
-    //                 data: monthly_gen_captive,
-    //                 borderWidth: 0
-    //             }, {
-    //                 label: 'Export', //2nd data in bar chart
-    //                 backgroundColor: '#1B2B4B',
-    //                 data: monthly_gen_exports,
-    //                 borderWidth: 0
-    //             }]
-    //         }
-    //         // Options
-    //         var options= {
-    //             scales: {
-    //                 xAxes: [{
-    //                     stacked: true,
-    //                     ticks: {
-    //                         autoSkip: false
-    //                     }
-    //                 }],
-    //                 yAxes: [{
-    //                     stacked: true
-    //                 }]
-    //             },
-    //             legend: {
-    //                 display: true,
-    //                 position: 'top',
-    //             },
-    //         }
 
-    //         // Init chart      //prepare data, prepare options to init chart
-    //         var barStackedChart = new Chart($this, {
-    //             type: 'bar',
-    //             data: data,
-    //             options: options
-    //         });
-    //         // Save to jQuery object
-    //         $this.data('chart', barStackedChart);
-    //     };
+    //TOP RIGHT GRAPH
+    function renderBarChart_co2() {
+        // Variables
+         var numOfYears = 25;
+            negatives = [], // for Y-axis
+            positives = [];  // for Y-axis
+        var firstPositive = 26;
+        var $chart = $('#chart-report');
+        var years = [];
+        var yearly_sav = []
 
-    //     if ($chart_gen.length) {
-    //         init($chart_gen);
-    //     }
-    // };
+        for (var i = 0; i <= numOfYears; i++) {
+            // if (saved_co2[i] <= 0) {
+            //     negatives.push(saved_co2[i] / 1000)
+            // } else {
+            //     firstPositive = Math.min(firstPositive, i)//choose the lower one outta two; will remain the index i of the first positive value we run into.
+            // };
+            // positives.push(saved_co2[i] / 1000)
+            yearly_sav.push(saved_co2[i]/1000)
+            years.push(i);
+        }
+        //console.log("negatives: ", negatives);
+        //console.log("positives: ", positives);
+
+
+        // Methods
+        function init($this) {
+            // Chart data
+            var data ={
+                labels: years,
+                datasets: [{
+                    label: 'Co2 savings', //1st data in bar chart
+                    backgroundColor: '#6074DD',
+                    data: yearly_sav,
+
+                    }
+                    // , {
+                    //     label: 'Positive', //1st data in bar chart
+                    //     backgroundColor: '#6074DD',
+                    //     data: positives,
+
+                    //     //barThickness: 'flex'
+                    // }
+                ]
+            };
+            // Options
+            var options= {
+
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            callback: function(value, index, values) {
+                                if (value % 5 == 0) //only show the year value every 5 years
+                                    return value;
+                                else return null;
+                            }
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            color: '#6074DD',
+                            zeroLineColor: '#6074DD',
+                            zeroLineBorderDash: [0, 0]
+                        },
+                        ticks: { }
+                    }],
+
+                 },
+                tooltips: {
+                    callbacks: {
+                        labelColor: function(tooltipItem, data) {
+
+                            if (tooltipItem.datasetIndex == 0) {
+
+                                return {
+                                    backgroundColor: '#17192B'
+                                }
+                            } else {
+
+                                return {
+                                    backgroundColor: '#6074DD'
+                                }
+                            }
+                        },
+
+                    },
+                    filter: function(tooltipItem, data) {
+                        var dataIndex = tooltipItem.datasetIndex;
+                        var label = data.labels[tooltipItem.index];
+                        if (dataIndex == 0) {
+                            return true;
+                        } else if (label < firstPositive) {
+                            return false;
+                        } else return true;
+                    }
+                }
+
+            }
+
+            // Init chart      //prepare data, prepare options to init chart
+            var barChart = new Chart($this, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
+            // Save to jQuery object
+            $this.data('chart', barChart);
+        }
+            if ($chart.length) {
+                init($chart);
+            }
+
+    }
+    //BOTTOM LEFT GRAPH
     function renderLineChart_gen() {
         // Variables
         var $chart_monthly_gen= $('#chart-line-gen');
@@ -717,214 +719,8 @@
 
     };
 
-    function renderBarChart_co2() {
-        // Variables
-         var numOfYears = 25;
-            negatives = [], // for Y-axis
-            positives = [];  // for Y-axis
-        var firstPositive = 26;
-        var $chart = $('#chart-report');
-        var years = [];
-        var yearly_sav = []
-
-        for (var i = 0; i <= numOfYears; i++) {
-            // if (saved_co2[i] <= 0) {
-            //     negatives.push(saved_co2[i] / 1000)
-            // } else {
-            //     firstPositive = Math.min(firstPositive, i)//choose the lower one outta two; will remain the index i of the first positive value we run into.
-            // };
-            // positives.push(saved_co2[i] / 1000)
-            yearly_sav.push(saved_co2[i]/1000)
-            years.push(i);
-        }
-        //console.log("negatives: ", negatives);
-        //console.log("positives: ", positives);
-
-
-        // Methods
-        function init($this) {
-            // Chart data
-            var data ={
-                labels: years,
-                datasets: [{
-                    label: 'Co2 savings', //1st data in bar chart
-                    backgroundColor: '#6074DD',
-                    data: yearly_sav,
-
-                    }
-                    // , {
-                    //     label: 'Positive', //1st data in bar chart
-                    //     backgroundColor: '#6074DD',
-                    //     data: positives,
-
-                    //     //barThickness: 'flex'
-                    // }
-                ]
-            };
-            // Options
-            var options= {
-
-                scales: {
-                    xAxes: [{
-                        ticks: {
-                            callback: function(value, index, values) {
-                                if (value % 5 == 0) //only show the year value every 5 years
-                                    return value;
-                                else return null;
-                            }
-                        }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            color: '#6074DD',
-                            zeroLineColor: '#6074DD',
-                            zeroLineBorderDash: [0, 0]
-                        },
-                        ticks: { }
-                    }],
-
-                 },
-                tooltips: {
-                    callbacks: {
-                        // labelColor: function(tooltipItem, data) {
-
-                        //     if (tooltipItem.datasetIndex == 0) {
-                        //         console.log(tooltipItem.datasetIndex)
-                        //         return {
-                        //             backgroundColor: '#17192B'
-                        //         }
-                        //     } else {
-                        //         console.log(tooltipItem.datasetIndex)
-                        //         return {
-                        //             backgroundColor: '#6074DD'
-                        //         }
-                        //     }
-                        // },
-                        label: function(tooltipItem, data) {
-                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-                    if (label) {
-                        label += ': ';
-                    }
-                    label += Math.round(tooltipItem.yLabel * 100) / 100;
-                    return label;
-                }
-                    },
-                    filter: function(tooltipItem, data) {
-                        var dataIndex = tooltipItem.datasetIndex;
-                        var label = data.labels[tooltipItem.index];
-                        if (dataIndex == 0) {
-                            return true;
-                        } else if (label < firstPositive) {
-                            return false;
-                        } else return true;
-                    }
-                }
-            };
-            // Init chart      //prepare data, prepare options to init chart
-            var barChart = new Chart($this, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
-            // Save to jQuery object
-            $this.data('chart', barChart);
-        };
-
-        if ($chart.length) {
-            init($chart);
-        }
-    };
-
-    // function renderLineChart_co2() {
-    //     // Variables
-    //     var $chart = $('#chart-report');
-    //     var numOfYears = 25,
-    //         negatives = [], // for Y-axis
-    //         positives = [],  // for Y-axis
-    //         years = []; // for X-axis?
-    //     var firstPositive = 26;
-    //     for (var i = 0; i <= numOfYears; i++) {
-    //         if (saved_co2[i] <= 0) {
-    //             negatives.push(saved_co2[i] / 1000)
-    //         } else firstPositive = Math.min(firstPositive, i); //choose the lower one outta two; worst case it's gonna be the 26th value (==never positive co2 saving within 25 years)
-    //         positives.push(saved_co2[i] / 1000)
-    //         years.push(i);
-    //     }
-    //     // Methods
-    //     function init($this) {
-    //         var salesChart = new Chart($this, {
-    //             type: 'line',
-    //             options: {
-    //                 scales: {
-    //                     yAxes: [{
-    //                         gridLines: {
-    //                             color: '#6074DD',
-    //                             zeroLineColor: '#6074DD',
-    //                             zeroLineBorderDash: [0, 0]
-    //                         },
-    //                         ticks: {}
-    //                     }],
-    //                     xAxes: [{
-    //                         ticks: {
-    //                             callback: function(value, index, values) {
-    //                                 if (value % 5 == 0) //only show the year value every 5 years
-    //                                     return value;
-    //                                 else return null;
-    //                             }
-    //                         }
-    //                     }]
-    //                 },
-    //                 tooltips: {
-    //                     callbacks: {
-    //                         labelColor: function(tooltipItem, data) {
-    //                             if (tooltipItem.datasetIndex == 0) {
-    //                                 return {
-    //                                     backgroundColor: '#17192B'
-    //                                 }
-    //                             } else {
-    //                                 return {
-    //                                     backgroundColor: '#6074DD'
-    //                                 }
-    //                             }
-    //                         }
-    //                      },
-    //                     filter: function(tooltipItem, data) {
-    //                         var dataIndex = tooltipItem.datasetIndex;
-    //                         var label = data.labels[tooltipItem.index];
-    //                         if (dataIndex == 0) {
-    //                             return true;
-    //                         } else if (label < firstPositive) {
-    //                             return false;
-    //                         } else return true;
-    //                     }
-    //                 }
-    //             },
-    //             data: {
-    //                 labels: years,
-    //                 datasets: [{
-    //                         label: 'Negative',
-    //                         data: negatives,
-    //                         borderColor: '#17192B'
-    //                     },
-    //                     {
-    //                         label: 'Positive',
-    //                         data: positives
-    //                     }
-    //                 ],
-    //             }
-    //         });
-    //         // Save to jQuery object
-    //         $this.data('chart', salesChart);
-    //     };
-    //     // Events
-    //     if ($chart.length) {
-    //         init($chart);
-    //     }
-
-    // };
-
-    function renderBarChart_gen() {
+    //BOTTOM RIGHT GRAPH
+     function renderBarChart_gen() {
         // Variables
         var $chart_yearly_gen= $('#chart-report-generation');
         var numOfYears = 25;
@@ -1025,86 +821,96 @@
 
     };
 
-    // function testCo2(){
 
-    //     var randomScalingFactor = function() {
-    //              //return Math.round(Math.random() * 100);
-    //              return Math.random() < 0.5 ? -1 : 1;
-    //          };
+    //FOR REFERENCE: CO2 LINE CHART
 
-	// 	var barChartData = {
-	// 		labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-	// 		datasets: [{
-	// 			label: 'Dataset 1',
-	// 			backgroundColor: "red",
-	// 			borderColor: "red",
-	// 			borderWidth: 1,
-	// 			data: [
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 				randomScalingFactor(),
-	// 			]
-	// 		}]
-
-	// 	};
-
-	// 	window.onload = function() {
-	// 		var ctx = document.getElementById('chart-report').getContext('2d');
-	// 		window.myBar = new Chart(ctx, {
-	// 			type: 'bar',
-	// 			data: barChartData,
-	// 			options: {
-	// 				responsive: true,
-	// 				legend: {
-	// 					position: 'top',
-	// 				},
-	// 				title: {
-	// 					display: true,
-	// 					text: 'Chart.js Bar Chart'
-	// 				},
+    // function renderLineChart_co2() {
+    //     // Variables
+    //     var $chart = $('#chart-report');
+    //     var numOfYears = 25,
+    //         negatives = [], // for Y-axis
+    //         positives = [],  // for Y-axis
+    //         years = []; // for X-axis?
+    //     var firstPositive = 26;
+    //     for (var i = 0; i <= numOfYears; i++) {
+    //         if (saved_co2[i] <= 0) {
+    //             negatives.push(saved_co2[i] / 1000)
+    //         } else firstPositive = Math.min(firstPositive, i); //choose the lower one outta two; worst case it's gonna be the 26th value (==never positive co2 saving within 25 years)
+    //         positives.push(saved_co2[i] / 1000)
+    //         years.push(i);
+    //     }
+    //     // Methods
+    //     function init($this) {
+    //         var salesChart = new Chart($this, {
+    //             type: 'line',
+    //             options: {
     //                 scales: {
     //                     yAxes: [{
-    //                     gridLines: {
-    //                         color: '#6074DD',
-    //                         zeroLineColor: '#6074DD',
-    //                         zeroLineBorderDash: [0, 0]
-    //                     },
-    //     //                 ticks: {
-    //     //   suggestedMax: 10000,
-    //     //   suggestedMin: -5000,
-    //     // }
-    //                 }],
+    //                         gridLines: {
+    //                             color: '#6074DD',
+    //                             zeroLineColor: '#6074DD',
+    //                             zeroLineBorderDash: [0, 0]
+    //                         },
+    //                         ticks: {}
+    //                     }],
+    //                     xAxes: [{
+    //                         ticks: {
+    //                             callback: function(value, index, values) {
+    //                                 if (value % 5 == 0) //only show the year value every 5 years
+    //                                     return value;
+    //                                 else return null;
+    //                             }
+    //                         }
+    //                     }]
+    //                 },
+    //                 tooltips: {
+    //                     callbacks: {
+    //                         labelColor: function(tooltipItem, data) {
+    //                             if (tooltipItem.datasetIndex == 0) {
+    //                                 return {
+    //                                     backgroundColor: '#17192B'
+    //                                 }
+    //                             } else {
+    //                                 return {
+    //                                     backgroundColor: '#6074DD'
+    //                                 }
+    //                             }
+    //                         }
+    //                      },
+    //                     filter: function(tooltipItem, data) {
+    //                         var dataIndex = tooltipItem.datasetIndex;
+    //                         var label = data.labels[tooltipItem.index];
+    //                         if (dataIndex == 0) {
+    //                             return true;
+    //                         } else if (label < firstPositive) {
+    //                             return false;
+    //                         } else return true;
+    //                     }
     //                 }
-	// 			}
-	// 		});
+    //             },
+    //             data: {
+    //                 labels: years,
+    //                 datasets: [{
+    //                         label: 'Negative',
+    //                         data: negatives,
+    //                         borderColor: '#17192B'
+    //                     },
+    //                     {
+    //                         label: 'Positive',
+    //                         data: positives
+    //                     }
+    //                 ],
+    //             }
+    //         });
+    //         // Save to jQuery object
+    //         $this.data('chart', salesChart);
+    //     };
+    //     // Events
+    //     if ($chart.length) {
+    //         init($chart);
+    //     }
 
-	// 	};
-
-		// document.getElementById('randomizeData').addEventListener('click', function() {
-		// 	var zero = Math.random() < 0.2 ? true : false;
-		// 	barChartData.datasets.forEach(function(dataset) {
-		// 		dataset.data = dataset.data.map(function() {
-		// 			return zero ? 0.0 : randomScalingFactor();
-		// 		});
-
-		// 	});
-		// 	window.myBar.update();
-		// });
-
-		// var colorNames = Object.keys(window.chartColors);
-    //}
-
-
-
-
-
+    // };
 
 
     function renderMap() {
@@ -1177,7 +983,6 @@
         renderLineChart_sav();
         renderLineChart_gen();
         renderBarChart_co2();
-        //testCo2();
         renderBarChart_gen();
 
         renderMap();
