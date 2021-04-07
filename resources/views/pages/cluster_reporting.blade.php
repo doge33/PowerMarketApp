@@ -347,9 +347,10 @@
         ' !!}');
     var yearly_gen_exports = JSON.parse('{!! $yearly_gen_exports ?? '
         ' !!}');
-
+    var test_value = JSON.parse('{!! $test_value ?? '
+        ' !!}');
     //console.log("m-gen-cap: ", monthly_gen_captive, "m-gen-exp: ", monthly_gen_exports, "y-gen-cap: ", yearly_gen_captive, 'yearly_gen_exports: ', yearly_gen_exports, "saved_co2: ", saved_co2, "monthly_savings: ", monthly_savings, "monthly_exports: ", monthly_exports);
-    //console.log("test value: ", test)
+    console.log("test value: ", test_value)
     var jsonString = `{!! $geodata ?? '
     ' !!}`;
     var map;
@@ -523,12 +524,13 @@
         var yearly_sav = []
 
         for (var i = 0; i <= numOfYears; i++) {
-            // if (saved_co2[i] <= 0) {
-            //     negatives.push(saved_co2[i] / 1000)
-            // } else {
-            //     firstPositive = Math.min(firstPositive, i)//choose the lower one outta two; will remain the index i of the first positive value we run into.
-            // };
-            // positives.push(saved_co2[i] / 1000)
+            if (saved_co2[i] <= 0) {
+                negatives.push(saved_co2[i] / 1000);
+                positives.push(0);
+            } else {
+                firstPositive = Math.min(firstPositive, i)//choose the lower one outta two; will remain the index i of the first positive value we run into.
+                positives.push(saved_co2[i] / 1000)
+            };
             yearly_sav.push(saved_co2[i]/1000)
             years.push(i);
         }
@@ -542,18 +544,18 @@
             var data ={
                 labels: years,
                 datasets: [{
-                    label: 'Co2 savings', //1st data in bar chart
-                    backgroundColor: '#6074DD',
-                    data: yearly_sav,
+                    label: 'Negative', //1st data in bar chart
+                    backgroundColor: '#bd403a',
+                    data: negatives,
 
                     }
-                    // , {
-                    //     label: 'Positive', //1st data in bar chart
-                    //     backgroundColor: '#6074DD',
-                    //     data: positives,
+                    , {
+                        label: 'Positive', //1st data in bar chart
+                        backgroundColor: '#63C54F',
+                        data: positives,
 
-                    //     //barThickness: 'flex'
-                    // }
+                        //barThickness: 'flex'
+                    }
                 ]
             };
             // Options
@@ -563,8 +565,12 @@
                     xAxes: [{
                         ticks: {
                             callback: function(value, index, values) {
-                                if (value % 5 == 0) //only show the year value every 5 years
+                                //console.log("value: ", value);
+                                if (value % 5 == 0) {
+
                                     return value;
+
+                                }
                                 else return null;
                             }
                         }
@@ -586,15 +592,18 @@
                             if (tooltipItem.datasetIndex == 0) {
 
                                 return {
-                                    backgroundColor: '#17192B'
+                                    backgroundColor: '#bd403a'
                                 }
                             } else {
 
                                 return {
-                                    backgroundColor: '#6074DD'
+                                    backgroundColor: '#63C54F'
                                 }
                             }
                         },
+                        title: function(tooltipItem, data){
+                            return 'Year ' + tooltipItem[0].index
+                        }
 
                     },
                     filter: function(tooltipItem, data) {
@@ -769,6 +778,10 @@
                                         backgroundColor: "#1E2B49"
                                     }
                                 }
+                            },
+                            title: function(tooltipItem, data){
+                                var year = tooltipItem[0].index + 1
+                                return 'Year ' + year
                             }
                         }
                         // filter: function(tooltipItem, data) {

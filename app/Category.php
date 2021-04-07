@@ -19,6 +19,7 @@ class Category extends Model
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
+
     public function items()
     {
         return $this->hasMany(Item::class);
