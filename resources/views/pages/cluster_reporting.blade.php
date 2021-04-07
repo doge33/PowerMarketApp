@@ -347,10 +347,8 @@
         ' !!}');
     var yearly_gen_exports = JSON.parse('{!! $yearly_gen_exports ?? '
         ' !!}');
-    var test_value = JSON.parse('{!! $test_value ?? '
-        ' !!}');
     //console.log("m-gen-cap: ", monthly_gen_captive, "m-gen-exp: ", monthly_gen_exports, "y-gen-cap: ", yearly_gen_captive, 'yearly_gen_exports: ', yearly_gen_exports, "saved_co2: ", saved_co2, "monthly_savings: ", monthly_savings, "monthly_exports: ", monthly_exports);
-    console.log("test value: ", test_value)
+
     var jsonString = `{!! $geodata ?? '
     ' !!}`;
     var map;

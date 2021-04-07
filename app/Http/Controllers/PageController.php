@@ -122,7 +122,12 @@ class PageController extends Controller
             'geodata' => json_encode([$geopoint]),
             'monthly_savings' => json_encode($geopoint->monthly_gen_saving_value_GBP),
             'monthly_exports' => json_encode($geopoint->monthly_gen_export_value_GBP),
-            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg)
+            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg),
+            'monthly_gen_captive' => json_encode($geopoint->monthly_gen_captive_kWh),
+            'monthly_gen_exports' => json_encode($geopoint->monthly_gen_export_kWh),
+            'yearly_gen_captive' => json_encode($geopoint->yearly_gen_captive_kWh),
+            'yearly_gen_exports' => json_encode($geopoint->yearly_gen_export_kWh),
+
         ]);
         $output = [];
         $tempDir = (new TemporaryDirectory())->create();
@@ -161,6 +166,7 @@ class PageController extends Controller
         } catch (\Exception $e) {
             $address = null;
         }
+
         return view('pages.reporting', [
             'id' => $geopoint->id,
             'size' => $geopoint->system_capacity_kWp,
@@ -177,7 +183,11 @@ class PageController extends Controller
             'geodata' => json_encode([$geopoint]),
             'monthly_savings' => json_encode($geopoint->monthly_gen_saving_value_GBP),
             'monthly_exports' => json_encode($geopoint->monthly_gen_export_value_GBP),
-            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg)
+            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg),
+            'monthly_gen_captive' => json_encode($geopoint->monthly_gen_captive_kWh),
+            'monthly_gen_exports' => json_encode($geopoint->monthly_gen_export_kWh),
+            'yearly_gen_captive' => json_encode($geopoint->yearly_gen_captive_kWh),
+            'yearly_gen_exports' => json_encode($geopoint->yearly_gen_export_kWh),
         ]);
     }
 
@@ -226,9 +236,6 @@ class PageController extends Controller
             'trees' => round($geopoints->sum('annual_gen_kWh') * 0.0117),
             'oil' => round($geopoints->sum('annual_gen_kWh') * 0.2174),
             'geodata' => json_encode($geopoints),
-            // 'monthly_savings' => json_encode($monthly_savings),
-            // 'monthly_exports' => json_encode($monthly_exports),
-            // 'saved_co2' => json_encode($yearly_co2),
             'monthly_savings' => json_encode($data_array['monthly_savings']),
             'monthly_exports' => json_encode($data_array['monthly_exports']),
             'monthly_gen_captive' => json_encode($data_array['monthly_gen_captive']),
