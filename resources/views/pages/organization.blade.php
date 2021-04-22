@@ -184,8 +184,8 @@
                     <!-- Title -->
                     <h5 class="h3 mb-0 account-header">{{ isset($account) ? $account->name : '' }}</h5>
 
-                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-black" src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:22px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
-                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-white" src="{{ asset('svg') }}/map-white.svg" class="map-icon-white" style="width:22px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-black" src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                    <a href="/dashboard/{{ $account->name }}" target="_blank"><img id="icon-{{ $account->id }}-white" src="{{ asset('svg') }}/map-white.svg" class="map-icon-white" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
 
                 </div>
                 <!-- Card body -->
@@ -230,7 +230,7 @@
                 <div class="card-header">
                     <!-- Title -->
                     <h5 class="h3 mb-0 account-header">{{ $region->name }}</h5>
-                    <a href="/dashboard/{{ $account->name }}/{{ $region->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:22px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                    <a href="/dashboard/{{ $account->name }}/{{ $region->name }}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black" style="width:20px" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
                 </div>
                 <!-- Card body -->
                 <div class="card-body" style="height:300px;">
@@ -532,9 +532,10 @@
                             <div class="card-header">
                                 <!-- Title -->
                                 <h5 class="h3 mb-0 account-header">${data.cluster.name}</h5>
-                                <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="${data.cluster.id}"><i class="fa fa-trash-alt map-icon-black" style="font-size:22px;color:#191B2F;"></i></a>
-                                <a href="/projects/${data.cluster.name}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon" /></a>
-                                <a href="/reporting/project/${data.cluster.name}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon"></i></a>
+                                <a class="delete" data-target="#delete-form" data-toggle="modal" data-id="${data.cluster.id}"><i class="fa fa-trash-alt map-icon-black" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="Delete Project"></i></a>
+                                <a href="/projects/${data.cluster.name}" target="_blank"><img src="{{ asset('svg') }}/map.svg" class="map-icon-black report-icon" style="width:20px" data-toggle="tooltip" data-placement="top" title="Share Project" data-toggle="tooltip" data-placement="top" title="Explore Map"></a>
+                                <a href="/reporting/project/${data.cluster.name}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon" style="font-size:20px;color:#191B2F;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
+                                <a class="share-button" data-toggle="modal" data-target="#share-form" target="_blank" ><i class="ni ni-curved-next map-icon-black report-icon" style="font-size:20px" data-toggle="tooltip" data-placement="top" title="Share Project"></i></a>
                             </div>
                             <!-- Card body -->
                             <div class="card-body add-cluster" style="height:300px;max-width:100%;">

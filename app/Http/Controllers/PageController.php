@@ -32,6 +32,68 @@ class PageController extends Controller
         return abort(404);
     }
 
+
+    private function getGeopointData($geopoints){
+
+       //this function can be called by each of the four reporting functions to extract the geopoint data
+       //return [1,2,3,4,5];
+       $monthly_savings = array_fill(0, 12, 0); //starting at index 0, fill in "0" for 12 spots   [0,0,0,0,0,0,0,0,0,0,0,0]
+       $monthly_exports = array_fill(0, 12, 0);
+       $monthly_gen_captive = array_fill(0, 12, 0);
+       $monthly_gen_exports = array_fill(0, 12, 0);
+       $yearly_gen_captive = array_fill(0, 25, 0);
+       $yearly_gen_exports = array_fill(0, 25, 0);
+       $yearly_co2 = array_fill(0, 26, 0);
+
+       foreach ($geopoints as $geopoint) {
+
+           for ($i = 0; $i < 12; $i++) {
+               $monthly_savings[$i] += $geopoint->monthly_gen_saving_value_GBP[$i]; //populate each value in the 12-item array with the value of the corresponding value in this param in the geopoint
+               $monthly_exports[$i] += $geopoint->monthly_gen_export_value_GBP[$i]; //there should be  at least 12 values (one for each month) on those columns/params for each geopoint
+           }
+
+           for ($i = 0; $i < 26; $i++) {
+               $yearly_co2[$i] += $geopoint->yearly_co2_saved_kg[$i]; //there should be at least 26 values in this param for each geopoint
+           }
+
+           //new params
+           if($geopoint->monthly_gen_captive_kWh){
+               for ($i = 0; $i < 12; $i++) {
+                   $monthly_gen_captive[$i] += $geopoint->monthly_gen_captive_kWh[$i];
+               }
+           }
+
+           if($geopoint->monthly_gen_export_kWh){
+               for ($i = 0; $i < 12; $i++) {
+                   $monthly_gen_exports[$i] += $geopoint->monthly_gen_export_kWh[$i];
+               }
+
+           }
+
+           if($geopoint->yearly_gen_captive_kWh){
+               for ($i = 0; $i < 25; $i++) {
+                   $yearly_gen_captive[$i] += $geopoint->yearly_gen_captive_kWh[$i]; //verified that y-gen-cap and y-gen-exp both are arrays of 25 values
+               }
+           }
+            if($geopoint->yearly_gen_export_kWh){
+               for ($i = 0; $i < 25; $i++) {
+                   $yearly_gen_exports[$i] += $geopoint->yearly_gen_export_kWh[$i];  //verified that y-gen-cap and y-gen-exp both are arrays of 25 values
+               }
+           }
+
+       }
+       return [
+           'monthly_savings' => $monthly_savings,
+           'monthly_exports' => $monthly_exports,
+           'monthly_gen_captive' => $monthly_gen_captive,
+           'monthly_gen_exports' => $monthly_gen_exports,
+           'yearly_gen_captive' => $yearly_gen_captive,
+           'yearly_gen_exports' => $yearly_gen_exports,
+           'yearly_co2' => $yearly_co2
+       ];
+   }
+
+
     public function pdf(Request $request)
     {
         $geopoint = Geopoint::find($request->geopoint_id);
@@ -62,7 +124,12 @@ class PageController extends Controller
             'geodata' => json_encode([$geopoint]),
             'monthly_savings' => json_encode($geopoint->monthly_gen_saving_value_GBP),
             'monthly_exports' => json_encode($geopoint->monthly_gen_export_value_GBP),
-            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg)
+            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg),
+            'monthly_gen_captive' => json_encode($geopoint->monthly_gen_captive_kWh),
+            'monthly_gen_exports' => json_encode($geopoint->monthly_gen_export_kWh),
+            'yearly_gen_captive' => json_encode($geopoint->yearly_gen_captive_kWh),
+            'yearly_gen_exports' => json_encode($geopoint->yearly_gen_export_kWh),
+
         ]);
         $output = [];
         $tempDir = (new TemporaryDirectory())->create();
@@ -117,7 +184,11 @@ class PageController extends Controller
             'geodata' => json_encode([$geopoint]),
             'monthly_savings' => json_encode($geopoint->monthly_gen_saving_value_GBP),
             'monthly_exports' => json_encode($geopoint->monthly_gen_export_value_GBP),
-            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg)
+            'saved_co2' => json_encode($geopoint->yearly_co2_saved_kg),
+            'monthly_gen_captive' => json_encode($geopoint->monthly_gen_captive_kWh),
+            'monthly_gen_exports' => json_encode($geopoint->monthly_gen_export_kWh),
+            'yearly_gen_captive' => json_encode($geopoint->yearly_gen_captive_kWh),
+            'yearly_gen_exports' => json_encode($geopoint->yearly_gen_export_kWh),
         ]);
     }
 
@@ -141,18 +212,19 @@ class PageController extends Controller
         }
 
         $geopoints = $cluster->geopoints;
-        $monthly_savings = array_fill(0, 12, 0);
-        $monthly_exports = array_fill(0, 12, 0);
-        $yearly_co2 = array_fill(0, 26, 0);
-        foreach ($geopoints as $geopoint) {
-            for ($i = 0; $i < 12; $i++) {
-                $monthly_savings[$i] += $geopoint->monthly_gen_saving_value_GBP[$i];
-                $monthly_exports[$i] += $geopoint->monthly_gen_export_value_GBP[$i];
-            }
-            for ($i = 0; $i < 26; $i++) {
-                $yearly_co2[$i] += $geopoint->yearly_co2_saved_kg[$i];
-            }
-        }
+        $data_array= $this->getGeopointData($geopoints);
+        // $monthly_savings = array_fill(0, 12, 0);
+        // $monthly_exports = array_fill(0, 12, 0);
+        // $yearly_co2 = array_fill(0, 26, 0);
+        // foreach ($geopoints as $geopoint) {
+        //     for ($i = 0; $i < 12; $i++) {
+        //         $monthly_savings[$i] += $geopoint->monthly_gen_saving_value_GBP[$i];
+        //         $monthly_exports[$i] += $geopoint->monthly_gen_export_value_GBP[$i];
+        //     }
+        //     for ($i = 0; $i < 26; $i++) {
+        //         $yearly_co2[$i] += $geopoint->yearly_co2_saved_kg[$i];
+        //     }
+        // }
         $html = view('pages.cluster_pdf', [
             'project' => $cluster->name,
             'size' => $geopoints->sum('system_capacity_kWp'),
@@ -164,9 +236,13 @@ class PageController extends Controller
             'trees' => round($geopoints->sum('annual_gen_kWh') * 0.0117),
             'oil' => round($geopoints->sum('annual_gen_kWh') * 0.2174),
             'geodata' => json_encode($geopoints),
-            'monthly_savings' => json_encode($monthly_savings),
-            'monthly_exports' => json_encode($monthly_exports),
-            'saved_co2' => json_encode($yearly_co2)
+            'monthly_savings' => json_encode($data_array['monthly_savings']),
+            'monthly_exports' => json_encode($data_array['monthly_exports']),
+            'monthly_gen_captive' => json_encode($data_array['monthly_gen_captive']),
+            'monthly_gen_exports' => json_encode($data_array['monthly_gen_exports']),
+            'yearly_gen_captive' => json_encode($data_array['yearly_gen_captive']),
+            'yearly_gen_exports' => json_encode($data_array['yearly_gen_exports']),
+            'saved_co2' => json_encode($data_array['yearly_co2']),
         ]);
         $output = [];
         $tempDir = (new TemporaryDirectory())->create();
@@ -204,18 +280,39 @@ class PageController extends Controller
         }
 
         $geopoints = $cluster->geopoints;
-        $monthly_savings = array_fill(0, 12, 0);
-        $monthly_exports = array_fill(0, 12, 0);
-        $yearly_co2 = array_fill(0, 26, 0);
-        foreach ($geopoints as $geopoint) {
-            for ($i = 0; $i < 12; $i++) {
-                $monthly_savings[$i] += $geopoint->monthly_gen_saving_value_GBP[$i];
-                $monthly_exports[$i] += $geopoint->monthly_gen_export_value_GBP[$i];
-            }
-            for ($i = 0; $i < 26; $i++) {
-                $yearly_co2[$i] += $geopoint->yearly_co2_saved_kg[$i];
-            }
-        }
+        $data_array= $this->getGeopointData($geopoints);
+        // $monthly_savings = array_fill(0, 12, 0);
+        // $monthly_exports = array_fill(0, 12, 0);
+        // $monthly_gen_captive = array_fill(0, 12, 0);
+        // $monthly_gen_exports = array_fill(0, 12, 0);
+        // $yearly_gen_captive = array_fill(0, 25, 0);
+        // $yearly_gen_exports = array_fill(0, 25, 0);
+        // $yearly_co2 = array_fill(0, 26, 0);
+        // foreach ($geopoints as $geopoint) {
+        //     for ($i = 0; $i < 12; $i++) {
+        //         $monthly_savings[$i] += $geopoint->monthly_gen_saving_value_GBP[$i];
+        //         $monthly_exports[$i] += $geopoint->monthly_gen_export_value_GBP[$i];
+        //
+        //         if ($geopoint->monthly_gen_captive_kWh) {
+        //           $monthly_gen_captive[$i] += $geopoint->monthly_gen_captive_kWh[$i];
+        //         }
+        //         if ($geopoint->monthly_gen_export_kWh) {
+        //           $monthly_gen_exports[$i] += $geopoint->monthly_gen_export_kWh[$i];
+        //         }
+        //     }
+        //     for ($i = 0; $i < 26; $i++) {
+        //         $yearly_co2[$i] += $geopoint->yearly_co2_saved_kg[$i];
+        //     }
+        //
+        //     for ($i = 0; $i < 25; $i++) {
+        //         if ($geopoint->yearly_gen_captive_kWh) {
+        //           $yearly_gen_captive[$i] += $geopoint->yearly_gen_captive_kWh[$i];
+        //         }
+        //         if ($geopoint->yearly_gen_export_kWh) {
+        //           $yearly_gen_exports[$i] += $geopoint->yearly_gen_export_kWh[$i];
+        //         }
+        //     }
+        // }
         return view('pages.cluster_reporting', [
             'project' => $cluster->name,
             'size' => $geopoints->sum('system_capacity_kWp'),
@@ -227,9 +324,13 @@ class PageController extends Controller
             'trees' => round($geopoints->sum('annual_gen_kWh') * 0.0117),
             'oil' => round($geopoints->sum('annual_gen_kWh') * 0.2174),
             'geodata' => json_encode($geopoints),
-            'monthly_savings' => json_encode($monthly_savings),
-            'monthly_exports' => json_encode($monthly_exports),
-            'saved_co2' => json_encode($yearly_co2)
+            'monthly_savings' => json_encode($data_array['monthly_savings']),
+            'monthly_exports' => json_encode($data_array['monthly_exports']),
+            'monthly_gen_captive' => json_encode($data_array['monthly_gen_captive']),
+            'monthly_gen_exports' => json_encode($data_array['monthly_gen_exports']),
+            'yearly_gen_captive' => json_encode($data_array['yearly_gen_captive']),
+            'yearly_gen_exports' => json_encode($data_array['yearly_gen_exports']),
+            'saved_co2' => json_encode($data_array['yearly_co2']),
         ]);
     }
     /**

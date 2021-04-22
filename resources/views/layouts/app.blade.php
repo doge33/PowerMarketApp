@@ -57,8 +57,9 @@
         <script src="{{ asset('argon') }}/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
         <script src="{{ asset('argon') }}/vendor/lavalamp/js/jquery.lavalamp.min.js"></script>
         <!-- Optional JS -->
-        <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script>
-        <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script>
+        <!-- <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.min.js"></script> -->
+        <!-- <script src="{{ asset('argon') }}/vendor/chart.js/dist/Chart.extension.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
         @stack('js')
 
