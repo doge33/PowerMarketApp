@@ -393,7 +393,12 @@
         [12, '#bd403a'],
         [13, '#bd403a'],
         [14, '#bd403a'],
-        [15, '#6D0000']
+        [15, '#bd403a'],
+        [16, '#bd403a'],
+        [17, '#bd403a'],
+        [18, '#bd403a'],
+        [19, '#bd403a'],
+        [20, '#bd403a']
     ];
 
     // var existingSolarColor = [
@@ -574,8 +579,7 @@
                                         'match',
                                         ['get', 'existingSolar'],
                                         'Y', '#5F73E3',
-                                        yearColorMap.get(symbol)?? "#6D0000",
-
+                                        yearColorMap.get(symbol)??'#282C33',
                             ]
                           }
                         });
@@ -815,10 +819,9 @@
             var visiblePoints = [];
             for (var i = 0; i < dataArray.length; i++) {
                 if (filterYears[dataArray[i].breakeven_years]) {
-                    if(dataArray[i].existingsolar === "N"){
+                  if(dataArray[i].existingsolar === 'N') {
                     visiblePoints.push(dataArray[i].id);
-
-                    }
+                  }
                 }
             }
             var formData = {

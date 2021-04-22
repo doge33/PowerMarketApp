@@ -31,10 +31,11 @@ class Geopoint extends Model
         'yearly_co2_saved_kg',
         'monthly_gen_export_value_GBP',
         'monthly_gen_saving_value_GBP',
-        'monthly_gen_export_kWh',
-        'monthly_gen_captive_kWh',
+        'existingsolar',
         'yearly_gen_captive_kWh',
-        'yearly_gen_export_kWh'
+        'yearly_gen_export_kWh',
+        'monthly_gen_captive_kWh',
+        'monthly_gen_export_kWh'
     ];
     protected $guarded = [];
 
@@ -50,6 +51,5 @@ class Geopoint extends Model
         'yearly_co2_saved_kg' => 'array',
         'yearly_gen_export_kWh' => 'array',
         'yearly_gen_captive_kWh' => 'array'
-
     ];
 }
