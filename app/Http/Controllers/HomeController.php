@@ -7,7 +7,8 @@ use App\Account;
 use App\Geopoint;
 use App\Cluster;
 use Illuminate\Support\Facades\DB;
-
+use App\Helpers\pro;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -97,6 +98,15 @@ class HomeController extends Controller
             'account' => $account_name,
             'region' => $region_name
         ]);
+    }
+
+    public function region_pro(Request $request){
+
+        //dd($request);
+        $param1 = $request->input('param1');
+        $param2 = $request->input('param2');
+
+        pro_params($param1, $param2);
     }
 
     public function cluster($cluster_name) {

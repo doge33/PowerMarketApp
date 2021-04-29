@@ -264,9 +264,19 @@
      @if(isset($cluster))
      <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-left: 1.2rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
      @endif
-    </div>
-    <div class="row">
 
+     <div>
+        <button class="btn-lg"  style="right: 200px">
+            <a id='testUrl' href="/pro?param1=111&param2=222" target="_blank">Test Button for PRO</a>
+        </button>
+        {{-- {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}} --}}
+    </div>
+
+    </div>
+
+
+
+    <div class="row">
       <div class="col text-left" style="margin-bottom: 10px;">
         <span class="text-nowrap" style="font-size: .75rem; margin-right: .5rem;">Show active solar sites &nbsp;</span>
         <label class="custom-toggle checkbox-inline btn-sm mr-0" style="">
@@ -312,6 +322,7 @@
             </div>
         </div>
     </div>
+
 
 
 
@@ -880,6 +891,13 @@
                 $('#next-response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(3000).fadeOut();
             });
         });
+        //$('#testUrl').on('click', function(){
+            // $('#testUrl').attr('href', function(i, val){
+
+            //     return val + '?param1=bear&param2=rabbit';
+            // })
+            // console.log($('#testUrl'));
+        //})
     });
 </script>
 <style>
