@@ -90,6 +90,7 @@ class HomeController extends Controller
             $account = $user->accounts()->where('name', $account_name)->first();
             if ($account == null) return abort(404);
         }
+        //to-do: need to verify user is on pro
         $region = $account->regions()->where('name', $region_name)->first();
         if ($region == null) return abort(404);
         $geopoints = Geopoint::where('region_id', $region->id)->get();
@@ -103,10 +104,20 @@ class HomeController extends Controller
     public function region_pro(Request $request){
 
         //dd($request);
-        $param1 = $request->input('param1');
-        $param2 = $request->input('param2');
 
-        pro_params($param1, $param2);
+        //----laravel blade input seems unable to pass input of type "number" as numeric values----
+        //----so manually converting input fields from string to floats in controller, for now-----
+        $captive_use = $request->captive_use ?  floatval($request->captive_use) : 0.055;
+        $export_tariff = $request->export_tariff ? floatval($request->export_tariff) : 0.055;
+        $domestic_tariff = $request->domestic_tariff ? floatval($request->domestic_tariff) : 0.146;
+        $commercial_tariff = $request->commercial_tariff ? floatval($request->commercial_tariff) : 0.12;
+        $kW_price = $request->kW_price ? floatval($request->kW_price) : 1200;
+        // echo gettype($captive_use);
+
+        //echo("$captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price");
+        $pro_data = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price);
+        //echo gettype($pro_data[$captive_use]);
+        return $pro_data;
     }
 
     public function cluster($cluster_name) {

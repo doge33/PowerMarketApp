@@ -265,11 +265,57 @@
      <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-left: 1.2rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
      @endif
 
-     <div>
+     {{-- <div>
         <button class="btn-lg"  style="right: 200px">
             <a id='testUrl' href="/pro?param1=111&param2=222" target="_blank">Test Button for PRO</a>
         </button>
-        {{-- {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}} --}}
+        {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}}
+    </div> --}}
+    <div>
+        <form class="mt-5" method="get" action="{{ route('home.region_pro') }}" role="form">
+            @csrf
+            <div class="row">
+                <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
+                    <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
+                    <input type="text" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder="{{ __('defaut: 0.8') }}" value="{{ old('captive-use') }}"autofocus>
+                    @include('alerts.feedback', ['field' => 'captive_use'])
+                </div>
+
+                <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
+                    <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
+                    <input type="text" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.055') }}" value="{{ old('export-tariff') }}">
+
+                    @include('alerts.feedback', ['field' => 'export_tariff'])
+                </div>
+
+
+                <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
+                    <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
+                    <input type="text" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.146') }}" value="{{ old('domestic-tariff') }}">
+
+                    @include('alerts.feedback', ['field' => 'domestic_tariff'])
+                </div>
+
+                <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
+                    <label class="form-control-label" for="input-commercial-tariff">{{ __('Commercial Tariff') }}</label>
+                    <input type="text" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.12') }}" value="{{ old('commercial-tariff') }}">
+
+                    @include('alerts.feedback', ['field' => 'commercial_tariff'])
+                </div>
+
+                <div class="col-sm-2 form-group{{ $errors->has('kW-price') ? ' has-danger' : '' }}">
+                    <label class="form-control-label" for="input-kW-price">{{ __('kW Price') }}</label>
+                    <input type="text" name="kW_price" id="input-kW-price" class="form-control{{ $errors->has('kW-price') ? ' is-invalid' : '' }}" placeholder="{{ __('default: £1200') }}" value="{{ old('kW-price') }}">
+
+                    @include('alerts.feedback', ['field' => 'kW_price'])
+                </div>
+
+                <div class="col-sm-2 text-left">
+                    <button type="submit" class="btn btn-default my-4">Run</button>
+                </div>
+            </div>
+
+        </form>
     </div>
 
     </div>
@@ -775,7 +821,7 @@
         })
     }
     $(document).ready(function() {
-        renderMap();
+        //renderMap();
         //console.log(JSON.parse(jsonString2));
         $('[data-toggle="tooltip"]').tooltip();
         getClusters();

@@ -75,7 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('notifications/markAsRead', 'NotificationController@markAsRead');
 
-    Route::get('/pro/', 'HomeController@region_pro')->name('home.region_pro');
+    Route::get('/pro', 'HomeController@region_pro')->name('home.region_pro');
     // echo route('home.region_pro',['param1' => 'bear', 'param2' => 'rabbit']);
 
     Route::get('/test', 'ClusterController@findCluster');
