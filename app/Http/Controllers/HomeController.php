@@ -123,12 +123,14 @@ class HomeController extends Controller
 
         //echo("$captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price");
         $pro_data = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price);
+        //dd($pro_data);
         return view('pages.dashboard-pro', [
             'geodata' => $geopoints,
             'account' => $account_name,
             'region' => $region_name,
             'pro_data' => $pro_data
         ]);
+
     }
 
     public function cluster($cluster_name) {

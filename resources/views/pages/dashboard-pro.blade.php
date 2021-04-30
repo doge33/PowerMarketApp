@@ -277,13 +277,13 @@
             <div class="row">
                 <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
-                    <input type="text" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder="{{ __('defaut: 0.8') }}" value="{{ old('captive-use') }}"autofocus>
+                    <input type="text" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['captive_use'] }}" value="{{ old('captive-use') }}"autofocus>
                     @include('alerts.feedback', ['field' => 'captive_use'])
                 </div>
 
                 <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
-                    <input type="text" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.055') }}" value="{{ old('export-tariff') }}">
+                    <input type="text" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['export_tariff'] }}" value="{{ old('export-tariff') }}">
 
                     @include('alerts.feedback', ['field' => 'export_tariff'])
                 </div>
@@ -291,21 +291,21 @@
 
                 <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
-                    <input type="text" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.146') }}" value="{{ old('domestic-tariff') }}">
+                    <input type="text" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['domestic_tariff'] }}" value="{{ old('domestic-tariff') }}">
 
                     @include('alerts.feedback', ['field' => 'domestic_tariff'])
                 </div>
 
                 <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-commercial-tariff">{{ __('Commercial Tariff') }}</label>
-                    <input type="text" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.12') }}" value="{{ old('commercial-tariff') }}">
+                    <input type="text" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['commercial_tariff'] }}" value="{{ old('commercial-tariff') }}">
 
                     @include('alerts.feedback', ['field' => 'commercial_tariff'])
                 </div>
 
                 <div class="col-sm-2 form-group{{ $errors->has('kW-price') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-kW-price">{{ __('kW Price') }}</label>
-                    <input type="text" name="kW_price" id="input-kW-price" class="form-control{{ $errors->has('kW-price') ? ' is-invalid' : '' }}" placeholder="{{ __('default: £1200') }}" value="{{ old('kW-price') }}">
+                    <input type="text" name="kW_price" id="input-kW-price" class="form-control{{ $errors->has('kW-price') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['kW_price'] }}" value="{{ old('kW-price') }}">
 
                     @include('alerts.feedback', ['field' => 'kW_price'])
                 </div>
@@ -313,9 +313,13 @@
                 <div class="col-sm-2 text-left">
                     <button type="submit" class="btn btn-default my-4">Run</button>
                 </div>
+                <div class="col-sm-2 text-left">
+                    <button type="submit" class="btn btn-default my-4">Reset</button>
+                </div>
             </div>
 
         </form>
+
     </div>
 
     </div>
