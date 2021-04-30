@@ -272,7 +272,7 @@
         {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}}
     </div> --}}
     <div>
-        <form class="mt-5" method="get" action="{{ route('home.region_pro') }}" role="form">
+        <form class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region]) }}" role="form">
             @csrf
             <div class="row">
                 <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">

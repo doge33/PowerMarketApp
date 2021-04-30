@@ -26,6 +26,7 @@ Route::prefix('dashboard')->middleware('auth')->group(function () {
 	Route::get('/', 'HomeController@index')->name('home');
 	Route::get('/{account}', 'HomeController@account')->name('account');
 	Route::get('/{account}/{region}', 'HomeController@region')->name('region');
+
 });
 
 Route::get('invitation/create', 'InvitationController@create')->name('invitation.create');
@@ -75,9 +76,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('notifications/markAsRead', 'NotificationController@markAsRead');
 
-    Route::get('/pro', 'HomeController@region_pro')->name('home.region_pro');
+
     // echo route('home.region_pro',['param1' => 'bear', 'param2' => 'rabbit']);
 
     Route::get('/test', 'ClusterController@findCluster');
 
+    Route::get('/pro/{account}/{region}', 'HomeController@region_pro')->name('home.region_pro');
+
 });
+
