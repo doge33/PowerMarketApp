@@ -119,10 +119,11 @@ class HomeController extends Controller
         $export_tariff = $request->export_tariff ? floatval($request->export_tariff) : 0.055;
         $domestic_tariff = $request->domestic_tariff ? floatval($request->domestic_tariff) : 0.146;
         $commercial_tariff = $request->commercial_tariff ? floatval($request->commercial_tariff) : 0.12;
-        $kW_price = $request->kW_price ? floatval($request->kW_price) : 1200;
+        $cost_of_small_system = $request->cost_of_small_system ? floatval($request->cost_of_small_system) : 6000;
+        $system_size_kwp = $request->system_size_kwp ? floatval($request->system_size_kwp) : 5;
 
         //echo("$captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price");
-        $pro_data = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price);
+        $pro_data = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints);
         //dd($pro_data);
         return view('pages.dashboard-pro', [
             'geodata' => $geopoints,

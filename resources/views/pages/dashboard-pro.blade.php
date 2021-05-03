@@ -303,13 +303,20 @@
                     @include('alerts.feedback', ['field' => 'commercial_tariff'])
                 </div>
 
-                <div class="col-sm-2 form-group{{ $errors->has('kW-price') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-kW-price">{{ __('kW Price') }}</label>
-                    <input type="text" name="kW_price" id="input-kW-price" class="form-control{{ $errors->has('kW-price') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['kW_price'] }}" value="{{ old('kW-price') }}">
-
-                    @include('alerts.feedback', ['field' => 'kW_price'])
+                <div class="col-sm-4 form-group">
+                    <label class="form-control-label" for="input-system-cost-per-kwp">{{ __('system_cost_per_kwp (total cost / system size)') }}</label>
+                    <div class="input-group" id="input-system-cost-per-kwp">
+                        {{-- <div class="form-group{{ $errors->has('cost_of_small_system') ? ' has-danger' : '' }}"> --}}
+                            {{-- <label class="form-control-label" for="input-cost-of-small-system">{{ __('cost_of_small_system') }}</label> --}}
+                            <input type="text" class="form-control" name="cost_of_small_system" id="input-cost-of-small-system" class="form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['cost_of_small_system']  }}" value="{{ old('cost_of_small_system') }}">
+                            @include('alerts.feedback', ['field' => 'cost_of_small_system'])
+                        {{-- </div> --}}
+                        {{-- <div class="form-group{{ $errors->has('system_size_kwp') ? ' has-danger' : '' }}"> --}}
+                            <input type="text" class="form-control" name="system_size_kwp" id="input-system-size-kwp" class="form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder="{{ $pro_data['system_size_kwp']  }}" value="{{ old('system_size_kwp') }}">
+                            @include('alerts.feedback', ['field' => 'system_size_kwp'])
+                        {{-- </div> --}}
+                    </div>
                 </div>
-
                 <div class="col-sm-2 text-left">
                     <button type="submit" class="btn btn-default my-4">Run</button>
                 </div>
