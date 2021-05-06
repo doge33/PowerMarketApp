@@ -835,7 +835,7 @@
         })
     }
     $(document).ready(function() {
-        //renderMap();
+        renderMap();
         //console.log(JSON.parse(jsonString2));
         $('[data-toggle="tooltip"]').tooltip();
         getClusters();

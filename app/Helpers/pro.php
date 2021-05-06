@@ -23,7 +23,7 @@ if(!function_exists('pro_params')){
         $corporate_tax_rate = 0.21;
         $residential_threshold = 10; //treat systems below this size as residential.  above, assume tax benefits claimed etc
         $co2_saved_per_kwh = 0.5; //rensmart.com/Calculators/KWH-to-CO2 also breaks down different electricity sources.  Since UK hardly uses coal and oil any more, we should view the gas-based generation as what our solar generation replaces, so 0.5kg/kWh
-        $embedded_co2_per_kep = 2142; //kg. renewableenergyhub.co.uk/main/solar-panels/solar-panels-carbon-analysis/ suggests 1500kg for manufacture nrel.gov/docs/fy13osti/56487.pdf suggests 60-70% of CO2 due to manufacture, so lets assume 1500/0.7=2142
+        $embedded_co2_per_kwp = 2142; //kg. renewableenergyhub.co.uk/main/solar-panels/solar-panels-carbon-analysis/ suggests 1500kg for manufacture nrel.gov/docs/fy13osti/56487.pdf suggests 60-70% of CO2 due to manufacture, so lets assume 1500/0.7=2142
         $panel_lifetime = 25;
 
         //calculate some lifetime factors using our assumption about degradation
@@ -45,19 +45,20 @@ if(!function_exists('pro_params')){
 
         foreach($geopoints as $geopoint){
             //echo("$geopoint->roofclass");
-            if($geopoint->roofclass == 's'){
+            $roofclass = $geopoint->roofclass;
+            if($roofclass == 's'){
                 $gen_per_year_per_kwp = 937; //figure for south facing in gloucester according to NREL
                 $yr_breakdown_per_kwp = [24,40,74,104,128,132,133,115,83,54,29,21]; //from NREL, gloucester
                 $spacingfactor = 1;
                 $foreshorten = 1/cos(30*M_PI/180); //assume 30 degree average slope - area will be foreshortened by cos(30)
             }
-            else if($geopoint->roofclass == 'f'){
+            else if($roofclass == 'f'){
                 $gen_per_year_per_kwp = 937; //figure for south facing in gloucester according to NREL - flat should enable optimal angle (e.g. ~15 deg) but need to space racks (or lay flat, but that increases system cost)
                 $yr_breakdown_per_kwp = [24,40,74,104,128,132,133,115,83,54,29,21];
                 $spacingfactor = 1.5; //0.5m spacing between rows so area usual increases by at least factor of 1.5
                 $foreshorten = 1; //no foreshortening of the roof, and 15 deg racks basically no foreshortening
             }
-            else if($geopoint->roofclass == 'i'){
+            else if($roofclass == 'i'){
                 $gen_per_year_per_kwp = 806; //figure for south facing in gloucester according to NREL - flat should enable optimal angle (e.g. ~15 deg) but need to space racks (or lay flat, but that increases system cost)
                 //these two arrays below are used to get the average of each month in the matlab file
                 $arr1 = [16,30,61,91,119,124,125,102,69,41,20,13];
@@ -71,27 +72,103 @@ if(!function_exists('pro_params')){
 
             //SYSTEM COST ESTIMATES, sclaed by the value entered by the user
             $sys_cost_5kw = $cost_of_small_system / $system_size_kwp; //default 1200
-            if($geopoint->system_capacity_kWp < 3){
+            $sys_cap = $geopoint->system_capacity_kWp;
+
+            if($sys_cap < 3){
                 $c = 1500 * ($sys_cost_5kw/1200);
             }
+            else if($sys_cap < 10){
+                $c = $sys_cost_5kw;
+            }
+            else if($sys_cap < 50){
+                $c = 1000 * ($sys_cost_5kw / 1200);
+            }
+            else if($sys_cap < 250){
+                $c= 850 * ($sys_cost_5kw / 1200);
+            }
+            else if($sys_cap < 1000){
+                $c= 600 * ($sys_cost_5kw / 1200);
+            }
+            else {
+                $c= 500 * ($sys_cost_5kw / 1200);
+            }
 
-            //dd($gen_per_year_per_kwp);
+            $sys_cost = $c * $sys_cap;
+
+            if($sys_cap < 50){
+                $electric_price = $domestic_tariff; //default value is set in controller method
+            } else {
+                $electric_price = $commercial_tariff;  //default value is set in controller method
+            }
+
+
+            //as per Phil, these should not need recalculating, just use stored values (unless panel
+            //rating is added to pro interface)
+            $annual_gen = $sys_cap * $gen_per_year_per_kwp;
+            //dd ("annual_gen: $annual_gen");
+            $annual_co2_saved = $annual_gen * $co2_saved_per_kwh;
+            $monthly_gen =[]; //an array containing data from Jan ~ Dec
+            foreach($yr_breakdown_per_kwp as $month_breakdown){
+                $monthly_gen[] = $month_breakdown * $sys_cap;
+            }
+            $cum_co2_overtime = array_fill(0, $panel_lifetime + 1, 0);
+            $yearly_gen_overtime = array_fill(0, $panel_lifetime + 1, 0) ; //lifetime_gen_GBP in database?
+            $lifetime_co2_saved = $annual_co2_saved * $panel_lifetime_output_factor;
+            $embedded_co2 = $embedded_co2_per_kwp * $sys_cap;
+            //note: the cumulative co2 array starts with embedded co2 as its first element
+            $cum_co2_overtime[0] = $embedded_co2;
+            $yearly_gen_overtime[0] = $annual_gen;
+
+            for($j = 1; $j <= $panel_lifetime; $j++){
+                $cum_co2_overtime[$j+1] = $cum_co2_overtime[$j] + $annual_co2_saved * $panel_degradation**($j-1);
+                $yearly_gen_overtime[$j+1] = $annual_gen * $panel_degradation**$j;
+            }
+
+            //stuff that will change with PRO parameter changes:
+            $annual_gen_val = $annual_gen * $electric_price * $captive_use + $annual_gen * $export_tariff *(1 - $captive_use);
+            if($sys_cap > $residential_threshold){
+                $lifetime_value = $annual_gen_val * $panel_commercial_lifetime_value_factor;
+            } else{
+                $lifetime_value = $annual_gen_val * $panel_domestic_lifetime_value_factor;
+            }
+
+            $return_on_investment = $lifetime_value / $sys_cost;
+            $annual_roi = (1 + $return_on_investment) ** (1 / $panel_lifetime) - 1;
+            // ^^^ this line needs to be verified with Phil
+
+            //calculate breakeven period
+            $breakeven = -1;
+            $v = 0;
+            $ag = $annual_gen;
+            $ep = $electric_price; //came from either domestic tariff or commercial tariff
+            $ex = $export_tariff;
+
+            for($k = 1; $k <= $panel_lifetime; $k++){
+                $tmpv = $ag * $ep * $captive_use + $ag * $ex * (1 - $captive_use); //value of elctricity use + export
+                $dpt = 0;
+
+                if($sys_cap > $residential_threshold && $k <= 1/$annual_depreciation){
+                    $dpt = $sys_cost * $annual_depreciation * $corporate_tax_rate; //depreciation tax benefits
+                }
+                $tmpv += $dpt;
+                $v += $tmpv;
+                if($v > $sys_cost){
+                    $breakeven = $k;
+                    break;
+                }
+                $ag *= $panel_degradation;
+                if($sys_cost > $residential_threshold){
+                    $ep *= $annual_commercial_electric_price_increase;
+                } else{
+                    $ep *= $annual_domestic_electric_price_increase;
+                }
+            }
+            if($breakeven == -1){
+                $breakeven = $panel_lifetime;
+            }
+
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //return all the new values for the geopoint
         $pro_data = [
             'captive_use' => $captive_use,
             'export_tariff'=>$export_tariff,

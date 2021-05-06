@@ -124,7 +124,7 @@ class HomeController extends Controller
 
         //echo("$captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price");
         $pro_data = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints);
-        //dd($pro_data);
+        print_r($pro_data);
         return view('pages.dashboard-pro', [
             'geodata' => $geopoints,
             'account' => $account_name,
