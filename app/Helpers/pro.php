@@ -70,7 +70,7 @@ if(!function_exists('pro_params')){
                 $foreshorten = 1/cos(30*M_PI/180);
             }
 
-            //SYSTEM COST ESTIMATES, sclaed by the value entered by the user
+            //SYSTEM COST ESTIMATES, scaled by the value entered by the user
             $sys_cost_5kw = $cost_of_small_system / $system_size_kwp; //default 1200
             $sys_cap = $geopoint->system_capacity_kWp;
 
@@ -102,44 +102,55 @@ if(!function_exists('pro_params')){
             }
 
 
-            //as per Phil, these should not need recalculating, just use stored values (unless panel
-            //rating is added to pro interface)
-            $annual_gen = $sys_cap * $gen_per_year_per_kwp;
-            //dd ("annual_gen: $annual_gen");
-            $annual_co2_saved = $annual_gen * $co2_saved_per_kwh;
+            //as per Phil, these should not need recalculating, just use stored values (unless panel rating is added to pro interface)
+            //means no need to update geopoint data in the following variables: (marked by corresponding database column name)
+
+                //annual_gen_kwh:
+            $annual_gen_kwh = $sys_cap * $gen_per_year_per_kwp;
+                //annual_saved_co2_kg:
+            $annual_co2_saved = $annual_gen_kwh * $co2_saved_per_kwh;
+                //monthly_gen_captive_kwh?
             $monthly_gen =[]; //an array containing data from Jan ~ Dec
             foreach($yr_breakdown_per_kwp as $month_breakdown){
                 $monthly_gen[] = $month_breakdown * $sys_cap;
             }
+                //yearly_cos2_saved_kg:
             $cum_co2_overtime = array_fill(0, $panel_lifetime + 1, 0);
-            $yearly_gen_overtime = array_fill(0, $panel_lifetime + 1, 0) ; //lifetime_gen_GBP in database?
+                //yearly_gen_captive_kWh:
+            $yearly_gen_overtime = array_fill(0, $panel_lifetime + 1, 0) ;
+                //lifetime_co2_saved_kg:
             $lifetime_co2_saved = $annual_co2_saved * $panel_lifetime_output_factor;
             $embedded_co2 = $embedded_co2_per_kwp * $sys_cap;
             //note: the cumulative co2 array starts with embedded co2 as its first element
             $cum_co2_overtime[0] = $embedded_co2;
-            $yearly_gen_overtime[0] = $annual_gen;
+            $yearly_gen_overtime[0] = $annual_gen_kwh;
 
             for($j = 1; $j <= $panel_lifetime; $j++){
                 $cum_co2_overtime[$j+1] = $cum_co2_overtime[$j] + $annual_co2_saved * $panel_degradation**($j-1);
-                $yearly_gen_overtime[$j+1] = $annual_gen * $panel_degradation**$j;
+                $yearly_gen_overtime[$j+1] = $annual_gen_kwh * $panel_degradation**$j;
             }
 
-            //stuff that will change with PRO parameter changes:
-            $annual_gen_val = $annual_gen * $electric_price * $captive_use + $annual_gen * $export_tariff *(1 - $captive_use);
+            //stuff that will change with PRO parameter changes;
+            //each variable is marked by their corresponding column name in the database on top
+
+            //1. annual_gen_GBP:
+            $annual_gen_val = $annual_gen_kwh * $electric_price * $captive_use + $annual_gen_kwh * $export_tariff *(1 - $captive_use);
+            //2. lifetime_gen_GBP:
             if($sys_cap > $residential_threshold){
                 $lifetime_value = $annual_gen_val * $panel_commercial_lifetime_value_factor;
             } else{
                 $lifetime_value = $annual_gen_val * $panel_domestic_lifetime_value_factor;
             }
-
+            //3. lifetime_return_on_investment_percent:
             $return_on_investment = $lifetime_value / $sys_cost;
+            //4. annualized_return_on_investment_percent:
             $annual_roi = (1 + $return_on_investment) ** (1 / $panel_lifetime) - 1;
             // ^^^ this line needs to be verified with Phil
 
-            //calculate breakeven period
+            //5. breakeven_years calculation
             $breakeven = -1;
             $v = 0;
-            $ag = $annual_gen;
+            $ag = $annual_gen_kwh;
             $ep = $electric_price; //came from either domestic tariff or commercial tariff
             $ex = $export_tariff;
 
@@ -166,20 +177,19 @@ if(!function_exists('pro_params')){
             if($breakeven == -1){
                 $breakeven = $panel_lifetime;
             }
+            //update all the changed params on a geopoint
+            $geopoint -> system_cost_GBP = $sys_cost;
+            $geopoint -> annual_gen_GBP = $annual_gen_val;
+            $geopoint -> lifetime_gen_GBP = $lifetime_value;
+            $geopoint -> lifetime_return_on_investment_percent = $return_on_investment;
+            $geopoint -> annualized_return_on_investment_percent = $annual_roi;
+            $geopoint -> breakeven_years = $breakeven;
 
         }
-        //return all the new values for the geopoint
-        $pro_data = [
-            'captive_use' => $captive_use,
-            'export_tariff'=>$export_tariff,
-            'domestic_tariff'=>$domestic_tariff,
-            'commercial_tariff'=>$commercial_tariff,
-            'cost_of_small_system'=>$cost_of_small_system,
-            'system_size_kwp' => $system_size_kwp
 
-        ];
+        $pro_geopoints = $geopoints;
 
-        return $pro_data;
+        return $pro_geopoints;
 
     }
 }

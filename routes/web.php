@@ -81,7 +81,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/test', 'ClusterController@findCluster');
 
-    Route::get('/pro/{account}/{region}', 'HomeController@region_pro')->name('home.region_pro');
+    Route::get('/pro/{account}/{region?}', 'HomeController@region_pro')->name('home.region_pro');
 
 });
 

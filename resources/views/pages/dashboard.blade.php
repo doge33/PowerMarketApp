@@ -272,18 +272,18 @@
         {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}}
     </div> --}}
     <div>
-        <form class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region]) }}" role="form">
+        <form class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
             @csrf
             <div class="row">
                 <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
-                    <input type="text" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder="{{ __('defaut: 0.8') }}" value="{{ old('captive-use') }}"autofocus>
+                    <input type="number" step="any" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder="{{ __('defaut: 0.8') }}" value="{{ old('captive-use') }}"autofocus>
                     @include('alerts.feedback', ['field' => 'captive_use'])
                 </div>
 
                 <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
-                    <input type="text" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.055') }}" value="{{ old('export-tariff') }}">
+                    <input type="number" step="any" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.055') }}" value="{{ old('export-tariff') }}">
 
                     @include('alerts.feedback', ['field' => 'export_tariff'])
                 </div>
@@ -291,14 +291,14 @@
 
                 <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
-                    <input type="text" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.146') }}" value="{{ old('domestic-tariff') }}">
+                    <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.146') }}" value="{{ old('domestic-tariff') }}">
 
                     @include('alerts.feedback', ['field' => 'domestic_tariff'])
                 </div>
 
                 <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-commercial-tariff">{{ __('Commercial Tariff') }}</label>
-                    <input type="text" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.12') }}" value="{{ old('commercial-tariff') }}">
+                    <input type="number" step="any" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.12') }}" value="{{ old('commercial-tariff') }}">
 
                     @include('alerts.feedback', ['field' => 'commercial_tariff'])
                 </div>
@@ -308,11 +308,11 @@
                     <div class="input-group" id="input-system-cost-per-kwp">
                         {{-- <div class="form-group{{ $errors->has('cost_of_small_system') ? ' has-danger' : '' }}"> --}}
                             {{-- <label class="form-control-label" for="input-cost-of-small-system">{{ __('cost_of_small_system') }}</label> --}}
-                            <input type="text" class="form-control" name="cost_of_small_system" id="input-cost-of-small-system" class="form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder="{{ __('default system cost: £6000') }}" value="{{ old('cost_of_small_system') }}">
+                            <input type="number" step="any" class="form-control" name="cost_of_small_system" id="input-cost-of-small-system" class="form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder="{{ __('default system cost: £6000') }}" value="{{ old('cost_of_small_system') }}">
                             @include('alerts.feedback', ['field' => 'cost_of_small_system'])
                         {{-- </div> --}}
                         {{-- <div class="form-group{{ $errors->has('system_size_kwp') ? ' has-danger' : '' }}"> --}}
-                            <input type="text" class="form-control" name="system_size_kwp" id="input-system-size-kwp" class="form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder="{{ __('default size in kw: 5') }}" value="{{ old('system_size_kwp') }}">
+                            <input type="number" step="any" class="form-control" name="system_size_kwp" id="input-system-size-kwp" class="form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder="{{ __('default size in kw: 5') }}" value="{{ old('system_size_kwp') }}">
                             @include('alerts.feedback', ['field' => 'system_size_kwp'])
                         {{-- </div> --}}
                     </div>

@@ -110,8 +110,6 @@ class HomeController extends Controller
         $region = $account->regions()->where('name', $region_name)->first();
         if ($region == null) return abort(404);
         $geopoints = Geopoint::where('region_id', $region->id)->get();
-
-        //dd($request);
         //-----------user input params-------------
         //----laravel blade input seems unable to pass input of type "number" as numeric values----
         //----so manually converting input fields from string to floats in controller, for now-----
@@ -122,14 +120,28 @@ class HomeController extends Controller
         $cost_of_small_system = $request->cost_of_small_system ? floatval($request->cost_of_small_system) : 6000;
         $system_size_kwp = $request->system_size_kwp ? floatval($request->system_size_kwp) : 5;
 
+        print_r ("first point's system_cost_GBP BEFORE helper: ", $geopoints[0]->system_cost_GBP);
         //echo("$captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $kW_price");
-        $pro_data = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints);
-        print_r($pro_data);
+        $pro_geopoints = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints);
+        print_r ("first point's system_cost_GBP AFTER helper: ", $geopoints[0]->system_cost_GBP);
+
+        $test_geopoint = $geopoints->where("id", 17499);
+        $prev_inputs = [
+            "captive_use" => $captive_use,
+            "export_tariff" => $export_tariff,
+            "domestic_tariff" => $domestic_tariff,
+            "commercial_tariff" => $commercial_tariff,
+            "cost_of_small_system" => $cost_of_small_system,
+            "system_size_kwp" => $system_size_kwp
+        ];
         return view('pages.dashboard-pro', [
-            'geodata' => $geopoints,
+            'geodata' => $pro_geopoints,
             'account' => $account_name,
             'region' => $region_name,
-            'pro_data' => $pro_data
+            "captive_use" => $captive_use,
+            "export_tariff" => $export_tariff,
+            "prev_inputs" => $prev_inputs,
+            "test_geopoint" => $test_geopoint
         ]);
 
     }
