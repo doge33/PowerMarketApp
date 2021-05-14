@@ -265,72 +265,67 @@
      <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-left: 1.2rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
      @endif
 
-     {{-- <div>
-        <button class="btn-lg"  style="right: 200px">
-            <a id='testUrl' href="/pro?param1=111&param2=222" target="_blank">Test Button for PRO</a>
-        </button>
-        {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}}
-    </div> --}}
-    <div>
-        <form class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
-            @csrf
-            <div class="row">
-                <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
-                    <input type="number" step="any" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder="{{ __('defaut: 0.8') }}" value="{{ old('captive-use') }}"autofocus>
-                    @include('alerts.feedback', ['field' => 'captive_use'])
-                </div>
+        <div>
+            @if(!empty($cluster))
+                <form class="mt-5" method="get" action="{{ route('home.cluster_pro', ['cluster' => $cluster]) }}" role="form">
+            @else
+                <form class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
+            @endif
+                @csrf
+                <div class="row">
+                    <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
+                        <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
+                        <input type="number" step="any" name="captive_use" id="input-captive-use" class="form-control{{ $errors->has('captive-use') ? ' is-invalid' : '' }}" placeholder='{{ __("defaut: 0.8") }}' value="{{ old('captive-use') }}"autofocus>
+                        @include('alerts.feedback', ['field' => 'captive_use'])
+                    </div>
 
-                <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
-                    <input type="number" step="any" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.055') }}" value="{{ old('export-tariff') }}">
+                    <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
+                        <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
+                        <input type="number" step="any" name="export_tariff" id="input-export-tariff" class="form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.055') }}" value="{{ old('export-tariff') }}">
 
-                    @include('alerts.feedback', ['field' => 'export_tariff'])
-                </div>
+                        @include('alerts.feedback', ['field' => 'export_tariff'])
+                    </div>
 
 
-                <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
-                    <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.146') }}" value="{{ old('domestic-tariff') }}">
+                    <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
+                        <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
+                        @if(!empty($account))
+                        <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder='default: {{ ($account == 'PPS') ? 0.095 : 0.146 }}' value="{{ old('domestic-tariff') }}">
+                        @else
+                        <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.146') }}"  value="{{ old('domestic-tariff') }}">
+                        @endif
+                        @include('alerts.feedback', ['field' => 'domestic_tariff'])
+                    </div>
 
-                    @include('alerts.feedback', ['field' => 'domestic_tariff'])
-                </div>
+                    <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
+                        <label class="form-control-label" for="input-commercial-tariff">{{ __('Commercial Tariff') }}</label>
+                        <input type="number" step="any" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.12') }}" value="{{ old('commercial-tariff') }}">
 
-                <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-commercial-tariff">{{ __('Commercial Tariff') }}</label>
-                    <input type="number" step="any" name="commercial_tariff" id="input-commercial-tariff" class="form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder="{{ __('default: 0.12') }}" value="{{ old('commercial-tariff') }}">
+                        @include('alerts.feedback', ['field' => 'commercial_tariff'])
+                    </div>
 
-                    @include('alerts.feedback', ['field' => 'commercial_tariff'])
-                </div>
+                    <div class="col-sm-4 form-group">
+                        <label class="form-control-label" for="input-system-cost-per-kwp">{{ __('system_cost_per_kwp (total cost / system size)') }}</label>
+                        <div class="input-group" id="input-system-cost-per-kwp">
+                            {{-- <div class="form-group{{ $errors->has('cost_of_small_system') ? ' has-danger' : '' }}"> --}}
+                                {{-- <label class="form-control-label" for="input-cost-of-small-system">{{ __('cost_of_small_system') }}</label> --}}
+                                <input type="number" step="any" class="form-control" name="cost_of_small_system" id="input-cost-of-small-system" class="form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder="{{ __('default system cost: £6000') }}" value="{{ old('cost_of_small_system') }}">
+                                @include('alerts.feedback', ['field' => 'cost_of_small_system'])
+                            {{-- </div> --}}
+                            {{-- <div class="form-group{{ $errors->has('system_size_kwp') ? ' has-danger' : '' }}"> --}}
+                                <input type="number" step="any" class="form-control" name="system_size_kwp" id="input-system-size-kwp" class="form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder="{{ __('default size in kw: 5') }}" value="{{ old('system_size_kwp') }}">
+                                @include('alerts.feedback', ['field' => 'system_size_kwp'])
+                            {{-- </div> --}}
+                        </div>
+                    </div>
 
-                <div class="col-sm-4 form-group">
-                    <label class="form-control-label" for="input-system-cost-per-kwp">{{ __('system_cost_per_kwp (total cost / system size)') }}</label>
-                    <div class="input-group" id="input-system-cost-per-kwp">
-                        {{-- <div class="form-group{{ $errors->has('cost_of_small_system') ? ' has-danger' : '' }}"> --}}
-                            {{-- <label class="form-control-label" for="input-cost-of-small-system">{{ __('cost_of_small_system') }}</label> --}}
-                            <input type="number" step="any" class="form-control" name="cost_of_small_system" id="input-cost-of-small-system" class="form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder="{{ __('default system cost: £6000') }}" value="{{ old('cost_of_small_system') }}">
-                            @include('alerts.feedback', ['field' => 'cost_of_small_system'])
-                        {{-- </div> --}}
-                        {{-- <div class="form-group{{ $errors->has('system_size_kwp') ? ' has-danger' : '' }}"> --}}
-                            <input type="number" step="any" class="form-control" name="system_size_kwp" id="input-system-size-kwp" class="form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder="{{ __('default size in kw: 5') }}" value="{{ old('system_size_kwp') }}">
-                            @include('alerts.feedback', ['field' => 'system_size_kwp'])
-                        {{-- </div> --}}
+                    <div class="col-sm-2 text-left">
+                        <button type="submit" class="btn btn-default my-4">Run</button>
                     </div>
                 </div>
 
-                <div class="col-sm-2 text-left">
-                    <button type="submit" class="btn btn-default my-4">Run</button>
-                </div>
-
-                {{-- <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Start"/>
-
-                    <input type="text" class="form-control" placeholder="End"/>
-                </div> --}}
-            </div>
-
-        </form>
-    </div>
+            </form>
+        </div>
 
     </div>
 
@@ -504,13 +499,16 @@
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
         ' !!}`;
+        // var testGeopoint = `{!! $test_geopoint ?? '
+        // ' !!}`;
+        // console.log(JSON.parse(testGeopoint));
 
         var bounds = new mapboxgl.LngLatBounds();
         var filterGroup = document.getElementById('filter-group'); //"breakeven nav bar tag"
         if (jsonString.length > 0) {
             dataArray = JSON.parse(jsonString);
 
-            console.log(dataArray)
+            console.log("in dashboard blade; geopoints: ", dataArray);
 
             dataArray.sort(function(a, b) {
                 return a['breakeven_years'] - b['breakeven_years'];

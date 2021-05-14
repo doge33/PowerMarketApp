@@ -264,15 +264,13 @@
      @if(isset($cluster))
      <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-left: 1.2rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
      @endif
-
-     {{-- <div>
-        <button class="btn-lg"  style="right: 200px">
-            <a id='testUrl' href="/pro?param1=111&param2=222" target="_blank">Test Button for PRO</a>
-        </button>
-        {{ route(home.region_pro), ['param1'=>111, 'param2'=>222]}}
-    </div> --}}
     <div>
-        <form class="mt-5" id="pro-form" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region]) }}" role="form">
+        @if(!empty($cluster))
+            <form class="pro-form" class="mt-5" method="get" action="{{ route('home.cluster_pro', ['cluster' => $cluster]) }}" role="form">
+        @else
+            <form class="pro-form" class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
+        @endif
+
             @csrf
             <div class="row">
                 <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
@@ -291,8 +289,11 @@
 
                 <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
                     <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
-                    <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder = "0.146" value="{{ $prev_inputs['domestic_tariff'] }}">
-
+                    @if(!empty($account))
+                        <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder='{{ ($account == 'PPS') ? 0.095 : 0.146 }}' value="{{ $prev_inputs['domestic_tariff'] }}">
+                    @else
+                        <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="0.146"  value="{{ $prev_inputs['domestic_tariff'] }}">
+                    @endif
                     @include('alerts.feedback', ['field' => 'domestic_tariff'])
                 </div>
 
@@ -502,16 +503,16 @@
     function renderMap() {
         var jsonString = `{!! $geodata ?? '
         ' !!}`;
-        var testGeopoint = `{!! $test_geopoint ?? '
-        ' !!}`;
-        console.log(JSON.parse(testGeopoint));
+        // var testGeopoint = `{!! $test_geopoint ?? '
+        // ' !!}`;
+        // console.log(JSON.parse(testGeopoint));
 
         var bounds = new mapboxgl.LngLatBounds();
         var filterGroup = document.getElementById('filter-group'); //"breakeven nav bar tag"
         if (jsonString.length > 0) {
             dataArray = JSON.parse(jsonString);
 
-            console.log(dataArray)
+            console.log("in dashboard-pro blade; geopoints: ", dataArray);
 
             dataArray.sort(function(a, b) {
                 return a['breakeven_years'] - b['breakeven_years'];
@@ -840,22 +841,32 @@
     $(document).ready(function() {
         renderMap();
         //console.log(JSON.parse(jsonString2));
-
+        //check if account name is PPS:
+        var default_domestic = 0.146;
+        var input_account = $("#input-domestic-tariff").attr("data-account");
+        console.log("default_domestic:", default_domestic);
+        if (input_account=== 'PPS'){
+            default_domestic = 0.095;
+        }
+        console.log($("#input-domestic-tariff").val());
         //default form values:
         const pro_inputs = {
             captive_use: 0.8,
             export_tariff: 0.055,
-            domestic_tariff: 0.146,
+            domestic_tariff: default_domestic,
             commercial_tariff: 0.12,
             cost_of_small_system: 6000,
             system_size_kwp: 5
         }
+        console.log(pro_inputs);
         //attach event handler to each of the pro input fields
-        $("#pro-form").find(".pro-input").each(function(input){
+        $(".pro-form").find(".pro-input").each(function(input){
             //->input gives the index number;  $this gives the actual element
             //reset pro-form values to original:
             const inputName = $(this).attr("name")
+
             $("#reset-btn").click((evt) => {
+
                 $(this).val(pro_inputs[inputName]);
             })
         })
