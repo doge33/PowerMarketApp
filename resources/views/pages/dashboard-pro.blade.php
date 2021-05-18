@@ -845,7 +845,7 @@
         var default_domestic = 0.146;
         var input_account = $("#input-domestic-tariff").attr("data-account");
         console.log("default_domestic:", default_domestic);
-        if (input_account=== 'PPS'){
+        if (input_account=== 'Gloucestershire | PPS'){
             default_domestic = 0.095;
         }
         console.log($("#input-domestic-tariff").val());
