@@ -6,9 +6,9 @@ use App\Region;
 use App\Account;
 use App\Geopoint;
 use App\Cluster;
-use Illuminate\Support\Facades\DB;
 use App\Helpers\pro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -111,12 +111,11 @@ class HomeController extends Controller
     }
 
     public function region_pro(Request $request){
-        //dd($request);
         $account_name = $request->account;
         $account = Account::where('name', $account_name)->first();
         $region_name = $request->region;
-        if($region_name){
-            //region may or may not be passed through the request:
+        //region may or may not be passed through the request:
+        if ($region_name) {
             $region = $account->regions()->where('name', $region_name)->first();
             $geopoints = Geopoint::where('region_id', $region->id)->get();
             //dd("with region name", $geopoints);
@@ -127,18 +126,16 @@ class HomeController extends Controller
         };
         //dd($geopoints);
         if($geopoints == null) return abort(404);
-
         //-----------user input params-------------
         //----laravel blade input seems unable to pass input of type "number" as numeric values----
         //----so manually converting input fields from string to floats in controller, for now-----
         $captive_use = $request->captive_use ?  floatval($request->captive_use) : 0.8;
         $export_tariff = $request->export_tariff ? floatval($request->export_tariff) : 0.055;
         //$domestic_tariff may have a different value if account is "PPS"
-
         if($request->domestic_tariff){
             $domestic_tariff = floatval($request->domestic_tariff);
         } else{
-            if($account_name == "PPS"){
+            if($account_name == "Gloucestershire | PPS"){
                 $domestic_tariff = 0.095;
             }else{
                 $domestic_tariff = 0.146;
@@ -167,13 +164,12 @@ class HomeController extends Controller
             'geodata' => $pro_geopoints,
             'account' => $account_name,
             'region' => $region_name,
-            'cluster' => '',
+            'cluster' => "",
             "captive_use" => $captive_use,
             "export_tariff" => $export_tariff,
             "prev_inputs" => $prev_inputs,
             "test_geopoint" => $test_geopoint
         ]);
-
     }
 
     public function cluster_pro(Request $request){
@@ -181,7 +177,6 @@ class HomeController extends Controller
         $user = auth()->user();
         $cluster_name = $request->cluster;
         $cluster = Cluster::where('user_id', $user->id)->where('name', $cluster_name)->first();
-
         //temporary fix until cluster-user relationship updated properly
         if ($cluster == null){
             $cluster = $user->clusters->where('name', $cluster_name)->first();
@@ -191,20 +186,17 @@ class HomeController extends Controller
         }
         $geopoints = $cluster->geopoints;
         if($geopoints == null) return abort(404);
-
         //-----------user input params-------------
         //----laravel blade input seems unable to pass input of type "number" as numeric values----
         //----so manually converting input fields from string to floats in controller, for now-----
         $captive_use = $request->captive_use ?  floatval($request->captive_use) : 0.8;
         $export_tariff = $request->export_tariff ? floatval($request->export_tariff) : 0.055;
         //$domestic_tariff may have a different value if account is "PPS"
-
         if($request->domestic_tariff){
             $domestic_tariff = floatval($request->domestic_tariff);
         } else{
             //to-do: how to use default 0.095 for PPS accounts
            $domestic_tariff = 0.146;
-
         }
         //dd($domestic_tariff);
         $commercial_tariff = $request->commercial_tariff ? floatval($request->commercial_tariff) : 0.12;
@@ -212,11 +204,8 @@ class HomeController extends Controller
         $system_size_kwp = $request->system_size_kwp ? floatval($request->system_size_kwp) : 5;
 
         $test_geopoint = $geopoints->where("id", 19483);
-
         $pro_geopoints = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints);
-
         //dd($geopoints->where('id', 17499));
-
         $prev_inputs = [
             "captive_use" => $captive_use,
             "export_tariff" => $export_tariff,
@@ -235,7 +224,6 @@ class HomeController extends Controller
             "prev_inputs" => $prev_inputs,
             "test_geopoint" => $test_geopoint
         ]);
-
     }
 
     public function cluster($cluster_name) {

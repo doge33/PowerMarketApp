@@ -383,8 +383,8 @@
     console.log("m-gen-cap: ", monthly_gen_captive, "m-gen-exp: ", monthly_gen_exports, "y-gen-cap: ", yearly_gen_captive, 'yearly_gen_exports: ', yearly_gen_exports, "saved_co2: ", saved_co2, "monthly_savings: ", monthly_savings, "monthly_exports: ", monthly_exports);
 
     function renderTable() {
-        var jsonString = '{!! $geodata ?? '
-        ' !!}';
+        var jsonString = `{!! $geodata ?? '
+        ' !!}`;
         if (jsonString.length > 0) {
             //var jsonData = JSON.parse(jsonString);
             var dataArray = JSON.parse(jsonString);

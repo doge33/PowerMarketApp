@@ -264,78 +264,68 @@
      @if(isset($cluster))
      <a href="/reporting/project/{{ $cluster}}" target="_blank"><i class="ni ni-single-copy-04 map-icon-black report-icon card-icons" style="font-size: 1.6rem; color: #191B2E; padding-left: 1.2rem;" data-toggle="tooltip" data-placement="top" title="View Report"></i></a>
      @endif
-    <div>
-        @if(!empty($cluster))
+
+
+     <div>
+       @if(!empty($cluster))
             <form class="pro-form mt-5" method="get" action="{{ route('home.cluster_pro', ['cluster' => $cluster]) }}" role="form">
         @else
             <form class="pro-form mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
         @endif
+         @csrf
+         <div class="row">
+           <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
+             <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
+             <input type="number" step="any" name="captive_use" id="input-captive-use" class="pro-input form-control{{ $errors->has('captive_use') ? ' is-invalid' : '' }}" placeholder="0.8" value="{{ $prev_inputs['captive_use'] }}">
+             @include('alerts.feedback', ['field' => 'captive_use'])
+           </div>
+           <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
+             <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
+             <input type="number" step="any" name="export_tariff" id="input-export-tariff" class="pro-input form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder = "0.055" value="{{ $prev_inputs['export_tariff'] }}">
+             @include('alerts.feedback', ['field' => 'export_tariff'])
+           </div>
+           <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
+             <label class="form-control-label" for="input-domestic-tariff">{{ __('Residential Tariff') }}</label>
+             @if(!empty($account))
+                  <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder='{{ ($account == 'Gloucestershire | PPS') ? 0.095 : 0.146 }}' value="{{ $prev_inputs['domestic_tariff'] }}">
+              @else
+                  <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="0.146"  value="{{ $prev_inputs['domestic_tariff'] }}">
+              @endif
+             @include('alerts.feedback', ['field' => 'domestic_tariff'])
+           </div>
+           <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
+             <label class="form-control-label" for="input-commercial-tariff">{{ __('Non-Residential Tariff') }}</label>
+             <input type="number" step="any" name="commercial_tariff" id="input-commercial-tariff" class="pro-input form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder = "0.12" value="{{ $prev_inputs['commercial_tariff'] }}">
+             @include('alerts.feedback', ['field' => 'commercial_tariff'])
+           </div>
+           <div class="col-sm-4 form-group">
+             <label class="form-control-label" for="input-system-cost-per-kwp">{{ __('System Cost per kWp (total cost / system size)') }}</label>
+             <div class="input-group" id="input-system-cost-per-kwp">
+               {{-- <div class="form-group{{ $errors->has('cost_of_small_system') ? ' has-danger' : '' }}"> --}}
+                 {{-- <label class="form-control-label" for="input-cost-of-small-system">{{ __('cost_of_small_system') }}</label> --}}
+                 <input type="number" step="any" name="cost_of_small_system" id="input-cost-of-small-system" class="pro-input form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder = "6000" value="{{ $prev_inputs['cost_of_small_system'] }}">
+                 @include('alerts.feedback', ['field' => 'cost_of_small_system'])
+                 {{-- </div> --}}
+                 {{-- <div class="form-group{{ $errors->has('system_size_kwp') ? ' has-danger' : '' }}"> --}}
+                   <input type="number" step="any" name="system_size_kwp" id="input-system-size-kwp" class="pro-input form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder = "5" value="{{ $prev_inputs['system_size_kwp'] }}">
+                   @include('alerts.feedback', ['field' => 'system_size_kwp'])
+                   {{-- </div> --}}
+                 </div>
+               </div>
+               <div class="col-sm-2 text-left">
+                 <button type="submit" class="btn btn-default my-4">Run</button>
+               </div>
+               <div class="col-sm-2 text-left">
+                 <button id="reset-btn" class="btn btn-default my-4">Reset</button>
+               </div>
+             </div>
+           </form>
+         </div>
 
-            @csrf
-            <div class="row">
-                <div class="col-sm-2 form-group{{ $errors->has('captive-use') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-captive-use">{{ __('Captive Use') }}</label>
-                    <input type="number" step="any" name="captive_use" id="input-captive-use" class="pro-input form-control{{ $errors->has('captive_use') ? ' is-invalid' : '' }}" placeholder="0.8" value="{{ $prev_inputs['captive_use'] }}">
-                    @include('alerts.feedback', ['field' => 'captive_use'])
-                </div>
-
-                <div class="col-sm-2 form-group{{ $errors->has('export-tariff') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-export-tariff">{{ __('Export Tariff') }}</label>
-                    <input type="number" step="any" name="export_tariff" id="input-export-tariff" class="pro-input form-control{{ $errors->has('export-tariff') ? ' is-invalid' : '' }}" placeholder = "0.055" value="{{ $prev_inputs['export_tariff'] }}">
-
-                    @include('alerts.feedback', ['field' => 'export_tariff'])
-                </div>
-
-
-                <div class="col-sm-2 form-group{{ $errors->has('domestic-tariff') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-domestic-tariff">{{ __('Domestic Tariff') }}</label>
-                    @if(!empty($account))
-                        <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder='{{ ($account == 'PPS') ? 0.095 : 0.146 }}' value="{{ $prev_inputs['domestic_tariff'] }}">
-                    @else
-                        <input type="number" step="any" name="domestic_tariff" id="input-domestic-tariff" class="pro-input form-control{{ $errors->has('domestic-tariff') ? ' is-invalid' : '' }}" placeholder="0.146"  value="{{ $prev_inputs['domestic_tariff'] }}">
-                    @endif
-                    @include('alerts.feedback', ['field' => 'domestic_tariff'])
-                </div>
-
-                <div class="col-sm-2 form-group{{ $errors->has('commercial-tariff') ? ' has-danger' : '' }}">
-                    <label class="form-control-label" for="input-commercial-tariff">{{ __('Commercial Tariff') }}</label>
-                    <input type="number" step="any" name="commercial_tariff" id="input-commercial-tariff" class="pro-input form-control{{ $errors->has('commercial-tariff') ? ' is-invalid' : '' }}" placeholder = "0.12" value="{{ $prev_inputs['commercial_tariff'] }}">
-
-                    @include('alerts.feedback', ['field' => 'commercial_tariff'])
-                </div>
-
-                <div class="col-sm-4 form-group">
-                    <label class="form-control-label" for="input-system-cost-per-kwp">{{ __('system_cost_per_kwp (total cost / system size)') }}</label>
-
-                    <div class="input-group" id="input-system-cost-per-kwp">
-                        {{-- <div class="form-group{{ $errors->has('cost_of_small_system') ? ' has-danger' : '' }}"> --}}
-                            {{-- <label class="form-control-label" for="input-cost-of-small-system">{{ __('cost_of_small_system') }}</label> --}}
-                            <input type="number" step="any" name="cost_of_small_system" id="input-cost-of-small-system" class="pro-input form-control{{ $errors->has('cost_of_small_system') ? ' is-invalid' : '' }}" placeholder = "6000" value="{{ $prev_inputs['cost_of_small_system'] }}">
-                            @include('alerts.feedback', ['field' => 'cost_of_small_system'])
-                        {{-- </div> --}}
-                        {{-- <div class="form-group{{ $errors->has('system_size_kwp') ? ' has-danger' : '' }}"> --}}
-                            <input type="number" step="any" name="system_size_kwp" id="input-system-size-kwp" class="pro-input form-control{{ $errors->has('system_size_kwp') ? ' is-invalid' : '' }}" placeholder = "5" value="{{ $prev_inputs['system_size_kwp'] }}">
-                            @include('alerts.feedback', ['field' => 'system_size_kwp'])
-                        {{-- </div> --}}
-                    </div>
-                </div>
-                <div class="col-sm-2 text-left">
-                    <button type="submit" class="btn btn-default my-4">Run</button>
-                </div>
-                <div class="col-sm-2 text-left">
-                    <button id="reset-btn" class="btn btn-default my-4">Reset</button>
-                </div>
-            </div>
-
-        </form>
 
     </div>
-
-    </div>
-
-
-
     <div class="row">
+
       <div class="col text-left" style="margin-bottom: 10px;">
         <span class="text-nowrap" style="font-size: .75rem; margin-right: .5rem;">Show active solar sites &nbsp;</span>
         <label class="custom-toggle checkbox-inline btn-sm mr-0" style="">
@@ -381,10 +371,6 @@
             </div>
         </div>
     </div>
-
-
-
-
     <!-- Disclaimer -->
     <br>
     <h4>DISCLAIMER</h4>
@@ -394,7 +380,6 @@
     <button type="button" class="btn btn-sm btn-neutral mr-0" aria-haspopup="true" aria-expanded="false">
         <a href="{{ route('page.faq') }}" target="_blank">FAQ</a>
     </button>
-
     <!-- <h5><a href="{{ route('page.faq') }}" target="_blank">FAQ</a></h5> -->
     <!-- Footer -->
     @include('layouts.footers.auth')
@@ -407,8 +392,7 @@
 <link rel="stylesheet" href="{{ asset('argon') }}/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css">
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css'>
 <link rel="stylesheet" href="{{ asset('css') }}/dashboard.css">
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css' type='text/css' />
-
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.css" type="text/css" />
 @endpush
 @push('js')
 <script src="{{ asset('argon') }}/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -422,9 +406,8 @@
 <script src="{{ asset('js') }}/mapbox-gl.js"></script>
 <script src="{{ asset('argon') }}/vendor/list.js/dist/list.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js'></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.0/mapbox-gl-draw.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
-
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoicG93ZXJtYXJrZXQiLCJhIjoiY2s3b3ZncDJ0MDkwZTNlbWtoYWY2MTZ6ZCJ9.Ywq8CoJ8OHXlQ4voDr4zow';
     var map = new mapboxgl.Map({
@@ -442,13 +425,10 @@
                 trash: true
             }
         });
-
     map.addControl(draw, 'top-left');
     // map.on('draw.create', this.updateArea);
     // map.on('draw.delete', this.updateArea);
     // map.on('draw.update', this.updateArea);
-
-
 
     var clicked_geopoint_id, clicked_layer, clicked_popup;
     var layerPrefix = 'layer-years-';
@@ -517,8 +497,6 @@
             dataArray.sort(function(a, b) {
                 return a['breakeven_years'] - b['breakeven_years'];
             });
-
-        // for all points not with roofclass of "s"
             var potential = 0;
             var savings = 0;
             var co2 = 0;
@@ -605,10 +583,9 @@
             selectedCount = totalCount;
             $('#total-count').text(numeral(dataArray.length).format('0,0'));
             $('#selected-count').text(numeral(dataArray.length).format('0,0'));
-
+        }
         map.on('load', function() {
             map.loadImage('../../svg/map-marker-alt-solid.png', function(error, image) {
-                // the marker itself is colorless
                 if (error) throw error;
                 map.addImage('marker-icon', image, {
                     'sdf': true
@@ -623,8 +600,6 @@
                     clusterMaxZoom: 12, // Max zoom to cluster points on
                     clusterRadius: 50
                 });
-
-                var counter = 0;
                 features.forEach(function(feature) {
                     var symbol = feature.properties['years'];
                     var layerID = layerPrefix + symbol;
@@ -670,7 +645,6 @@
                         label.textContent = symbol + ' Years';
                         filterGroup.appendChild(label);
 
-
                         // When the checkbox changes, update the visibility of the layer.
                         input.addEventListener('change', function(e) {
                             map.setLayoutProperty(
@@ -699,9 +673,8 @@
                             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                             }
-                            var popup
-                            if(feature.properties.roofclass !== "s"){
-                                popup = new mapboxgl.Popup()
+
+                            var popup = new mapboxgl.Popup()
                                 .setLngLat(coordinates)
                                 .setHTML(description)
                                 .setMaxWidth("500px")
@@ -733,12 +706,8 @@
                         map.on('mouseleave', layerID, function() {
                             map.getCanvas().style.cursor = '';
                         });
-
-
                     }
                 });
-
-
                 map.addLayer({
                     id: 'clusters',
                     type: 'circle',
@@ -782,12 +751,13 @@
                         'text-size': 12
                     }
                 });
+
                 var layers = map.getStyle().layers;
+
                 var labelLayerId;
                 for (var i = 0; i < layers.length; i++) {
                     if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
                         labelLayerId = layers[i].id;
-
                         break;
                     }
                 }
@@ -819,7 +789,6 @@
             });
         });
       }
-    }
 
 
 
@@ -836,19 +805,16 @@
             }
         })
     }
-
-
     $(document).ready(function() {
         renderMap();
-        //console.log(JSON.parse(jsonString2));
+
         //check if account name is PPS:
         var default_domestic = 0.146;
         var input_account = $("#input-domestic-tariff").attr("data-account");
-        console.log("default_domestic:", default_domestic);
-        if (input_account=== 'PPS'){
+        console.log(input_account);
+        if (input_account=== 'Gloucestershire | PPS'){
             default_domestic = 0.095;
         }
-        console.log($("#input-domestic-tariff").val());
         //default form values:
         const pro_inputs = {
             captive_use: 0.8,
@@ -858,18 +824,16 @@
             cost_of_small_system: 6000,
             system_size_kwp: 5
         }
-        console.log(pro_inputs);
         //attach event handler to each of the pro input fields
         $(".pro-form").find(".pro-input").each(function(input){
             //->input gives the index number;  $this gives the actual element
             //reset pro-form values to original:
             const inputName = $(this).attr("name")
-
             $("#reset-btn").click((evt) => {
-
                 $(this).val(pro_inputs[inputName]);
             })
         })
+
         $('[data-toggle="tooltip"]').tooltip();
         getClusters();
         $('#map').on('click', '#add_cluster', function(event) {
@@ -984,13 +948,6 @@
                 $('#next-response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(3000).fadeOut();
             });
         });
-        //$('#testUrl').on('click', function(){
-            // $('#testUrl').attr('href', function(i, val){
-
-            //     return val + '?param1=bear&param2=rabbit';
-            // })
-            // console.log($('#testUrl'));
-        //})
     });
 </script>
 <style>

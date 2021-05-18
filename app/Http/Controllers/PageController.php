@@ -104,7 +104,7 @@ class PageController extends Controller
         $lon = $geopoint->latLon->getLng();
         $key = config('services.google_maps.key');
         try {
-            $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&key=' . $key . '&result_type=street_address');
+            $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&key=' . $key);
             $address = $response['results'][0]['formatted_address'];
         } catch (\Exception $e) {
             $address = null;
@@ -163,7 +163,7 @@ class PageController extends Controller
         $lon = $geopoint->latLon->getLng();
         $key = config('services.google_maps.key');
         try {
-            $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&key=' . $key . '&result_type=street_address');
+            $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&key=' . $key);
             $address = $response['results'][0]['formatted_address'];
         } catch (\Exception $e) {
             $address = null;

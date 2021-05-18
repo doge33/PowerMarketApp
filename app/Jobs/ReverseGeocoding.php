@@ -41,7 +41,7 @@ class ReverseGeocoding implements ShouldQueue
             $lat = $geopoint->latLon->getLat();
             $lon = $geopoint->latLon->getLng();
             try {
-                $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&key=' . $key . '&result_type=street_address');
+                $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $lat . ',' . $lon . '&key=' . $key);
                 $address = $response['results'][0]['formatted_address'];
                 $cases[] = "WHEN {$geopoint->id} then ?";
                 $values[] = $address;
