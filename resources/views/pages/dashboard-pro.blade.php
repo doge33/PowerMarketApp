@@ -682,7 +682,7 @@
                                     clicked_popup = e.target
                                 })
                                 .addTo(map);
-                            }
+
                             //else {
                             //     popup = new mapboxgl.Popup()
                             //     .setLngLat(coordinates)
