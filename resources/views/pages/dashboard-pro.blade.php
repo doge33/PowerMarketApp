@@ -266,9 +266,9 @@
      @endif
     <div>
         @if(!empty($cluster))
-            <form class="pro-form" class="mt-5" method="get" action="{{ route('home.cluster_pro', ['cluster' => $cluster]) }}" role="form">
+            <form class="pro-form mt-5" method="get" action="{{ route('home.cluster_pro', ['cluster' => $cluster]) }}" role="form">
         @else
-            <form class="pro-form" class="mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
+            <form class="pro-form mt-5" method="get" action="{{ route('home.region_pro', ['account' => $account, 'region' => $region ?? '']) }}" role="form">
         @endif
 
             @csrf
