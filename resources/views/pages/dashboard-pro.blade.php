@@ -699,27 +699,15 @@
                             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                             }
-                            var popup
-                            if(feature.properties.roofclass !== "s"){
-                                popup = new mapboxgl.Popup()
+                            var popup = new mapboxgl.Popup()
                                 .setLngLat(coordinates)
-                                .setHTML(description)
+                                .setHTML(`<div>existing Solar</div>`)
                                 .setMaxWidth("500px")
                                 .on('open', function(e) {
                                     clicked_popup = e.target
                                 })
                                 .addTo(map);
-                            }
-                            //else {
-                            //     popup = new mapboxgl.Popup()
-                            //     .setLngLat(coordinates)
-                            //     .setHTML(`<div>existing Solar</div>`)
-                            //     .setMaxWidth("500px")
-                            //     .on('open', function(e) {
-                            //         clicked_popup = e.target
-                            //     })
-                            //     .addTo(map);
-                            // }
+
 
                             $('[data-toggle="tooltip"]').tooltip();
                             e.originalEvent.cancelBubble = true;
