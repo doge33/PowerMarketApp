@@ -14,12 +14,12 @@ class UpdateClusterGeopointTable extends Migration
     public function up()
     {
         Schema::table('cluster_geopoint', function (Blueprint $table) {
-            $table->decimal('captive_use')->default(0.8);
-            $table->decimal('export_tariff')->default(5.5);
-            $table->decimal('domestic_tariff')->default(14.36);
-            $table->decimal('commercial_tariff')->default(12.0);
-
-
+            $table->float('captive_use', 5, 4)->default(0.8);
+            $table->float('export_tariff', 5, 4)->default(0.055);
+            $table->float('domestic_tariff', 5, 4)->default(0.146);
+            $table->float('commercial_tariff', 5, 4)->default(0.12);
+            $table->decimal('system_cost')->default(6000);
+            $table->decimal('system_size')->default(5);
         });
     }
 
@@ -30,6 +30,8 @@ class UpdateClusterGeopointTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('cluster_geopoint', function(Blueprint $table){
+            $table->dropColumn(['captive_use', 'export_tariff', 'domestic_tariff', 'commercial_tariff', 'system_cost', 'system_size']);
+        });
     }
 }

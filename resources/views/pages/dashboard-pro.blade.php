@@ -528,6 +528,7 @@
                             </div>
                             <div class="card-body" style="padding-top:0.5rem;padding-bottom:0.5rem; padding-left:1rem; padding-right:1rem;">
                                 <p class="card-text">
+                                <strong>geopoint ID:</strong> ${dataArray[key].id}</br>
                                 <strong>Break-even:</strong> ${dataArray[key].breakeven_years} years</br>
                                 <strong>System Size:</strong> ${numeral(dataArray[key].system_capacity_kWp).format('0,0.0a')} kWp<br/>
                                 <strong>System Cost:</strong> £ ${numeral(dataArray[key].system_cost_GBP).format('0,0.0a')}<br/>
@@ -811,7 +812,6 @@
         //check if account name is PPS:
         var default_domestic = 0.146;
         var input_account = $("#input-domestic-tariff").attr("data-account");
-        console.log(input_account);
         if (input_account=== 'Gloucestershire | PPS'){
             default_domestic = 0.095;
         }
@@ -892,10 +892,21 @@
                   }
                 }
             }
+            //grab the current input values for pro params:
+            var proParams = {
+                    captive_use: $("#input-captive-use").val(),
+                    export_tariff: $("#input-export-tariff").val(),
+                    domestic_tariff: $("#input-domestic-tariff").val(),
+                    commercial_tariff: $("#input-commercial-tariff").val(),
+                    system_cost: $("#input-cost-of-small-system").val(),
+                    system_size: $("#input-system-size-kwp").val()
+                }
+            console.log(proParams);
             var formData = {
                 'name': $('input[name=name]').val(),
                 '_token': $('input[name=_token]').val(),
-                'geopoints': JSON.stringify(visiblePoints)
+                'geopoints': JSON.stringify(visiblePoints),
+                'pro_params': JSON.stringify(proParams)
             };
             $.ajax({
                 type: 'POST',

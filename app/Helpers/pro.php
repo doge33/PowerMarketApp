@@ -87,7 +87,7 @@ if(!function_exists('pro_params')){
                 $c= 500 * ($sys_cost_5kw / 1200);
             }
             $sys_cost = $c * $sys_cap;
-            if($sys_cap < 50){
+            if($sys_cap < 10){ //changed from <50 to <10
                 $electric_price = $domestic_tariff; //default value is set in controller method
             } else {
                 $electric_price = $commercial_tariff;  //default value is set in controller method

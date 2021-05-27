@@ -28,6 +28,10 @@ class ClusterController extends Controller
             'geopoints' => 'required|json',
         ]);
         $geopoints = json_decode($request->geopoints);
+        $pro_params = json_decode($request->pro_params);
+        //dd('pros:', $pro_params->captive_use);
+        // print_r($geopoints);
+
         $user = $request->user();
         if (Cluster::where('user_id', $user->id)->where('name', $request->name)->exists()) {
             return response()->json([
@@ -43,7 +47,16 @@ class ClusterController extends Controller
         ]);
         $cluster->users()->attach($user->id, ['is_author' => 1, 'is_editor' => 1]);
 
-        $cluster->geopoints()->attach($geopoints);
+        //$cluster->geopoints()->attach($geopoints);
+        $cluster->geopoints()->attach($geopoints, [
+                'captive_use'=>$pro_params->captive_use,
+                'export_tariff' => $pro_params->export_tariff,
+                'domestic_tariff' => $pro_params->domestic_tariff,
+                'commercial_tariff' => $pro_params->commercial_tariff,
+                'system_cost' => $pro_params->system_cost,
+                'system_size' => $pro_params->system_size
+            ]);
+
         $cluster->setLatLon();
         return response()->json([
             'message' => 'The project has been successfully created',
