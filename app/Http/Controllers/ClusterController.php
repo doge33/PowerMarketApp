@@ -28,7 +28,10 @@ class ClusterController extends Controller
             'geopoints' => 'required|json',
         ]);
         $geopoints = json_decode($request->geopoints);
-        $pro_params = json_decode($request->pro_params);
+       // dd($geopoints);
+        if($request->pro_params){
+            $pro_params = json_decode($request->pro_params);
+        };
         //dd('pros:', $pro_params->captive_use);
         // print_r($geopoints);
 
@@ -48,14 +51,24 @@ class ClusterController extends Controller
         $cluster->users()->attach($user->id, ['is_author' => 1, 'is_editor' => 1]);
 
         //$cluster->geopoints()->attach($geopoints);
-        $cluster->geopoints()->attach($geopoints, [
-                'captive_use'=>$pro_params->captive_use,
-                'export_tariff' => $pro_params->export_tariff,
-                'domestic_tariff' => $pro_params->domestic_tariff,
-                'commercial_tariff' => $pro_params->commercial_tariff,
-                'system_cost' => $pro_params->system_cost,
-                'system_size' => $pro_params->system_size
+        //create data array for each geopoint and insert to db using a single query:
+        $geopoint_data = [];
+        foreach($geopoints as $geopoint){
+            // the hardcoded values account for when user create cluster directly from the non-pro dashboard
+            // (meaning no value in each input field)
+            array_push($geopoint_data, [
+                'cluster_id'=>$cluster->id,
+                'geopoint_id' => $geopoint,
+                'captive_use'=>$pro_params->captive_use ?? 0.8,
+                'export_tariff' => $pro_params->export_tariff ?? 0.055,
+                'domestic_tariff' => $pro_params->domestic_tariff ?? 0.146,
+                'commercial_tariff' => $pro_params->commercial_tariff ?? 0.12,
+                'system_cost' => $pro_params->system_cost ?? 6000,
+                'system_size' => $pro_params->system_size ?? 5
             ]);
+        };
+
+        DB::table('cluster_geopoint')->insert($geopoint_data);
 
         $cluster->setLatLon();
         return response()->json([
