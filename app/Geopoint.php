@@ -51,4 +51,15 @@ class Geopoint extends Model
         'yearly_gen_export_kWh' => 'array',
         'yearly_gen_captive_kWh' => 'array'
     ];
+    public function clusters()
+    {
+        return $this->belongsToMany(Cluster::class)->withPivot([
+                'captive_use',
+                'export_tariff',
+                'domestic_tariff',
+                'commercial_tariff',
+                'system_cost',
+                'system_size'
+            ]);
+    }
 }

@@ -27,7 +27,14 @@ class Cluster extends Model
 
     public function geopoints()
     {
-        return $this->belongsToMany(Geopoint::class);
+        return $this->belongsToMany(Geopoint::class)->withPivot([
+            'captive_use',
+            'export_tariff',
+            'domestic_tariff',
+            'commercial_tariff',
+            'system_cost',
+            'system_size'
+        ]);;
     }
 
     public function setLatLon()

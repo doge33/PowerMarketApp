@@ -171,6 +171,8 @@ if(!function_exists('pro_params')){
             $geopoint -> breakeven_years = $breakeven;
         }
         $pro_geopoints = $geopoints;
+        //dd($pro_geopoints);
         return $pro_geopoints;
+
     }
 }

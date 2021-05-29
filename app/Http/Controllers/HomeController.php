@@ -205,7 +205,7 @@ class HomeController extends Controller
 
         $test_geopoint = $geopoints->where("id", 19483);
         $pro_geopoints = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints);
-        //dd($geopoints->where('id', 17499));
+
         $prev_inputs = [
             "captive_use" => $captive_use,
             "export_tariff" => $export_tariff,
@@ -214,6 +214,7 @@ class HomeController extends Controller
             "cost_of_small_system" => $cost_of_small_system,
             "system_size_kwp" => $system_size_kwp
         ];
+        //dd($prev_inputs);
         return view('pages.dashboard-pro', [
             'geodata' => $pro_geopoints,
             'cluster' => $cluster->name,
@@ -240,10 +241,25 @@ class HomeController extends Controller
         }
 
         $geopoints = $cluster->geopoints;
+        $pro_geopoints = [];
+        //call pro calc to calculate each geopoint based on the custom params
+        foreach($geopoints as $geopoint){
+            $captive_use = $geopoint->pivot->captive_use;
+            $export_tariff = $geopoint->pivot->export_tariff;
+            $domestic_tariff = $geopoint->pivot->domestic_tariff;
+            $commercial_tariff = $geopoint -> pivot -> commercial_tariff;
+            $cost_of_small_system = $geopoint->pivot -> system_cost;
+            $system_size_kwp = $geopoint->pivot->system_size;
+            $pro_geopoint = pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, [$geopoint]);
+            //dd($pro_geopoint);
+            //dd(array_values($pro_geopoint)[0]);
+            array_push($pro_geopoints, array_values($pro_geopoint)[0]);
+        };
+        //dd($pro_geopoints);
 
         return view('pages.dashboard', [
-        'geodata' => $geopoints,
-        'cluster' => $cluster->name,
+            'geodata' => collect($pro_geopoints),
+            'cluster' => $cluster->name,
         ]);
 
     }

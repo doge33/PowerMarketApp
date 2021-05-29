@@ -14,7 +14,7 @@
 {{-- <li class="breadcrumb-item active" aria-current="page">{{ __('Default') }}</li> --}}
 @endcomponent
 @endcomponent
-
+{{-- <div>{!! dd($geodata) !!}</div> --}}
 <div class="modal fade" id="delete-form" tabindex="-1" role="dialog" aria-labelledby="delete-form" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
         <div class="modal-content">
@@ -483,11 +483,10 @@
     var features = [];
     var checkExisting = document.querySelector("#checkExisting");
     function renderMap() {
+
         var jsonString = `{!! $geodata ?? '
         ' !!}`;
-        // var testGeopoint = `{!! $test_geopoint ?? '
-        // ' !!}`;
-        // console.log(JSON.parse(testGeopoint));
+        console.log(jsonString);
 
         var bounds = new mapboxgl.LngLatBounds();
         var filterGroup = document.getElementById('filter-group'); //"breakeven nav bar tag"
