@@ -123,10 +123,23 @@ class ClusterController extends Controller
                     'user_id' => $user->id
                 ]);
             }
-            $cluster->addGeopoint($request->geopoint_id);
+
+            //insert geopoint with all the pro params:
+            $pro_params = json_decode($request->pro_params);
+
+            $geopoint_params = [
+                'captive_use'=>$pro_params->captive_use ?? 0.8,
+                'export_tariff' => $pro_params->export_tariff ?? 0.055,
+                'domestic_tariff' => $pro_params->domestic_tariff ?? 0.146,
+                'commercial_tariff' => $pro_params->commercial_tariff ?? 0.12,
+                'system_cost' => $pro_params->system_cost ?? 6000,
+                'system_size' => $pro_params->system_size ?? 5
+            ];
+            $cluster->addGeopoint($request->geopoint_id, $geopoint_params);
+
             $cluster->setLatLon();
             return response()->json([
-                'message' => 'Geopoint has been successfully added',
+                'message' => "geopoint has been successfully added",
                 'cluster_link' => URL::to('/projects/'.$cluster->name)
             ], 200);
         } else if ($user->isOrgMember()) {

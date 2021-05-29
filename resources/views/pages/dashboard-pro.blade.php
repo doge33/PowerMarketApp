@@ -882,6 +882,16 @@
                 $('#delete-next-response-status').text(data.responseJSON.message).css('display', 'block').addClass('alert-danger').removeClass('alert-success').delay(3000).fadeOut();
             });
         })
+        //grab the current input values for pro params:
+        var proParams = {
+                    captive_use: $("#input-captive-use").val(),
+                    export_tariff: $("#input-export-tariff").val(),
+                    domestic_tariff: $("#input-domestic-tariff").val(),
+                    commercial_tariff: $("#input-commercial-tariff").val(),
+                    system_cost: $("#input-cost-of-small-system").val(),
+                    system_size: $("#input-system-size-kwp").val()
+                }
+        console.log(proParams);
         $('#modal-form').submit(function(event) {
             event.preventDefault();
             var visiblePoints = [];
@@ -892,16 +902,6 @@
                   }
                 }
             }
-            //grab the current input values for pro params:
-            var proParams = {
-                    captive_use: $("#input-captive-use").val(),
-                    export_tariff: $("#input-export-tariff").val(),
-                    domestic_tariff: $("#input-domestic-tariff").val(),
-                    commercial_tariff: $("#input-commercial-tariff").val(),
-                    system_cost: $("#input-cost-of-small-system").val(),
-                    system_size: $("#input-system-size-kwp").val()
-                }
-            console.log(proParams);
             var formData = {
                 'name': $('input[name=name]').val(),
                 '_token': $('input[name=_token]').val(),
@@ -934,7 +934,8 @@
             event.preventDefault();
             var formData = {
                 geopoint_id: clicked_geopoint_id,
-                '_token': $('input[name=_token]').val()
+                '_token': $('input[name=_token]').val(),
+                'pro_params': JSON.stringify(proParams)
             }
             if ($('#newClusterCheck').is(":checked")) {
                 formData['new_name'] = $('input[name=new_name]').val()

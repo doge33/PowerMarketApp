@@ -49,7 +49,8 @@ class Cluster extends Model
         $this->save();
     }
 
-    public function addGeopoint($geopoint_id) {
-        $this->geopoints()->syncWithoutDetaching($geopoint_id);
+    public function addGeopoint($geopoint_id, $geopoint_params) {
+        $this->geopoints()->syncWithoutDetaching(array($geopoint_id => $geopoint_params));
+
     }
 }

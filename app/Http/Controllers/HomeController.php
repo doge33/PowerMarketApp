@@ -255,7 +255,6 @@ class HomeController extends Controller
             //dd(array_values($pro_geopoint)[0]);
             array_push($pro_geopoints, array_values($pro_geopoint)[0]);
         };
-        //dd($pro_geopoints);
 
         return view('pages.dashboard', [
             'geodata' => collect($pro_geopoints),

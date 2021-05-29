@@ -3,7 +3,7 @@ if(!function_exists('pro_params')){
     function pro_params($captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, $geopoints)
     {
         //echo("Using helper!");
-        echo("using default values: $captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, \n ");
+        //echo("using default values: $captive_use, $export_tariff, $domestic_tariff, $commercial_tariff, $cost_of_small_system, $system_size_kwp, \n ");
         //globals
         $distance_per_pixel = 0.3677;
         $area_per_pix =  $distance_per_pixel**2;
